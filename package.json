@@ -1,0 +1,22 @@
+{
+  "name": "OpenBioCard",
+  "version": "1.0.0",
+  "description": "✨A free and open source decentralized electronic business card software✨",
+  "main": "src/main.ts",
+  "scripts": {
+    "dev": "ts-node src/main.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bio",
+    "card",
+    "open"
+  ],
+  "author": "Cherry Fu",
+  "license": "MIT",
+  "packageManager": "pnpm@10.10.0",
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.3"
+  }
+}
