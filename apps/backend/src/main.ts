@@ -102,7 +102,7 @@ app.use(slowDownMiddleware);
 app.use(securityMiddleware);
 
 // Apply legacy rate limiting (backup)
-app.use(apiRateLimiter(15 * 60 * 1000, 100));
+app.use(apiRateLimiter(5 * 60 * 1000, 5000)); // 5分鐘內5000次請求
 
 // Apply access control middleware - this is the key addition
 app.use(accessControlMiddleware);

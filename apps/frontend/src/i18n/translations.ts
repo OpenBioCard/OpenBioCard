@@ -1,5 +1,5 @@
 export const translations = {
-  'zh-TW': {
+  'zh-Hant': {
     title: 'OpenBioCard 系統初始化',
     welcome: '歡迎使用 OpenBioCard！',
     description: '這是您第一次使用本系統，請完成初始化設置。',
@@ -354,11 +354,11 @@ export const translations = {
 };
 
 export type Language = keyof typeof translations;
-export type TranslationKey = keyof typeof translations['zh-TW'];
+export type TranslationKey = keyof typeof translations['zh-Hant'];
 
 export const languages = [
-  { code: 'zh-TW' as Language, name: '繁體中文' },
-  { code: 'zh-CN' as Language, name: '简体中文' },
-  { code: 'en' as Language, name: 'English' },
+  { code: 'zh-Hant' as Language, name: '繁體中文' },
+ { code: 'zh-CN' as Language, name: '简体中文' },
+ { code: 'en' as Language, name: 'English' },
   { code: 'ja' as Language, name: '日本語' }
 ];

@@ -31,7 +31,7 @@ export class SystemIntegrity {
         try {
           const fixedConfig = {
             isInitialized: true,
-            language: 'zh-TW', // 默認語言
+            language: 'en', // 默認語言
             createdAt: new Date().toISOString()
           };
           

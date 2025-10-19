@@ -75,6 +75,9 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center p-4">
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 w-full max-w-md">
         <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <img src="/logo.svg" alt="OpenBioCard Logo" className="w-20 h-20" />
+          </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">OpenBioCard</h1>
           <p className="text-gray-600 dark:text-gray-300">管理員登錄</p>
         </div>

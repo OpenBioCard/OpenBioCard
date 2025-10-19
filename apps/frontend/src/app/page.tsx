@@ -1,26 +1,41 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { initAPI } from '../api/init';
 import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../i18n/context';
 import InitializationPage from '../components/InitializationPage';
 import LoginPage from '../components/LoginPage';
-import DashboardLayout from '../components/DashboardLayout';
-import DashboardOverview from '../components/DashboardOverview';
-import UserManagement from '../components/UserManagement';
-import SystemStatusPage from '../components/SystemStatusPage';
 
 export default function Home() {
   const [isInitialized, setIsInitialized] = useState<boolean | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState('overview');
   const { isAuthenticated, user, isLoading: authLoading } = useAuth();
   const { setLanguage } = useI18n();
+  const router = useRouter();
 
   useEffect(() => {
     checkInitStatus();
   }, []);
+
+  // Set document title based on current state
+  useEffect(() => {
+    if (loading || authLoading) {
+      document.title = 'Loading - OpenBioCard';
+    } else if (!isInitialized) {
+      document.title = 'Initialization - OpenBioCard';
+    } else if (!isAuthenticated) {
+      document.title = 'Login - OpenBioCard';
+    }
+  }, [loading, authLoading, isInitialized, isAuthenticated]);
+
+  // Redirect to dashboard if authenticated
+  useEffect(() => {
+    if (!authLoading && isAuthenticated && user && ['root', 'admin'].includes(user.role)) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, authLoading, user, router]);
 
   const checkInitStatus = async () => {
     try {
@@ -44,18 +59,7 @@ export default function Home() {
   };
 
   const handleLoginSuccess = () => {
-    setCurrentPage('overview');
-  };
-
-  const renderDashboardContent = () => {
-    switch (currentPage) {
-      case 'users':
-        return <UserManagement />;
-      case 'system':
-        return <SystemStatusPage />;
-      default:
-        return <DashboardOverview />;
-    }
+    // Navigation will be handled by useEffect
   };
 
   if (loading || authLoading) {
@@ -102,9 +106,5 @@ export default function Home() {
     );
   }
 
-  return (
-    <DashboardLayout currentPage={currentPage} onPageChange={setCurrentPage}>
-      {renderDashboardContent()}
-    </DashboardLayout>
-  );
+  return null; // Will redirect to dashboard
 }

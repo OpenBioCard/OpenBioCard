@@ -52,13 +52,6 @@ export default function DashboardOverview() {
 
   const isSystemStable = systemHealth?.apiService && systemHealth?.database;
 
-  const quickActions = [
-    { icon: '👥', title: t('createUser') },
-    { icon: '📊', title: t('viewReports') },
-    { icon: '⚙️', title: t('systemSettings') },
-    { icon: '💾', title: t('dataBackup') }
-  ];
-
   return (
     <div className="space-y-6">
       {/* Welcome */}
@@ -69,9 +62,9 @@ export default function DashboardOverview() {
         <p className="text-gray-600 dark:text-gray-400">{t('systemOverview')}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-6">
         {/* System Health */}
-        <div className="lg:col-span-2 glass-card p-6">
+        <div className="glass-card p-6">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t('systemHealth')}</h3>
             {loading && (
@@ -140,25 +133,6 @@ export default function DashboardOverview() {
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="glass-card p-6">
-          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('quickActions')}</h3>
-          <div className="space-y-3">
-            {quickActions.map((action, index) => (
-              <button 
-                key={index}
-                className="w-full glass-button p-3 rounded-lg text-left hover:scale-105 transition-transform"
-              >
-                <div className="flex items-center space-x-3">
-                  <span className="text-lg">{action.icon}</span>
-                  <span className="font-medium text-gray-700 dark:text-gray-300">
-                    {action.title}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
-        </div>
       </div>
     </div>
   );

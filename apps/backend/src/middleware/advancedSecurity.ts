@@ -37,18 +37,18 @@ export const securityHeadersMiddleware = helmet({
 });
 
 export const advancedRateLimiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW || '900000'), // 15分鐘，默認值
-  max: parseInt(process.env.RATE_LIMIT_MAX || '100'), // 默認100次請求
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW || '60000'), // 1分鐘
+  max: parseInt(process.env.RATE_LIMIT_MAX || '10000'), // 大幅增加到10000次請求
   message: {
     error: 'Too many requests',
     code: 'RATE_LIMIT_EXCEEDED',
-    retryAfter: '15 minutes'
+    retryAfter: '1 minute'
   },
   standardHeaders: true,
   legacyHeaders: false,
   skip: (req) => {
-    // 跳過健康檢查
-    return req.path === '/api/health';
+    // 跳過健康檢查和開發環境
+    return req.path === '/api/health' || process.env.NODE_ENV === 'development';
   },
   keyGenerator: (req) => {
     // 使用IP + User-Agent的組合來生成key
@@ -57,11 +57,11 @@ export const advancedRateLimiter = rateLimit({
 });
 
 export const slowDownMiddleware = slowDown({
-  windowMs: 15 * 60 * 1000, // 15分鐘
-  delayAfter: 50, // 50次請求後開始延遲
-  delayMs: () => 500, // 每次增加500ms延遲
-  maxDelayMs: 20000, // 最大延遲20秒
-  skip: (req) => req.path === '/api/health'
+  windowMs: 5 * 60 * 1000, // 5分鐘
+  delayAfter: 5000, // 5000次請求後開始延遲（大幅增加）
+  delayMs: () => 100, // 每次增加100ms延遲（減少延遲）
+  maxDelayMs: 2000, // 最大延遲2秒（減少最大延遲）
+  skip: (req) => req.path === '/api/health' || process.env.NODE_ENV === 'development'
 });
 
 export const requestSizeLimit = (req: Request, res: Response, next: NextFunction) => {

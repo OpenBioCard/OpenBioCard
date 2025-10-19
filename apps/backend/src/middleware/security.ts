@@ -61,10 +61,15 @@ export const securityMiddleware = (req: Request, res: Response, next: NextFuncti
   next();
 };
 
-export const apiRateLimiter = (windowMs: number = 15 * 60 * 1000, max: number = 100) => {
+export const apiRateLimiter = (windowMs: number = 5 * 60 * 1000, max: number = 5000) => {
   const requests = new Map();
   
   return (req: Request, res: Response, next: NextFunction) => {
+    // 在開發環境跳過速率限制
+    if (process.env.NODE_ENV === 'development') {
+      return next();
+    }
+    
     const clientIP = req.ip || req.connection.remoteAddress || 'unknown';
     const now = Date.now();
     const windowStart = now - windowMs;

@@ -51,7 +51,7 @@ router.post('/setup', (req: Request, res: Response) => {
       // 這種情況可能表示數據被篡改，立即拒絕並修復狀態
       const fixedConfig: SystemConfig = {
         isInitialized: true,
-        language: 'zh-TW', // 默認語言
+        language: 'en', // 默認語言
         createdAt: new Date().toISOString()
       };
       FileManager.writeConfig(fixedConfig);
