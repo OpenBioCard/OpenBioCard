@@ -18,17 +18,15 @@ export default function DashboardOverview() {
 
   useEffect(() => {
     checkSystemHealth();
-    const interval = setInterval(checkSystemHealth, 30000); // 每30秒檢查一次
+    const interval = setInterval(checkSystemHealth, 30000);
     return () => clearInterval(interval);
   }, []);
 
   const checkSystemHealth = async () => {
     try {
-      // 檢查API服務狀態
       const response = await fetch(process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001' + '/api/health');
       const apiServiceHealthy = response.ok;
       
-      // 檢查數據庫狀態（通過嘗試獲取系統狀態）
       let databaseHealthy = false;
       try {
         await apiClient.getSystemStatus();
@@ -52,104 +50,89 @@ export default function DashboardOverview() {
     }
   };
 
-  const getStatusColor = (isHealthy: boolean) => {
-    return isHealthy ? 'bg-green-500' : 'bg-red-500';
-  };
-
-  const getStatusText = (isHealthy: boolean) => {
-    return isHealthy ? t('normal') : t('abnormal');
-  };
-
-  const getStatusTextColor = (isHealthy: boolean) => {
-    return isHealthy 
-      ? 'text-green-600 dark:text-green-400' 
-      : 'text-red-600 dark:text-red-400';
-  };
-
   const isSystemStable = systemHealth?.apiService && systemHealth?.database;
 
+  const quickActions = [
+    { icon: '👥', title: t('createUser') },
+    { icon: '📊', title: t('viewReports') },
+    { icon: '⚙️', title: t('systemSettings') },
+    { icon: '💾', title: t('dataBackup') }
+  ];
+
   return (
-    <div>
-      <div className="mb-8">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">{t('dashboardOverview')}</h2>
-        <p className="text-gray-600 dark:text-gray-400">
-          {t('welcomeBack')}, {user?.username}！{t('systemOverview')}
-        </p>
+    <div className="space-y-6">
+      {/* Welcome */}
+      <div>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          {t('welcomeBack')}, {user?.username}！
+        </h1>
+        <p className="text-gray-600 dark:text-gray-400">{t('systemOverview')}</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* System Health */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('systemHealth')}</h3>
-              {loading && (
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
-              )}
+        <div className="lg:col-span-2 glass-card p-6">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t('systemHealth')}</h3>
+            {loading && (
+              <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            <div className="glass-button p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-3 h-3 rounded-full ${
+                    loading ? 'bg-gray-400' : systemHealth?.apiService ? 'bg-green-500' : 'bg-red-500'
+                  }`}></div>
+                  <span className="text-sm font-medium">{t('apiService')}</span>
+                </div>
+                <span className={`text-sm ${
+                  loading ? 'text-gray-500' : 
+                  systemHealth?.apiService ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                }`}>
+                  {loading ? t('checking') : systemHealth?.apiService ? t('normal') : t('abnormal')}
+                </span>
+              </div>
+            </div>
+
+            <div className="glass-button p-4 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-3">
+                  <div className={`w-3 h-3 rounded-full ${
+                    loading ? 'bg-gray-400' : systemHealth?.database ? 'bg-green-500' : 'bg-red-500'
+                  }`}></div>
+                  <span className="text-sm font-medium">{t('database')}</span>
+                </div>
+                <span className={`text-sm ${
+                  loading ? 'text-gray-500' : 
+                  systemHealth?.database ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                }`}>
+                  {loading ? t('checking') : systemHealth?.database ? t('normal') : t('abnormal')}
+                </span>
+              </div>
             </div>
           </div>
-          <div className="p-6">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${loading ? 'bg-gray-400' : getStatusColor(systemHealth?.apiService || false)}`}></div>
-                  <span className="text-sm text-gray-900 dark:text-white">{t('apiService')}</span>
-                </div>
-                <span className={`text-sm ${loading ? 'text-gray-500' : getStatusTextColor(systemHealth?.apiService || false)}`}>
-                  {loading ? t('checking') : getStatusText(systemHealth?.apiService || false)}
+
+          {/* Overall Status */}
+          <div className={`glass-card p-4 rounded-lg ${
+            loading ? 'bg-gray-50/50 dark:bg-gray-800/50' : 
+            isSystemStable ? 'bg-green-50/50 dark:bg-green-900/20' : 'bg-red-50/50 dark:bg-red-900/20'
+          }`}>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <span className="text-lg">
+                  {loading ? '⏳' : isSystemStable ? '✅' : '⚠️'}
+                </span>
+                <span className="font-medium">
+                  {loading ? t('checkingSystemStatus') : isSystemStable ? t('stable') : t('systemAbnormal')}
                 </span>
               </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <div className={`w-2 h-2 rounded-full ${loading ? 'bg-gray-400' : getStatusColor(systemHealth?.database || false)}`}></div>
-                  <span className="text-sm text-gray-900 dark:text-white">{t('database')}</span>
-                </div>
-                <span className={`text-sm ${loading ? 'text-gray-500' : getStatusTextColor(systemHealth?.database || false)}`}>
-                  {loading ? t('checking') : getStatusText(systemHealth?.database || false)}
-                </span>
-              </div>
-            </div>
-            
-            <div className={`mt-6 p-4 rounded-lg ${
-              loading 
-                ? 'bg-gray-50 dark:bg-gray-700/20' 
-                : isSystemStable 
-                  ? 'bg-blue-50 dark:bg-blue-900/20' 
-                  : 'bg-red-50 dark:bg-red-900/20'
-            }`}>
-              <div className="flex items-center space-x-2">
-                <span className={
-                  loading 
-                    ? 'text-gray-600 dark:text-gray-400' 
-                    : isSystemStable 
-                      ? 'text-blue-600 dark:text-blue-400' 
-                      : 'text-red-600 dark:text-red-400'
-                }>
-                  {loading ? '⏳' : isSystemStable ? 'ℹ️' : '⚠️'}
-                </span>
-                <span className={`text-sm ${
-                  loading 
-                    ? 'text-gray-800 dark:text-gray-300' 
-                    : isSystemStable 
-                      ? 'text-blue-800 dark:text-blue-300' 
-                      : 'text-red-800 dark:text-red-300'
-                }`}>
-                  {loading 
-                    ? t('checkingSystemStatus') 
-                    : isSystemStable 
-                      ? t('stable') 
-                      : t('systemAbnormal')
-                  }
-                </span>
-              </div>
-            </div>
-            
-            <div className="mt-4 text-right">
               <button
                 onClick={checkSystemHealth}
                 disabled={loading}
-                className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 disabled:opacity-50"
+                className="glass-button px-3 py-1 rounded text-sm disabled:opacity-50"
               >
                 {loading ? t('checking') : t('recheckHealth')}
               </button>
@@ -158,32 +141,22 @@ export default function DashboardOverview() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{t('quickActions')}</h3>
-          </div>
-          <div className="p-6">
-            <div className="grid grid-cols-2 gap-4">
-              <button className="p-4 text-center border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <div className="text-2xl mb-2">👥</div>
-                <div className="text-sm text-gray-700 dark:text-gray-300">{t('createUser')}</div>
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('quickActions')}</h3>
+          <div className="space-y-3">
+            {quickActions.map((action, index) => (
+              <button 
+                key={index}
+                className="w-full glass-button p-3 rounded-lg text-left hover:scale-105 transition-transform"
+              >
+                <div className="flex items-center space-x-3">
+                  <span className="text-lg">{action.icon}</span>
+                  <span className="font-medium text-gray-700 dark:text-gray-300">
+                    {action.title}
+                  </span>
+                </div>
               </button>
-              
-              <button className="p-4 text-center border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <div className="text-2xl mb-2">📊</div>
-                <div className="text-sm text-gray-700 dark:text-gray-300">{t('viewReports')}</div>
-              </button>
-              
-              <button className="p-4 text-center border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <div className="text-2xl mb-2">⚙️</div>
-                <div className="text-sm text-gray-700 dark:text-gray-300">{t('systemSettings')}</div>
-              </button>
-              
-              <button className="p-4 text-center border border-gray-200 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
-                <div className="text-2xl mb-2">💾</div>
-                <div className="text-sm text-gray-700 dark:text-gray-300">{t('dataBackup')}</div>
-              </button>
-            </div>
+            ))}
           </div>
         </div>
       </div>

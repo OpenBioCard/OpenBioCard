@@ -1,9 +1,9 @@
 [
   {
-    "id": "dea0a6c6-ad4b-49ee-af8d-1fdf8b5b93e8",
-    "username": "root",
-    "password": "$2a$10$mDfLnvcb6CcEU9N6FwvinOTvbOllxO9EvqApsPB6BvEPSfCCzWSwW",
+    "id": "e1e1179e-c271-4c4e-9d2f-1864302da6f1",
+    "username": "admin",
+    "password": "$2a$10$yXVKX2MprpUPpdDjpXeZXuHtawsVBVr4kRh0oM2uGZG5nIIx36Lym",
     "role": "root",
-    "createdAt": "2025-10-19T11:02:35.442Z"
+    "createdAt": "2025-10-19T12:42:51.712Z"
   }
 ]

@@ -13,12 +13,7 @@ router.use(requireRole('root'));
 
 router.get('/users', (req: AuthenticatedRequest, res: Response) => {
   try {
-    const users = FileManager.readUsers().map(user => ({
-      id: user.id,
-      username: user.username,
-      role: user.role,
-      createdAt: user.createdAt
-    }));
+    const users = FileManager.getSafeUsers();
     res.json({ users });
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch users' });
@@ -76,7 +71,7 @@ router.post('/users', (req: AuthenticatedRequest, res: Response) => {
 router.get('/status', (req: AuthenticatedRequest, res: Response) => {
   try {
     const config = FileManager.readConfig();
-    const users = FileManager.readUsers();
+    const systemStats = FileManager.getSystemStats();
     
     const packageJsonPath = path.join(__dirname, '../../../package.json');
     let version = 'Unknown';
@@ -107,11 +102,8 @@ router.get('/status', (req: AuthenticatedRequest, res: Response) => {
         createdAt: config?.createdAt || null
       },
       users: {
-        total: users.length,
-        byRole: users.reduce((acc, user) => {
-          acc[user.role] = (acc[user.role] || 0) + 1;
-          return acc;
-        }, {} as Record<string, number>)
+        total: systemStats.totalUsers,
+        byRole: systemStats.usersByRole
       },
       system: systemInfo
     });

@@ -82,7 +82,10 @@ export const translations = {
     recheckHealth: '重新檢查',
     logout: '登出',
     retry: '重試',
-    adminPanel: '管理面板'
+    adminPanel: '管理面板',
+    days: '天',
+    hours: '小時',
+    minutes: '分鐘'
   },
   'zh-CN': {
     title: 'OpenBioCard 系统初始化',
@@ -167,7 +170,10 @@ export const translations = {
     recheckHealth: '重新检查',
     logout: '登出',
     retry: '重试',
-    adminPanel: '管理面板'
+    adminPanel: '管理面板',
+    days: '天',
+    hours: '小时',
+    minutes: '分钟'
   },
   'en': {
     title: 'OpenBioCard System Initialization',
@@ -252,7 +258,10 @@ export const translations = {
     recheckHealth: 'Recheck Health',
     logout: 'Logout',
     retry: 'Retry',
-    adminPanel: 'Admin Panel'
+    adminPanel: 'Admin Panel',
+    days: 'days',
+    hours: 'hours',
+    minutes: 'minutes'
   },
   'ja': {
     title: 'OpenBioCard システム初期化',
@@ -337,7 +346,10 @@ export const translations = {
     recheckHealth: 'ヘルスチェック再実行',
     logout: 'ログアウト',
     retry: '再試行',
-    adminPanel: '管理パネル'
+    adminPanel: '管理パネル',
+    days: '日',
+    hours: '時間',
+    minutes: '分'
   }
 };
 

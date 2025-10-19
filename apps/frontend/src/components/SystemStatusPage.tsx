@@ -12,7 +12,7 @@ export default function SystemStatusPage() {
 
   useEffect(() => {
     loadSystemStatus();
-    const interval = setInterval(loadSystemStatus, 30000); // 每30秒刷新
+    const interval = setInterval(loadSystemStatus, 30000);
     return () => clearInterval(interval);
   }, []);
 
@@ -40,7 +40,7 @@ export default function SystemStatusPage() {
     const days = Math.floor(seconds / 86400);
     const hours = Math.floor((seconds % 86400) / 3600);
     const minutes = Math.floor((seconds % 3600) / 60);
-    return `${days}天 ${hours}小時 ${minutes}分鐘`;
+    return `${days}${t('days')} ${hours}${t('hours')} ${minutes}${t('minutes')}`;
   };
 
   const formatDate = (dateString: string | null) => {
@@ -51,167 +51,166 @@ export default function SystemStatusPage() {
   if (loading && !status) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="w-6 h-6 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   if (error && !status) {
     return (
-      <div className="p-4 rounded-lg bg-red-50 dark:bg-red-900/50 border border-red-200 dark:border-red-800">
-        <p className="text-red-600 dark:text-red-400">{error}</p>
-        <button
-          onClick={loadSystemStatus}
-          className="mt-2 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-        >
-          {t('retry')}
-        </button>
+      <div className="glass-card p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-lg font-medium text-red-600 dark:text-red-400 mb-1">載入失敗</h3>
+            <p className="text-red-600 dark:text-red-400 text-sm">{error}</p>
+          </div>
+          <button
+            onClick={loadSystemStatus}
+            className="glass-button px-4 py-2 rounded-lg text-red-600 dark:text-red-400"
+          >
+            {t('retry')}
+          </button>
+        </div>
       </div>
     );
   }
 
   if (!status) return null;
 
+  const memoryUsagePercentage = Math.round((status.system.memoryUsage.heapUsed / status.system.memoryUsage.heapTotal) * 100);
+  const systemMemoryUsagePercentage = Math.round(((status.system.totalMemory - status.system.freeMemory) / status.system.totalMemory) * 100);
+
   return (
-    <div>
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('systemStatus')}</h2>
+    <div className="space-y-6">
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('systemStatus')}</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">系統運行狀態監控</p>
+        </div>
         <button
           onClick={loadSystemStatus}
           disabled={loading}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 transition-colors"
+          className="glass-button px-4 py-2 rounded-lg flex items-center space-x-2 disabled:opacity-50"
         >
-          {loading ? t('refreshing') : t('refresh')}
+          <svg className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          <span>{loading ? t('refreshing') : t('refresh')}</span>
         </button>
       </div>
 
       {error && (
-        <div className="mb-4 p-3 rounded-lg bg-yellow-50 dark:bg-yellow-900/50 border border-yellow-200 dark:border-yellow-800">
-          <p className="text-yellow-600 dark:text-yellow-400 text-sm">{error}</p>
+        <div className="glass-card p-4 bg-yellow-50/50 dark:bg-yellow-900/20">
+          <p className="text-yellow-700 dark:text-yellow-400 text-sm">{error}</p>
         </div>
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* System Info */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('systemInfo')}</h3>
+        {/* System Information */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('systemInfo')}</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('version')}:</span>
-              <span className="text-gray-900 dark:text-white font-mono">{status.system.version}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('version')}</span>
+              <span className="font-mono text-sm">{status.system.version}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('platform')}:</span>
-              <span className="text-gray-900 dark:text-white">{status.system.platform}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('platform')}</span>
+              <span className="text-sm">{status.system.platform}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('architecture')}:</span>
-              <span className="text-gray-900 dark:text-white">{status.system.arch}</span>
+              <span className="text-gray-600 dark:text-gray-400">Node.js</span>
+              <span className="font-mono text-sm">{status.system.nodeVersion}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">Node.js:</span>
-              <span className="text-gray-900 dark:text-white font-mono">{status.system.nodeVersion}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('hostname')}:</span>
-              <span className="text-gray-900 dark:text-white">{status.system.hostname}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('uptime')}:</span>
-              <span className="text-gray-900 dark:text-white">{formatUptime(status.system.uptime)}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('uptime')}</span>
+              <span className="text-sm">{formatUptime(status.system.uptime)}</span>
             </div>
           </div>
         </div>
 
-        {/* Memory Usage */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('memoryInfo')}</h3>
+        {/* Memory Information */}
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('memoryInfo')}</h3>
           <div className="space-y-3">
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('totalMemory')}:</span>
-              <span className="text-gray-900 dark:text-white">{formatBytes(status.system.totalMemory)}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('totalMemory')}</span>
+              <span className="text-sm">{formatBytes(status.system.totalMemory)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('freeMemory')}:</span>
-              <span className="text-gray-900 dark:text-white">{formatBytes(status.system.freeMemory)}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('freeMemory')}</span>
+              <span className="text-sm">{formatBytes(status.system.freeMemory)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('processRSS')}:</span>
-              <span className="text-gray-900 dark:text-white">{formatBytes(status.system.memoryUsage.rss)}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('heapUsed')}</span>
+              <span className="text-sm">{formatBytes(status.system.memoryUsage.heapUsed)}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('heapTotal')}:</span>
-              <span className="text-gray-900 dark:text-white">{formatBytes(status.system.memoryUsage.heapTotal)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('heapUsed')}:</span>
-              <span className="text-gray-900 dark:text-white">{formatBytes(status.system.memoryUsage.heapUsed)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('external')}:</span>
-              <span className="text-gray-900 dark:text-white">{formatBytes(status.system.memoryUsage.external)}</span>
-            </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('cpuCores')}:</span>
-              <span className="text-gray-900 dark:text-white">{status.system.cpuCount}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('cpuCores')}</span>
+              <span className="text-sm">{status.system.cpuCount}</span>
             </div>
           </div>
         </div>
 
         {/* Application Status */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('applicationStatus')}</h3>
+        <div className="glass-card p-6">
+          <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-4">{t('applicationStatus')}</h3>
           <div className="space-y-3">
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('initStatus')}:</span>
+            <div className="flex justify-between items-center">
+              <span className="text-gray-600 dark:text-gray-400">{t('initStatus')}</span>
               <span className={`px-2 py-1 rounded-full text-xs font-medium ${
                 status.config.isInitialized 
-                  ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300'
-                  : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300'
+                  ? 'bg-green-100 text-green-800 dark:bg-green-900/50 dark:text-green-300'
+                  : 'bg-red-100 text-red-800 dark:bg-red-900/50 dark:text-red-300'
               }`}>
                 {status.config.isInitialized ? t('initialized') : t('notInitialized')}
               </span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('systemLanguage')}:</span>
-              <span className="text-gray-900 dark:text-white">{status.config.language || 'N/A'}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('systemLanguage')}</span>
+              <span className="text-sm">{status.config.language || 'N/A'}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('creationTime')}:</span>
-              <span className="text-gray-900 dark:text-white text-sm">{formatDate(status.config.createdAt)}</span>
+              <span className="text-gray-600 dark:text-gray-400">{t('totalUsers')}</span>
+              <span className="text-sm">{status.users.total}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-gray-600 dark:text-gray-400">{t('totalUsers')}:</span>
-              <span className="text-gray-900 dark:text-white">{status.users.total}</span>
-            </div>
-            {Object.entries(status.users.byRole).map(([role, count]) => (
-              <div key={role} className="flex justify-between">
-                <span className="text-gray-600 dark:text-gray-400">{role} {t('user')}:</span>
-                <span className="text-gray-900 dark:text-white">{count}</span>
-              </div>
-            ))}
           </div>
         </div>
       </div>
 
-      {/* Memory Usage Chart Placeholder */}
-      <div className="mt-6 bg-white dark:bg-gray-800 rounded-lg shadow p-6">
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">{t('systemPerformance')}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="text-center p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400">
-              {Math.round((status.system.memoryUsage.heapUsed / status.system.memoryUsage.heapTotal) * 100)}%
+      {/* Performance Overview */}
+      <div className="glass-card p-6">
+        <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-6">{t('systemPerformance')}</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="text-center">
+            <div className="text-2xl font-bold text-blue-600 dark:text-blue-400 mb-2">
+              {memoryUsagePercentage}%
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">{t('heapMemoryUsage')}</div>
-          </div>
-          <div className="text-center p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-            <div className="text-2xl font-bold text-green-600 dark:text-green-400">
-              {Math.round(((status.system.totalMemory - status.system.freeMemory) / status.system.totalMemory) * 100)}%
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">{t('heapMemoryUsage')}</div>
+            <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-blue-500 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${memoryUsagePercentage}%` }}
+              ></div>
             </div>
-            <div className="text-sm text-gray-600 dark:text-gray-400">{t('systemMemoryUsage')}</div>
           </div>
-          <div className="text-center p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600 dark:text-purple-400">
+          
+          <div className="text-center">
+            <div className="text-2xl font-bold text-green-600 dark:text-green-400 mb-2">
+              {systemMemoryUsagePercentage}%
+            </div>
+            <div className="text-sm text-gray-600 dark:text-gray-400 mb-3">{t('systemMemoryUsage')}</div>
+            <div className="bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+              <div 
+                className="bg-green-500 h-2 rounded-full transition-all duration-500"
+                style={{ width: `${systemMemoryUsagePercentage}%` }}
+              ></div>
+            </div>
+          </div>
+          
+          <div className="text-center">
+            <div className="text-lg font-bold text-purple-600 dark:text-purple-400 mb-2">
               {formatUptime(status.system.uptime)}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">{t('systemUptime')}</div>
