@@ -77,6 +77,7 @@ class ApiClient {
     this.token = null;
     if (typeof window !== 'undefined') {
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
     }
   }
 
@@ -92,6 +93,25 @@ class ApiClient {
     return headers;
   }
 
+  private async handleResponse(response: Response) {
+    const result = await response.json();
+    
+    // 如果收到401錯誤，清除token並重新加載頁面
+    if (response.status === 401) {
+      this.clearToken();
+      if (typeof window !== 'undefined') {
+        window.location.reload();
+      }
+      throw new Error(result.error || 'Authentication failed');
+    }
+    
+    if (!response.ok) {
+      throw new Error(result.error || `HTTP error! status: ${response.status}`);
+    }
+    
+    return result;
+  }
+
   async login(data: LoginRequest): Promise<LoginResponse> {
     const response = await fetch(`${API_BASE}/api/auth/login`, {
       method: 'POST',
@@ -99,12 +119,7 @@ class ApiClient {
       body: JSON.stringify(data),
     });
     
-    const result = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(result.error || 'Login failed');
-    }
-    
+    const result = await this.handleResponse(response);
     this.setToken(result.token);
     return result;
   }
@@ -114,13 +129,7 @@ class ApiClient {
       headers: this.getHeaders(),
     });
     
-    const result = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(result.error || 'Failed to fetch users');
-    }
-    
-    return result;
+    return await this.handleResponse(response);
   }
 
   async createUser(data: CreateUserRequest): Promise<{ success: boolean; user: User }> {
@@ -130,13 +139,16 @@ class ApiClient {
       body: JSON.stringify(data),
     });
     
-    const result = await response.json();
+    return await this.handleResponse(response);
+  }
+
+  async deleteUser(userId: string): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${API_BASE}/api/admin/users/${userId}`, {
+      method: 'DELETE',
+      headers: this.getHeaders(),
+    });
     
-    if (!response.ok) {
-      throw new Error(result.error || 'Failed to create user');
-    }
-    
-    return result;
+    return await this.handleResponse(response);
   }
 
   async getSystemStatus(): Promise<SystemStatus> {
@@ -144,13 +156,7 @@ class ApiClient {
       headers: this.getHeaders(),
     });
     
-    const result = await response.json();
-    
-    if (!response.ok) {
-      throw new Error(result.error || 'Failed to fetch system status');
-    }
-    
-    return result;
+    return await this.handleResponse(response);
   }
 }
 

@@ -3,14 +3,17 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient, User, CreateUserRequest } from '../api/client';
 import { useI18n } from '../i18n/context';
+import { useAuth } from '../contexts/AuthContext';
 
 export default function UserManagement() {
   const { t } = useI18n();
+  const { user: currentUser } = useAuth();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const [formData, setFormData] = useState<CreateUserRequest>({
     username: '',
     password: '',
@@ -61,18 +64,37 @@ export default function UserManagement() {
     }
   };
 
+  const handleDeleteUser = async (userId: string, username: string) => {
+    if (!window.confirm(`確定要刪除用戶 "${username}" 嗎？此操作無法復原。`)) {
+      return;
+    }
+
+    setDeleting(userId);
+    setError('');
+
+    try {
+      await apiClient.deleteUser(userId);
+      await loadUsers();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete user');
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString();
   };
 
   const getRoleBadge = (role: string) => {
     const roleStyles = {
+      root: { bg: 'bg-red-500', text: 'text-white', icon: '👑' },
       admin: { bg: 'bg-orange-500', text: 'text-white', icon: '🛡️' },
       user: { bg: 'bg-green-500', text: 'text-white', icon: '👤' }
     };
     
     const style = roleStyles[role as keyof typeof roleStyles] || roleStyles.user;
-    const roleText = role === 'admin' ? t('admin') : t('user');
+    const roleText = role === 'root' ? 'Root' : role === 'admin' ? t('admin') : t('user');
     
     return (
       <div className={`inline-flex items-center px-2 py-1 rounded-lg ${style.bg} ${style.text} text-xs font-medium`}>
@@ -101,6 +123,7 @@ export default function UserManagement() {
         <button
           onClick={() => setShowCreateForm(true)}
           className="glass-button px-4 py-2 rounded-lg flex items-center space-x-2"
+          disabled={currentUser?.role !== 'root'}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -230,11 +253,21 @@ export default function UserManagement() {
               
               <div className="flex items-center space-x-3">
                 {getRoleBadge(user.role)}
-                <button className="glass-button p-2 rounded-lg text-gray-500">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                  </svg>
-                </button>
+                {currentUser?.role === 'root' && user.id !== currentUser.id && (
+                  <button 
+                    onClick={() => handleDeleteUser(user.id, user.username)}
+                    disabled={deleting === user.id}
+                    className="glass-button p-2 rounded-lg text-red-500 hover:text-red-600 disabled:opacity-50"
+                  >
+                    {deleting === user.id ? (
+                      <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
+                    ) : (
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    )}
+                  </button>
+                )}
               </div>
             </div>
           ))}

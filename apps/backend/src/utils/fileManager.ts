@@ -51,12 +51,28 @@ export class FileManager {
   static ensureDataDir(): void {
     try {
       this.validatePath(DATA_DIR);
+      
       if (!fs.existsSync(DATA_DIR)) {
+        console.log(`Creating data directory: ${DATA_DIR}`);
         fs.mkdirSync(DATA_DIR, { recursive: true, mode: 0o700 });
+        console.log('Data directory created successfully');
+      } else {
+        // 確保現有目錄有正確的權限
+        try {
+          fs.chmodSync(DATA_DIR, 0o700);
+        } catch (chmodError) {
+          console.warn('Could not set directory permissions:', chmodError);
+        }
+        console.log('Data directory already exists');
       }
+      
+      // 驗證目錄可訪問性
+      fs.accessSync(DATA_DIR, fs.constants.R_OK | fs.constants.W_OK);
+      console.log('Data directory access verified');
+      
     } catch (error) {
-      console.error('Error creating data directory:', error);
-      throw new Error('Failed to create secure data directory');
+      console.error('Error with data directory:', error);
+      throw new Error(`Failed to initialize data directory: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -133,6 +149,14 @@ export class FileManager {
     }
     
     users.push(user);
+    this.writeUsers(users);
+  }
+
+  static getUsers(): User[] {
+    return this.readUsers();
+  }
+
+  static saveUsers(users: User[]): void {
     this.writeUsers(users);
   }
 
