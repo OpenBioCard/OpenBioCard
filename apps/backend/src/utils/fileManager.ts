@@ -99,10 +99,40 @@ export class FileManager {
       if (!config.isInitialized || !config.language || !config.createdAt) {
         throw new Error('Invalid configuration data');
       }
+
+      // 額外安全檢查：如果系統已經初始化，拒絕覆蓋
+      const existingConfig = this.readConfig();
+      if (existingConfig?.isInitialized && config.isInitialized) {
+        console.error('🚨 CRITICAL SECURITY ALERT: Attempt to overwrite initialized config!', {
+          existingConfig,
+          newConfig: config,
+          timestamp: new Date().toISOString()
+        });
+        throw new Error('Cannot overwrite initialized system configuration');
+      }
       
       fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), { mode: 0o600 });
+      console.log('✅ Configuration written successfully:', { isInitialized: config.isInitialized, language: config.language });
     } catch (error) {
       console.error('Error writing config:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * 強制寫入配置 - 僅用於系統完整性修復
+   * 警告：此方法繞過正常的安全檢查，只應在系統完整性修復時使用
+   */
+  static forceWriteConfig(config: SystemConfig): void {
+    this.ensureDataDir();
+    try {
+      this.validatePath(CONFIG_FILE);
+      
+      console.warn('⚠️ Force writing configuration (integrity repair):', config);
+      fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), { mode: 0o600 });
+      console.log('✅ Configuration force-written for integrity repair');
+    } catch (error) {
+      console.error('Error force-writing config:', error);
       throw error;
     }
   }

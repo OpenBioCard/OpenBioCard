@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Debug Encryption</title>
+</head>
+<body>
+    <h1>Encryption Debug</h1>
+    <div id="status">Testing...</div>
+    <pre id="log"></pre>
+
+    <script>
+        const log = document.getElementById('log');
+        const status = document.getElementById('status');
+        
+        function logMessage(msg) {
+            console.log(msg);
+            log.textContent += new Date().toISOString() + ': ' + msg + '\n';
+        }
+
+        async function testEncryption() {
+            try {
+                logMessage('Testing public key fetch...');
+                
+                const response = await fetch('http://localhost:3001/api/crypto/public-key', {
+                    headers: {
+                        'User-Agent': navigator.userAgent
+                    }
+                });
+                
+                logMessage('Response status: ' + response.status);
+                logMessage('Response headers: ' + JSON.stringify([...response.headers.entries()]));
+                
+                if (!response.ok) {
+                    const text = await response.text();
+                    logMessage('Error response: ' + text);
+                    status.textContent = 'Failed: ' + response.status;
+                    return;
+                }
+                
+                const data = await response.json();
+                logMessage('Success! Got data: ' + JSON.stringify(data, null, 2));
+                status.textContent = 'Success!';
+                
+            } catch (error) {
+                logMessage('Error: ' + error.message);
+                logMessage('Stack: ' + error.stack);
+                status.textContent = 'Error: ' + error.message;
+            }
+        }
+
+        testEncryption();
+    </script>
+</body>
+</html>

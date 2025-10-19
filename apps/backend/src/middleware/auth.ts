@@ -22,7 +22,8 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
     return res.status(401).json({ error: 'Invalid token.' });
   }
 
-  // 驗證用戶是否仍然存在於數據庫中
+  // 由於accessControl中間件已經驗證了用戶存在性和權限一致性
+  // 這裡我們可以信任token中的信息，但仍然從數據庫獲取最新信息以確保安全
   try {
     const users = FileManager.getUsers();
     const currentUser = users.find(user => user.id === decoded.id);
@@ -31,12 +32,10 @@ export const authMiddleware = (req: AuthenticatedRequest, res: Response, next: N
       return res.status(401).json({ error: 'User not found. Please login again.' });
     }
 
-    // 驗證token中的角色是否與數據庫記錄一致
     if (currentUser.role !== decoded.role) {
       return res.status(401).json({ error: 'User permissions have changed. Please login again.' });
     }
 
-    // 驗證用戶名是否一致（額外安全檢查）
     if (currentUser.username !== decoded.username) {
       return res.status(401).json({ error: 'User data mismatch. Please login again.' });
     }

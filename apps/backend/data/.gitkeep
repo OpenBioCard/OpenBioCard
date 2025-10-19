@@ -1,3 +1,0 @@
-# This file ensures the data directory is created in the repository
-# The actual data files (config.json, users.json) are ignored by git
-# but this directory structure is preserved for proper application startup

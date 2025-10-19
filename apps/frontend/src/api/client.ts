@@ -86,8 +86,11 @@ class ApiClient {
       'Content-Type': 'application/json',
     };
     
-    if (this.token) {
-      headers['Authorization'] = `Bearer ${this.token}`;
+    // 每次都從 localStorage 獲取最新的 token
+    const currentToken = typeof window !== 'undefined' ? localStorage.getItem('token') : this.token;
+    
+    if (currentToken) {
+      headers['Authorization'] = `Bearer ${currentToken}`;
     }
     
     return headers;
@@ -103,6 +106,35 @@ class ApiClient {
         window.location.reload();
       }
       throw new Error(result.error || 'Authentication failed');
+    }
+    
+    // 如果收到500錯誤，根據錯誤代碼進行不同處理
+    if (response.status === 500) {
+      const errorCode = result.code;
+      
+      switch (errorCode) {
+        case 'SYSTEM_NOT_INITIALIZED':
+          // 系統未初始化，重定向到初始化頁面
+          if (typeof window !== 'undefined') {
+            window.location.reload();
+          }
+          break;
+        case 'AUTH_REQUIRED':
+        case 'AUTH_INVALID':
+        case 'USER_NOT_FOUND':
+        case 'USER_DATA_MISMATCH':
+          // 認證相關錯誤，清除token並重新加載
+          this.clearToken();
+          if (typeof window !== 'undefined') {
+            window.location.reload();
+          }
+          break;
+        default:
+          // 其他500錯誤，正常拋出
+          break;
+      }
+      
+      throw new Error(result.error || `Server error: ${response.status}`);
     }
     
     if (!response.ok) {

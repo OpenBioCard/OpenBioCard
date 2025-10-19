@@ -30,9 +30,9 @@ router.post('/users', requireRole('root'), (req: AuthenticatedRequest, res: Resp
       return res.status(400).json({ error: 'Username, password and role are required' });
     }
 
-    if (username.length < 3 || password.length < 6) {
+    if (username.length < 3 || password.length < 8) {
       return res.status(400).json({ 
-        error: 'Username must be at least 3 characters and password at least 6 characters' 
+        error: 'Username must be at least 3 characters and password at least 8 characters' 
       });
     }
 

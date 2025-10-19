@@ -2,7 +2,8 @@ import crypto from 'crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'openbiocards-secret-key';
+// 從環境變量獲取，如果沒有則使用固定的默認值（僅用於開發）
+const JWT_SECRET = process.env.JWT_SECRET || 'openbiocards-dev-secret-key-change-in-production';
 
 export class SecurityUtils {
   static hashPassword(password: string): string {
@@ -27,5 +28,10 @@ export class SecurityUtils {
     } catch (error) {
       return null;
     }
+  }
+
+  // 獲取當前使用的密鑰指紋（用於調試）
+  static getKeyFingerprint(): string {
+    return crypto.createHash('sha256').update(JWT_SECRET).digest('hex').substring(0, 8);
   }
 }
