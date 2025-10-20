@@ -85,7 +85,9 @@ export const translations = {
     adminPanel: '管理面板',
     days: '天',
     hours: '小時',
-    minutes: '分鐘'
+    minutes: '分鐘',
+    userManagementDescription: '管理系統中的所有用戶帳號',
+    systemStatusDescription: '系統運行狀態監控'
   },
   'zh-CN': {
     title: 'OpenBioCard 系统初始化',
@@ -173,7 +175,9 @@ export const translations = {
     adminPanel: '管理面板',
     days: '天',
     hours: '小时',
-    minutes: '分钟'
+    minutes: '分钟',
+    userManagementDescription: '管理系统中的所有用户账号',
+    systemStatusDescription: '系统运行状态监控'
   },
   'en': {
     title: 'OpenBioCard System Initialization',
@@ -261,7 +265,9 @@ export const translations = {
     adminPanel: 'Admin Panel',
     days: 'days',
     hours: 'hours',
-    minutes: 'minutes'
+    minutes: 'minutes',
+    userManagementDescription: 'Manage all user accounts in the system',
+    systemStatusDescription: 'Monitor system operation status'
   },
   'ja': {
     title: 'OpenBioCard システム初期化',
@@ -349,7 +355,9 @@ export const translations = {
     adminPanel: '管理パネル',
     days: '日',
     hours: '時間',
-    minutes: '分'
+    minutes: '分',
+    userManagementDescription: 'システム内のすべてのユーザーアカウントを管理',
+    systemStatusDescription: 'システム運用状況の監視'
   }
 };
 

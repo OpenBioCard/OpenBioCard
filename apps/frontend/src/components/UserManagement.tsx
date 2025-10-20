@@ -129,7 +129,7 @@ export default function UserManagement() {
       <div className="flex justify-between items-center">
         <div>
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('userManagement')}</h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">管理系統中的所有用戶帳號</p>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">{t('userManagementDescription')}</p>
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
