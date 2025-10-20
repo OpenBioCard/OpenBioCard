@@ -4,9 +4,9 @@ import React, { useState } from 'react';
 import { useAuth } from '../contexts/AuthContext';
 import { useI18n } from '../i18n/context';
 import { SecureForm, SecureInput } from './SecureForm';
-import { InputSanitizer } from '../utils/inputSanitizer';
 import { useSecureApiClient } from '../api/secureClient';
 import { apiClient as regularApiClient } from '../api/client';
+import { useToast } from './Toast';
 
 interface LoginPageProps {
   onLoginSuccess: () => void;
@@ -16,28 +16,12 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
   const { login } = useAuth();
   const { t } = useI18n();
   const apiClient = useSecureApiClient();
-  const [formValid, setFormValid] = useState({
-    username: true,
-    password: true
-  });
+  const { showSuccess, showError } = useToast();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
   const handleSecureSubmit = async (data: any, isValid: boolean) => {
     if (!isValid) {
-      setError('Invalid input detected');
-      return;
-    }
-
-    if (!data.username?.trim() || !data.password?.trim()) {
-      setError(t('usernameRequired'));
-      return;
-    }
-
-    // 額外的密碼驗證
-    const passwordValidation = InputSanitizer.validatePassword(data.password);
-    if (!passwordValidation.isValid) {
-      setError(passwordValidation.message);
       return;
     }
 
@@ -52,23 +36,28 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
         login(response.data.user, response.data.token);
         // Set token in the regular API client for subsequent requests
         regularApiClient.setToken(response.data.token);
+        showSuccess('Login successful!');
         onLoginSuccess();
       } else {
-        setError(response.error || 'Login failed');
+        const errorMessage = response.error || 'Login failed';
+        setError(errorMessage);
+        showError(errorMessage);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Login failed');
+      const errorMessage = err instanceof Error ? err.message : 'Login failed';
+      setError(errorMessage);
+      showError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleUsernameChange = (_value: string, isValid: boolean) => {
-    setFormValid(prev => ({ ...prev, username: isValid }));
+  const handleUsernameChange = () => {
+    // For login, we don't need strict validation, just basic sanitization
   };
 
-  const handlePasswordChange = (_value: string, isValid: boolean) => {
-    setFormValid(prev => ({ ...prev, password: isValid }));
+  const handlePasswordChange = () => {
+    // For login, we don't need strict validation, just basic sanitization
   };
 
   return (
@@ -79,7 +68,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
             <img src="/logo.svg" alt="OpenBioCard Logo" className="w-20 h-20" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">OpenBioCard</h1>
-          <p className="text-gray-600 dark:text-gray-300">管理員登錄</p>
+          <p className="text-gray-600 dark:text-gray-300">Login Page</p>
         </div>
 
         <SecureForm onSecureSubmit={handleSecureSubmit} className="space-y-6">
@@ -109,6 +98,7 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
               type="password"
               id="password"
               name="password"
+              sanitizeType="input"
               onSecureChange={handlePasswordChange}
               placeholder={t('passwordPlaceholder')}
               className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
@@ -126,10 +116,10 @@ export default function LoginPage({ onLoginSuccess }: LoginPageProps) {
 
           <button
             type="submit"
-            disabled={loading || !formValid.username || !formValid.password}
+            disabled={loading}
             className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg transition-colors"
           >
-            {loading ? t('validating') : '登錄'}
+            {loading ? t('validating') : 'Login'}
           </button>
         </SecureForm>
       </div>

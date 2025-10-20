@@ -1,5 +1,3 @@
-'use client';
-
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { I18nProvider } from "../i18n/context";
@@ -7,6 +5,7 @@ import { AuthProvider } from "../contexts/AuthContext";
 import { ThemeProvider } from "../contexts/ThemeContext";
 import { EncryptionProvider } from "../contexts/EncryptionContext";
 import { SecurityProvider } from "../components/SecurityProvider";
+import { ToastProvider } from "../components/Toast";
 import ErrorBoundary from "../components/ErrorBoundary";
 
 const geistSans = Geist({
@@ -39,7 +38,9 @@ export default function RootLayout({
               <ThemeProvider>
                 <I18nProvider>
                   <AuthProvider>
-                    {children}
+                    <ToastProvider>
+                      {children}
+                    </ToastProvider>
                   </AuthProvider>
                 </I18nProvider>
               </ThemeProvider>

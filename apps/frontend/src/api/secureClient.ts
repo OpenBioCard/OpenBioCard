@@ -181,13 +181,6 @@ export function useSecureApiClient() {
 
   return {
     async login(credentials: { username: string; password: string }): Promise<ApiResponse<{ user: any; token: string }>> {
-      // 驗證憑證
-      const passwordValidation = InputSanitizer.validatePassword(credentials.password);
-      
-      if (!passwordValidation.isValid) {
-        throw new Error(passwordValidation.message);
-      }
-
       // 對於登錄，我們使用直接的 fetch 而不是加密請求
       const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/api/auth/login`, {
         method: 'POST',

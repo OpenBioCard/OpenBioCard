@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useEffect } from 'react';
 import { IntegrityProtector } from '../utils/integrityProtector';
 
@@ -13,19 +15,21 @@ export const SecurityProvider: React.FC<SecurityProviderProps> = ({
   enableInspectionPrevention = process.env.NODE_ENV === 'production'
 }) => {
   useEffect(() => {
-    // 初始化完整性保護
-    IntegrityProtector.initialize();
-    
-    // 檢測開發者工具使用
-    if (enableInspectionPrevention) {
-      const interval = setInterval(() => {
-        if (IntegrityProtector.detectDevTools()) {
-          console.clear();
-          console.warn('🚨 Unauthorized inspection detected!');
-        }
-      }, 1000);
+    // 確保在客戶端才初始化
+    if (typeof window !== 'undefined') {
+      IntegrityProtector.initialize();
       
-      return () => clearInterval(interval);
+      // 檢測開發者工具使用
+      if (enableInspectionPrevention) {
+        const interval = setInterval(() => {
+          if (IntegrityProtector.detectDevTools()) {
+            console.clear();
+            console.warn('🚨 Unauthorized inspection detected!');
+          }
+        }, 1000);
+        
+        return () => clearInterval(interval);
+      }
     }
   }, [enableAntiDebug, enableInspectionPrevention]);
 

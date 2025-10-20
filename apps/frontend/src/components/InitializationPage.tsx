@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { useI18n } from '../i18n/context';
 import { Language, languages } from '../i18n/translations';
 import { initAPI } from '../api/init';
+import { useToast } from './Toast';
 
 interface InitializationPageProps {
   onComplete: () => void;
@@ -11,6 +12,7 @@ interface InitializationPageProps {
 
 export default function InitializationPage({ onComplete }: InitializationPageProps) {
   const { language, setLanguage, t } = useI18n();
+  const { showSuccess, showError } = useToast();
   const [step, setStep] = useState<'language' | 'account'>('language');
   const [formData, setFormData] = useState({
     username: '',
@@ -26,19 +28,19 @@ export default function InitializationPage({ onComplete }: InitializationPagePro
 
   const validateForm = () => {
     if (!formData.username.trim()) {
-      setError(t('usernameRequired'));
+      showError(t('usernameRequired'));
       return false;
     }
     if (!formData.password.trim()) {
-      setError(t('passwordRequired'));
+      showError(t('passwordRequired'));
       return false;
     }
     if (formData.username.length < 3) {
-      setError(t('usernameMinLength'));
+      showError(t('usernameMinLength'));
       return false;
     }
     if (formData.password.length < 6) {
-      setError(t('passwordMinLength'));
+      showError(t('passwordMinLength'));
       return false;
     }
     return true;
@@ -61,9 +63,12 @@ export default function InitializationPage({ onComplete }: InitializationPagePro
         password: formData.password
       });
       
+      showSuccess('System initialized successfully!');
       onComplete();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('initFailed'));
+      const errorMessage = err instanceof Error ? err.message : t('initFailed');
+      setError(errorMessage);
+      showError(errorMessage);
     } finally {
       setLoading(false);
     }

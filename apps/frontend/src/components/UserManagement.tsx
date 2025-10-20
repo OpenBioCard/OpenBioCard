@@ -4,10 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { apiClient, User, CreateUserRequest } from '../api/client';
 import { useI18n } from '../i18n/context';
 import { useAuth } from '../contexts/AuthContext';
+import { useToast } from './Toast';
 
 export default function UserManagement() {
   const { t } = useI18n();
   const { user: currentUser } = useAuth();
+  const { showSuccess, showError } = useToast();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -29,8 +31,11 @@ export default function UserManagement() {
       setLoading(true);
       const response = await apiClient.getUsers();
       setUsers(response.users);
+      setError('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load users');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load users';
+      setError(errorMessage);
+      showError('Failed to Load Users', errorMessage);
     } finally {
       setLoading(false);
     }
@@ -40,12 +45,12 @@ export default function UserManagement() {
     e.preventDefault();
     
     if (!formData.username.trim() || !formData.password.trim()) {
-      setError(t('usernamePasswordRequired'));
+      showError(t('usernamePasswordRequired'));
       return;
     }
 
     if (formData.username.length < 3 || formData.password.length < 6) {
-      setError(t('usernamePasswordMinLength'));
+      showError(t('usernamePasswordMinLength'));
       return;
     }
 
@@ -56,9 +61,12 @@ export default function UserManagement() {
       await apiClient.createUser(formData);
       setFormData({ username: '', password: '', role: 'user' });
       setShowCreateForm(false);
+      showSuccess(`User "${formData.username}" created successfully!`);
       await loadUsers();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create user');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to create user';
+      setError(errorMessage);
+      showError(errorMessage);
     } finally {
       setCreating(false);
     }
@@ -74,9 +82,12 @@ export default function UserManagement() {
 
     try {
       await apiClient.deleteUser(userId);
+      showSuccess(`User "${username}" deleted successfully!`);
       await loadUsers();
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete user');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to delete user';
+      setError(errorMessage);
+      showError(errorMessage);
     } finally {
       setDeleting(null);
     }
@@ -123,7 +134,7 @@ export default function UserManagement() {
         <button
           onClick={() => setShowCreateForm(true)}
           className="glass-button px-4 py-2 rounded-lg flex items-center space-x-2"
-          disabled={currentUser?.role !== 'root'}
+          disabled={currentUser?.role === 'user'}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -194,7 +205,7 @@ export default function UserManagement() {
                   disabled={creating}
                 >
                   <option value="user">{t('user')}</option>
-                  <option value="admin">{t('admin')}</option>
+                  {currentUser?.role === 'root' && <option value="admin">{t('admin')}</option>}
                 </select>
               </div>
               
@@ -253,7 +264,7 @@ export default function UserManagement() {
               
               <div className="flex items-center space-x-3">
                 {getRoleBadge(user.role)}
-                {currentUser?.role === 'root' && user.id !== currentUser.id && (
+                {(currentUser?.role === 'root' || (currentUser?.role === 'admin' && user.role === 'user')) && user.id !== currentUser.id && (
                   <button 
                     onClick={() => handleDeleteUser(user.id, user.username)}
                     disabled={deleting === user.id}

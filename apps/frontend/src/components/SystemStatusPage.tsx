@@ -3,9 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import { apiClient, SystemStatus } from '../api/client';
 import { useI18n } from '../i18n/context';
+import { useToast } from './Toast';
 
 export default function SystemStatusPage() {
   const { t } = useI18n();
+  const { showSuccess, showError } = useToast();
   const [status, setStatus] = useState<SystemStatus | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -21,8 +23,14 @@ export default function SystemStatusPage() {
       setLoading(true);
       const response = await apiClient.getSystemStatus();
       setStatus(response);
+      setError('');
+      if (!loading) {
+        showSuccess('System status refreshed successfully');
+      }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load system status');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to load system status';
+      setError(errorMessage);
+      showError(errorMessage);
     } finally {
       setLoading(false);
     }

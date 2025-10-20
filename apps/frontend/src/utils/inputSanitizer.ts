@@ -49,19 +49,53 @@ export class InputSanitizer {
   }
 
   /**
+   * 實時驗證用戶名格式
+   */
+  static validateUsername(username: string): { isValid: boolean; message: string } {
+    if (typeof username !== 'string') {
+      return { isValid: false, message: '用戶名必須是字符串' };
+    }
+    
+    if (username.length < 3) {
+      return { isValid: false, message: '用戶名至少需要3個字符' };
+    }
+    
+    if (username.length > 32) {
+      return { isValid: false, message: '用戶名不能超過32個字符' };
+    }
+    
+    // 檢查是否只包含允許的字符
+    if (!/^[a-zA-Z0-9_\-]+$/.test(username)) {
+      return { isValid: false, message: '用戶名只能包含字母、數字、下劃線和連字符' };
+    }
+    
+    // 檢查是否以字母開頭
+    if (!/^[a-zA-Z]/.test(username)) {
+      return { isValid: false, message: '用戶名必須以字母開頭' };
+    }
+    
+    // 檢查是否包含連續的特殊字符
+    if (/[-_]{2,}/.test(username)) {
+      return { isValid: false, message: '用戶名不能包含連續的連字符或下劃線' };
+    }
+    
+    return { isValid: true, message: '用戶名格式正確' };
+  }
+
+  /**
    * 驗證並清理密碼（不修改內容，只驗證）
    */
-  static validatePassword(password: string): { isValid: boolean; message: string } {
+  static validatePassword(password: string): { isValid: boolean; message: string; strength?: string } {
     if (typeof password !== 'string') {
-      return { isValid: false, message: 'Password must be a string' };
+      return { isValid: false, message: '密碼必須是字符串' };
     }
     
     if (password.length < 8) {
-      return { isValid: false, message: 'Password must be at least 8 characters' };
+      return { isValid: false, message: '密碼至少需要8個字符' };
     }
     
     if (password.length > 128) {
-      return { isValid: false, message: 'Password too long' };
+      return { isValid: false, message: '密碼不能超過128個字符' };
     }
     
     // 檢查是否包含危險模式
@@ -76,11 +110,69 @@ export class InputSanitizer {
     
     for (const pattern of dangerousPatterns) {
       if (pattern.test(password)) {
-        return { isValid: false, message: 'Password contains invalid characters' };
+        return { isValid: false, message: '密碼包含非法字符' };
+      }
+    }
+
+    // 密碼強度檢查
+    let strength = 0;
+    let strengthMessage = '';
+    
+    // 檢查包含數字
+    if (/\d/.test(password)) {
+      strength += 1;
+    }
+    
+    // 檢查包含小寫字母
+    if (/[a-z]/.test(password)) {
+      strength += 1;
+    }
+    
+    // 檢查包含大寫字母
+    if (/[A-Z]/.test(password)) {
+      strength += 1;
+    }
+    
+    // 檢查包含特殊字符
+    if (/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) {
+      strength += 1;
+    }
+    
+    // 檢查長度獎勵
+    if (password.length >= 12) {
+      strength += 1;
+    }
+    
+    // 檢查是否包含常見弱密碼模式
+    const weakPatterns = [
+      /^[a-z]+$/,           // 純小寫
+      /^[A-Z]+$/,           // 純大寫
+      /^\d+$/,              // 純數字
+      /^(.)\1{2,}$/,        // 重複字符
+      /^(123|abc|qwe)/i,    // 連續字符
+      /^(password|admin|user|test)/i  // 常見詞彙
+    ];
+    
+    for (const pattern of weakPatterns) {
+      if (pattern.test(password)) {
+        return { isValid: false, message: '密碼過於簡單，請使用更複雜的密碼' };
       }
     }
     
-    return { isValid: true, message: 'Valid password' };
+    // 設定強度等級
+    if (strength >= 4) {
+      strengthMessage = '強';
+    } else if (strength >= 3) {
+      strengthMessage = '中';
+    } else if (strength >= 2) {
+      strengthMessage = '弱';
+      return { isValid: false, message: '密碼強度太弱，請包含更多字符類型（大寫、小寫、數字、特殊字符）', strength: strengthMessage };
+    } else {
+      strengthMessage = '很弱';
+      return { isValid: false, message: '密碼強度很弱，請包含多種字符類型', strength: strengthMessage };
+    }
+    
+    return { isValid: true, message: '密碼格式正確', strength: strengthMessage };
   }
 
   /**
