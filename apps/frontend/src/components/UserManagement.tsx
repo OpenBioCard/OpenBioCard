@@ -49,7 +49,7 @@ export default function UserManagement() {
       return;
     }
 
-    if (formData.username.length < 3 || formData.password.length < 6) {
+    if (formData.username.length < 3 || formData.password.length < 8) {
       showError(t('usernamePasswordMinLength'));
       return;
     }
@@ -175,7 +175,7 @@ export default function UserManagement() {
                   value={formData.username}
                   onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
                   className="glass-input w-full px-3 py-2 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                  placeholder="請輸入用戶名"
+                  placeholder={t('usernamePlaceholder')}
                   disabled={creating}
                 />
               </div>
@@ -189,7 +189,7 @@ export default function UserManagement() {
                   value={formData.password}
                   onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
                   className="glass-input w-full px-3 py-2 text-gray-800 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
-                  placeholder="請輸入密碼"
+                  placeholder={t('passwordPlaceholder')}
                   disabled={creating}
                 />
               </div>
