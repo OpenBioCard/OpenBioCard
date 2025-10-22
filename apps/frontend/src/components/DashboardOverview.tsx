@@ -56,23 +56,23 @@ export default function DashboardOverview() {
     <div className="space-y-6">
       {/* Welcome */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-2">
           {t('welcomeBack')}, {user?.username}！
         </h1>
-        <p className="text-gray-600 dark:text-gray-400">{t('systemOverview')}</p>
+        <p className="text-gray-600 dark:text-gray-400 text-sm sm:text-base">{t('systemOverview')}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 gap-4 sm:gap-6">
         {/* System Health */}
-        <div className="glass-card p-6">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-lg font-medium text-gray-900 dark:text-white">{t('systemHealth')}</h3>
+        <div className="glass-card p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 sm:mb-6">
+            <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 sm:mb-0">{t('systemHealth')}</h3>
             {loading && (
               <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
             <div className="glass-button p-4 rounded-lg">
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-3">
@@ -109,23 +109,23 @@ export default function DashboardOverview() {
           </div>
 
           {/* Overall Status */}
-          <div className={`glass-card p-4 rounded-lg ${
-            loading ? 'bg-gray-50/50 dark:bg-gray-800/50' : 
+          <div className={`glass-card p-3 sm:p-4 rounded-lg ${
+            loading ? 'bg-gray-50/50 dark:bg-gray-800/50' :
             isSystemStable ? 'bg-green-50/50 dark:bg-green-900/20' : 'bg-red-50/50 dark:bg-red-900/20'
           }`}>
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div className="flex items-center space-x-3">
                 <span className="text-lg">
                   {loading ? '⏳' : isSystemStable ? '✅' : '⚠️'}
                 </span>
-                <span className="font-medium">
+                <span className="font-medium text-sm sm:text-base">
                   {loading ? t('checkingSystemStatus') : isSystemStable ? t('stable') : t('systemAbnormal')}
                 </span>
               </div>
               <button
                 onClick={checkSystemHealth}
                 disabled={loading}
-                className="glass-button px-3 py-1 rounded text-sm disabled:opacity-50"
+                className="glass-button px-3 py-1 rounded text-sm disabled:opacity-50 self-start sm:self-auto"
               >
                 {loading ? t('checking') : t('recheckHealth')}
               </button>

@@ -126,20 +126,20 @@ export default function UserManagement() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{t('userManagement')}</h2>
-          <p className="text-gray-600 dark:text-gray-400 mt-1">{t('userManagementDescription')}</p>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t('userManagement')}</h2>
+          <p className="text-gray-600 dark:text-gray-400 mt-1 text-sm sm:text-base">{t('userManagementDescription')}</p>
         </div>
         <button
           onClick={() => setShowCreateForm(true)}
-          className="glass-button px-4 py-2 rounded-lg flex items-center space-x-2"
+          className="glass-button px-4 py-2 rounded-lg flex items-center space-x-2 self-start sm:self-auto"
           disabled={currentUser?.role === 'user'}
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
           </svg>
-          <span>{t('createNewUser')}</span>
+          <span className="text-sm sm:text-base">{t('createNewUser')}</span>
         </button>
       </div>
 
@@ -152,7 +152,7 @@ export default function UserManagement() {
       {/* Create User Modal */}
       {showCreateForm && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="glass-card p-6 w-full max-w-md">
+          <div className="glass-card p-4 sm:p-6 w-full max-w-md mx-4">
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-xl font-bold text-gray-900 dark:text-white">{t('createNewUser')}</h3>
               <button
@@ -242,18 +242,18 @@ export default function UserManagement() {
       <div className="glass-card p-6">
         <div className="space-y-4">
           {users.map((user) => (
-            <div 
+            <div
               key={user.id}
-              className="glass-button p-4 rounded-lg flex items-center justify-between"
+              className="glass-button p-3 sm:p-4 rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-3"
             >
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center">
+                <div className="w-10 h-10 bg-blue-500 rounded-lg flex items-center justify-center flex-shrink-0">
                   <span className="text-white font-medium">
                     {user.username.charAt(0).toUpperCase()}
                   </span>
                 </div>
-                <div>
-                  <h3 className="font-medium text-gray-900 dark:text-white">
+                <div className="min-w-0 flex-1">
+                  <h3 className="font-medium text-gray-900 dark:text-white truncate">
                     {user.username}
                   </h3>
                   <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -261,14 +261,14 @@ export default function UserManagement() {
                   </p>
                 </div>
               </div>
-              
-              <div className="flex items-center space-x-3">
+
+              <div className="flex items-center justify-between sm:justify-end space-x-3">
                 {getRoleBadge(user.role)}
                 {(currentUser?.role === 'root' || (currentUser?.role === 'admin' && user.role === 'user')) && user.id !== currentUser.id && (
-                  <button 
+                  <button
                     onClick={() => handleDeleteUser(user.id, user.username)}
                     disabled={deleting === user.id}
-                    className="glass-button p-2 rounded-lg text-red-500 hover:text-red-600 disabled:opacity-50"
+                    className="glass-button p-2 rounded-lg text-red-500 hover:text-red-600 disabled:opacity-50 flex-shrink-0"
                   >
                     {deleting === user.id ? (
                       <div className="w-4 h-4 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>

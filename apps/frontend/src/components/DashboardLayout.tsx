@@ -17,6 +17,7 @@ export default function DashboardLayout({ children, currentPage, onPageChange }:
   const { theme, toggleTheme } = useTheme();
   const { language, setLanguage, t } = useI18n();
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Close dropdown when clicking outside
@@ -53,29 +54,46 @@ export default function DashboardLayout({ children, currentPage, onPageChange }:
     <div className="min-h-screen glass-background">
       {/* Top Navigation */}
       <nav className="glass-nav sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-2xl glass-card flex items-center justify-center p-1 transition-all duration-200 hover:scale-110 hover:rotate-6">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex justify-between items-center h-14 sm:h-16">
+            <div className="flex items-center space-x-2 sm:space-x-3 relative">
+              {/* Mobile Menu Button */}
+              <button
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className="lg:hidden glass-button p-2 rounded-xl text-gray-600 dark:text-gray-300 transition-all duration-200 hover:scale-110 active:scale-95"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  {isMobileMenuOpen ? (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  ) : (
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                  )}
+                </svg>
+              </button>
+
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-2xl glass-card flex items-center justify-center p-1 transition-all duration-200 hover:scale-110 hover:rotate-6 z-10">
                 <img src="/logo.svg" alt="OpenBioCard Logo" className="w-full h-full" />
               </div>
-              <h1 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h1 className="text-base sm:text-xl font-bold text-gray-900 dark:text-white hidden lg:block z-10">
                 OpenBioCard {t('adminPanel')}
               </h1>
+              {/* 在小屏幕上隱藏管理面板標題，因為側邊欄已顯示當前頁面 */}
+              {/* 移除此處的 h1 標籤，避免潛在的佈局問題 */}
             </div>
-            
-            <div className="flex items-center space-x-4">
+
+            <div className="flex items-center space-x-2 sm:space-x-4 z-20">
               {/* Language Selector */}
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
-                  className="glass-button px-3 py-2 text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center space-x-2 min-w-[100px] rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
+                  className="glass-button px-2 sm:px-3 py-2 text-xs sm:text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 flex items-center space-x-1 sm:space-x-2 min-w-[60px] sm:min-w-[100px] rounded-xl transition-all duration-200 hover:scale-105 active:scale-95"
                 >
-                  <span>{currentLanguageInfo?.name || 'Language'}</span>
-                  <svg 
-                    className={`w-4 h-4 transition-transform ${isLanguageDropdownOpen ? 'rotate-180' : ''}`} 
-                    fill="none" 
-                    stroke="currentColor" 
+                  <span className="hidden sm:inline">{currentLanguageInfo?.name || 'Language'}</span>
+                  <span className="sm:hidden">{currentLanguageInfo?.code || 'EN'}</span>
+                  <svg
+                    className={`w-3 h-3 sm:w-4 sm:h-4 transition-transform ${isLanguageDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
                     viewBox="0 0 24 24"
                   >
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -146,14 +164,27 @@ export default function DashboardLayout({ children, currentPage, onPageChange }:
       </nav>
 
       <div className="flex">
+        {/* Mobile Sidebar Overlay */}
+        {isMobileMenuOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+        )}
+
         {/* Sidebar */}
-        <div className="w-64 glass-sidebar min-h-[calc(100vh-4rem)]">
+        <div className={`fixed lg:static top-14 sm:top-16 bottom-0 left-0 w-64 glass-sidebar h-[calc(100vh-3.5rem)] sm:h-[calc(100vh-4rem)] lg:min-h-[calc(100vh-4rem)] transform transition-transform duration-300 ease-in-out ${
+          isMobileMenuOpen ? 'translate-x-0 z-60' : '-translate-x-full lg:translate-x-0 z-50'
+        }`}>
           <nav className="p-4">
             <div className="space-y-2">
               {menuItems.map((item) => (
                 <button
                   key={item.id}
-                  onClick={() => onPageChange(item.id)}
+                  onClick={() => {
+                    onPageChange(item.id);
+                    setIsMobileMenuOpen(false); // Close mobile menu on selection
+                  }}
                   className={`w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors ${
                     currentPage === item.id
                       ? 'glass-card text-blue-600 dark:text-blue-400'
@@ -169,7 +200,7 @@ export default function DashboardLayout({ children, currentPage, onPageChange }:
         </div>
 
         {/* Main Content */}
-        <div className="flex-1 p-6">
+        <div className={`flex-1 p-4 sm:p-6 transition-all duration-300 ease-in-out ${isMobileMenuOpen ? 'blur-sm lg:blur-none pointer-events-none lg:pointer-events-auto' : ''} lg:ml-0`}>
           <div className="max-w-7xl mx-auto">
             {children}
           </div>
