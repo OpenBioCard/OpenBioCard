@@ -20,6 +20,22 @@ export interface User {
   createdAt: string;
 }
 
+export interface UserProfile {
+  username: string;
+  displayName: string;
+  bio: string;
+  avatar: string;
+  isInitialized: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpdateProfileRequest {
+  displayName: string;
+  bio: string;
+  avatar: string;
+}
+
 export interface CreateUserRequest {
   username: string;
   password: string;
@@ -187,7 +203,42 @@ class ApiClient {
     const response = await fetch(`${API_BASE}/api/admin/status`, {
       headers: this.getHeaders(),
     });
-    
+
+    return await this.handleResponse(response);
+  }
+
+  async getUserProfile(): Promise<{ success: boolean; profile: UserProfile }> {
+    const response = await fetch(`${API_BASE}/api/user/profile`, {
+      headers: this.getHeaders(),
+    });
+
+    return await this.handleResponse(response);
+  }
+
+  async updateUserProfile(data: UpdateProfileRequest): Promise<{ success: boolean; message: string; profile: UserProfile }> {
+    const response = await fetch(`${API_BASE}/api/user/profile`, {
+      method: 'PUT',
+      headers: this.getHeaders(),
+      body: JSON.stringify(data),
+    });
+
+    return await this.handleResponse(response);
+  }
+
+  async getProfileStatus(): Promise<{ success: boolean; isInitialized: boolean; username: string }> {
+    const response = await fetch(`${API_BASE}/api/user/profile/status`, {
+      headers: this.getHeaders(),
+    });
+
+    return await this.handleResponse(response);
+  }
+
+  async deleteAvatar(): Promise<{ success: boolean; message: string }> {
+    const response = await fetch(`${API_BASE}/api/user/profile/avatar`, {
+      method: 'DELETE',
+      headers: this.getHeaders(),
+    });
+
     return await this.handleResponse(response);
   }
 }

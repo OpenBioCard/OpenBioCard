@@ -1,22 +1,83 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '../../contexts/AuthContext';
 import { useI18n } from '../../i18n/context';
 import { useToast } from '../../components/Toast';
+import { apiClient } from '../../api/client';
+import ProfileSetupPage from '../../components/ProfileSetupPage';
 
 export default function UserPage() {
   const { user, logout } = useAuth();
-  const { t, language } = useI18n();
+  const { language } = useI18n();
   const { showSuccess } = useToast();
   const router = useRouter();
+
+  const [isProfileInitialized, setIsProfileInitialized] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showProfileSetup, setShowProfileSetup] = useState(false);
+
+  useEffect(() => {
+    checkProfileStatus();
+  }, []);
+
+  const checkProfileStatus = async () => {
+    try {
+      setLoading(true);
+      const response = await apiClient.getProfileStatus();
+      setIsProfileInitialized(response.isInitialized);
+
+      // 如果个人资料未初始化，显示设置页面
+      if (!response.isInitialized) {
+        setShowProfileSetup(true);
+      }
+    } catch (error) {
+      console.error('Failed to check profile status:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogout = () => {
     logout();
     showSuccess(language.startsWith('zh') ? '登出成功' : 'Logout successful');
     router.push('/');
   };
+
+  const handleProfileSetupComplete = () => {
+    setShowProfileSetup(false);
+    setIsProfileInitialized(true);
+    showSuccess(language.startsWith('zh') ? '个人资料设置完成' : 'Profile setup completed');
+  };
+
+  const handleEditProfile = () => {
+    setShowProfileSetup(true);
+  };
+
+  // 加载中状态
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">
+            {language.startsWith('zh') ? '加载中...' : 'Loading...'}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // 显示个人资料设置页面
+  if (showProfileSetup) {
+    return (
+      <ProfileSetupPage
+        isFirstTime={!isProfileInitialized}
+        onComplete={handleProfileSetupComplete}
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800">
@@ -69,7 +130,10 @@ export default function UserPage() {
               {language.startsWith('zh') ? '功能' : 'Features'}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              <div className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg text-center">
+              <button
+                onClick={handleEditProfile}
+                className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg text-center hover:bg-white/70 dark:hover:bg-gray-800/70 transition-all"
+              >
                 <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-3">
                   <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
@@ -81,7 +145,7 @@ export default function UserPage() {
                 <p className="text-sm text-gray-600 dark:text-gray-400">
                   {language.startsWith('zh') ? '管理您的個人信息' : 'Manage your personal information'}
                 </p>
-              </div>
+              </button>
 
               <div className="p-4 bg-white/50 dark:bg-gray-800/50 rounded-lg text-center">
                 <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">

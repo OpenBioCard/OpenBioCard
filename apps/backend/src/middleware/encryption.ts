@@ -20,7 +20,8 @@ export const encryptionMiddleware = (req: EncryptedRequest, res: EncryptedRespon
     '/api/crypto/establish-session',
     '/api/init',
     '/api/auth',
-    '/api/admin'
+    '/api/admin',
+    '/api/user'
   ];
 
   if (skipEncryption.some(path => req.path.startsWith(path))) {

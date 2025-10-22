@@ -118,6 +118,13 @@ router.delete('/users/:id', requireRole('root'), (req: AuthenticatedRequest, res
     const updatedUsers = users.filter((user: User) => user.id !== id);
     FileManager.saveUsers(updatedUsers);
 
+    // 刪除用戶的個人資料文件
+    try {
+      FileManager.deleteUserProfile(targetUser.username);
+    } catch (profileError) {
+      console.warn(`Failed to delete profile for user ${targetUser.username}:`, profileError);
+    }
+
     console.log(`User ${targetUser.username} (${targetUser.role}) deleted by ${authUser.username}`);
     res.json({ success: true, message: 'User deleted successfully' });
   } catch (error) {

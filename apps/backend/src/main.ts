@@ -3,6 +3,7 @@ import cors from 'cors';
 import initRoutes from './routes/init';
 import authRoutes from './routes/auth';
 import adminRoutes from './routes/admin';
+import userRoutes from './routes/user';
 import securityRoutes from './routes/security';
 import { securityMiddleware, apiRateLimiter } from './middleware/security';
 import { accessControlMiddleware } from './middleware/accessControl';
@@ -137,6 +138,7 @@ app.post('/api/crypto/establish-session', (req, res) => {
 app.use('/api/init', initRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/user', userRoutes);
 app.use('/api/security', securityRoutes);
 
 // 處理未找到的路由 - 返回500而不是404

@@ -143,3 +143,4 @@ vite.config.ts.timestamp-*
 apps/backend/data/*.json
 apps/backend/data/*.db
 !apps/backend/data/.gitkeep
+apps/backend/data/profiles/*.json
