@@ -1,0 +1,21 @@
+{
+  "name": "OpenBioCard",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "nx build",
+    "dev": "nx serve",
+    "test": "nx test",
+    "nx": "nx"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.10.0",
+  "devDependencies": {
+    "@nx/vite": "^22.1.1",
+    "nx": "22.1.1"
+  },
+  "nx": {}
+}
