@@ -1,5 +1,5 @@
 {
-  "name": "openbiocard",
+  "name": "@openbiocard/worker",
   "type": "module",
   "scripts": {
     "dev": "vite",

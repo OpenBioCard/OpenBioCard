@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "nx build",
-    "dev": "nx serve",
+    "dev": "nx serve frontend",
     "test": "nx test",
     "nx": "nx"
   },

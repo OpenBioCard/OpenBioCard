@@ -1,0 +1,13 @@
+{
+  "name": "OpenBioCard",
+  "$schema": "./node_modules/nx/schemas/project-schema.json",
+  "targets": {
+    "serve": {
+      "executor": "nx:run-commands",
+      "options": {
+        "commands": ["nx serve worker", "nx serve frontend"],
+        "parallel": true
+      }
+    }
+  }
+}
