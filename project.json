@@ -5,8 +5,8 @@
     "serve": {
       "executor": "nx:run-commands",
       "options": {
-        "commands": ["nx serve worker", "nx serve frontend"],
-        "parallel": true
+        "commands": ["nx serve worker"],
+        "parallel": false
       }
     }
   }
