@@ -1,9 +1,13 @@
 import { Hono } from 'hono'
 import { renderer } from './renderer'
+import { siginup } from './router/siginup'
+import { UserDO } from './durable-objects/user'
 
-const app = new Hono()
+const app = new Hono<{ Bindings: CloudflareBindings }>()
 
 app.use(renderer)
+
+app.route('/signup', siginup)
 
 app.get('/', (c) => {
   return c.render(<h1>Hello!</h1>)
@@ -26,3 +30,4 @@ app.get('/frontend', (c) => {
 })
 
 export default app
+export { UserDO }
