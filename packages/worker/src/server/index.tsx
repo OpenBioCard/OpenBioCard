@@ -2,6 +2,7 @@ import { Hono } from 'hono'
 import { renderer } from './renderer'
 import { siginup } from './router/siginup'
 import { siginup as signin } from './router/siginin'
+import { delate } from './router/delate'
 import { UserDO } from './durable-objects/user'
 
 const app = new Hono<{ Bindings: CloudflareBindings }>()
@@ -10,6 +11,7 @@ app.use(renderer)
 
 app.route('/signup', siginup)
 app.route('/signin', signin)
+app.route('/delete', delate)
 
 app.get('/', (c) => {
   return c.render(<h1>Hello!</h1>)

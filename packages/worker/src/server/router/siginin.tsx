@@ -12,7 +12,7 @@ siginup.post('/', async (c) => {
     const response = await stub.fetch(new Request('http://internal/get'))
     const userData: CreateAccount | null = await response.json()
     if (userData && body.username === userData.username && body.password === userData.password) {
-        return c.json({ token: body.token })
+        return c.json({ token: userData.token })
     } else {
         return c.json({ error: 'Invalid credentials' }, 401)
     }
