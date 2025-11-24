@@ -8,15 +8,31 @@ export interface AuthenticatedUser {
 
 export interface AuthVariables {
   user?: AuthenticatedUser
+  requestBody?: any
 }
 
-export const authMiddleware: MiddlewareHandler<{ Bindings: { USER_DO: any }, Variables: AuthVariables }> = async (c, next) => {
+export const authMiddleware: MiddlewareHandler<{ Bindings: CloudflareBindings, Variables: AuthVariables }> = async (c, next) => {
   const body = await c.req.json().catch(() => ({}))
+
+  // 将解析的 body 存储到 context 中，供后续使用
+  c.set('requestBody', body)
+
   const token = body.token || c.req.header('Authorization')?.replace('Bearer ', '')
   const username = body.username
 
   if (!token || !username) {
     return c.json({ error: 'Token and username required' }, 401)
+  }
+
+  // 特殊处理root用户
+  if (username === c.env.ROOT_USERNAME && token.startsWith('root-')) {
+    c.set('user', {
+      username: c.env.ROOT_USERNAME!,
+      type: 'root',
+      token
+    })
+    await next()
+    return
   }
 
   const id = c.env.USER_DO.idFromName(username)
@@ -26,7 +42,7 @@ export const authMiddleware: MiddlewareHandler<{ Bindings: { USER_DO: any }, Var
     body: JSON.stringify({ token }),
     headers: { 'Content-Type': 'application/json' }
   })
-  const result = await response.json()
+  const result = await response.json() as { valid: boolean, username: string, type: string }
 
   if (!result.valid) {
     return c.json({ error: 'Invalid token' }, 401)
@@ -42,14 +58,15 @@ export const authMiddleware: MiddlewareHandler<{ Bindings: { USER_DO: any }, Var
   await next()
 }
 
-export const requirePermission = (requiredType: string): MiddlewareHandler<{ Bindings: { USER_DO: any }, Variables: AuthVariables }> => {
+export const requirePermission = (requiredTypes: string | string[]): MiddlewareHandler<{ Bindings: CloudflareBindings, Variables: AuthVariables }> => {
   return async (c, next) => {
     const user = c.var.user
     if (!user) {
       return c.json({ error: 'Authentication required' }, 401)
     }
 
-    if (user.type !== requiredType) {
+    const types = Array.isArray(requiredTypes) ? requiredTypes : [requiredTypes]
+    if (!types.includes(user.type)) {
       return c.json({ error: 'Insufficient permissions' }, 403)
     }
 

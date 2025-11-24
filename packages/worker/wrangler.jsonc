@@ -8,6 +8,10 @@
       {
         "name": "USER_DO",
         "class_name": "UserDO"
+      },
+      {
+        "name": "ADMIN_DO",
+        "class_name": "AdminDO"
       }
     ]
   },
@@ -16,6 +20,12 @@
       "tag": "v1",
       "new_classes": [
         "UserDO"
+      ]
+    },
+    {
+      "tag": "v2",
+      "new_classes": [
+        "AdminDO"
       ]
     }
   ]

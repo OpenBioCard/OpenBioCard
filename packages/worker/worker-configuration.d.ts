@@ -9,7 +9,10 @@ declare namespace Cloudflare {
 		USER_DO: DurableObjectNamespace<import("./src/server/index").UserDO>;
 	}
 }
-interface CloudflareBindings extends Cloudflare.Env {}
+interface CloudflareBindings extends Cloudflare.Env {
+    ROOT_USERNAME?: string;
+    ROOT_PASSWORD?: string;
+}
 
 // Begin runtime types
 /*! *****************************************************************************
