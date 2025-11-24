@@ -1,6 +1,8 @@
 import { Hono } from 'hono'
 import { renderer } from '../renderer'
 import { CreateAccount } from '../types/siginup'
+import { hashPassword } from '../utils/password'
+
 export const siginup = new Hono<{ Bindings: CloudflareBindings }>()
 
 siginup.post('/create', async (c) => {
@@ -11,12 +13,15 @@ siginup.post('/create', async (c) => {
   // Generate a token
   const token = crypto.randomUUID()
 
+  // Hash the password
+  const hashedPassword = await hashPassword(password)
+
   // Store in Durable Object
   const id = c.env.USER_DO.idFromName(username)
   const stub = c.env.USER_DO.get(id)
   await stub.fetch('http://do/store', {
     method: 'POST',
-    body: JSON.stringify({ username, password, type, token }),
+    body: JSON.stringify({ username, password: hashedPassword, type, token }),
     headers: { 'Content-Type': 'application/json' }
   })
 
