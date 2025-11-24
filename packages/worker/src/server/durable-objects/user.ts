@@ -1,10 +1,9 @@
 import { CreateAccount } from '../types/siginup'
+import { DurableObject } from 'cloudflare:workers'
 
-export class UserDO {
-  state: DurableObjectState
-
-  constructor(state: DurableObjectState) {
-    this.state = state
+export class UserDO extends DurableObject {
+  constructor(state: DurableObjectState, env: CloudflareBindings) {
+    super(state, env)
   }
 
   async fetch(request: Request) {
@@ -12,7 +11,7 @@ export class UserDO {
 
     if (request.method === 'POST' && url.pathname === '/store') {
       const data: CreateAccount = await request.json()
-      await this.state.storage.put('user', data)
+      await this.ctx.storage.put('user', data)
 
       // 注册到AdminDO（如果不是root用户）
       if (data.type !== 'root') {
@@ -30,7 +29,7 @@ export class UserDO {
     }
 
     if (request.method === 'GET' && url.pathname === '/get') {
-      const data = await this.state.storage.get('user')
+      const data = await this.ctx.storage.get('user')
       return new Response(JSON.stringify(data || null), {
         headers: { 'Content-Type': 'application/json' }
       })
@@ -38,7 +37,7 @@ export class UserDO {
 
     if (request.method === 'POST' && url.pathname === '/verify-token') {
       const { token }: { token: string } = await request.json()
-      const data = await this.state.storage.get('user') as CreateAccount | undefined
+      const data = await this.ctx.storage.get('user') as CreateAccount | undefined
       if (data && data.token === token) {
         return new Response(JSON.stringify({ valid: true, type: data.type, username: data.username }), {
           headers: { 'Content-Type': 'application/json' }
@@ -51,7 +50,7 @@ export class UserDO {
     }
 
     if (request.method === 'POST' && url.pathname === '/delate') {
-      await this.state.storage.delete('user')
+      await this.ctx.storage.delete('user')
       return new Response(JSON.stringify({ success: true }), {
         headers: { 'Content-Type': 'application/json' }
       })

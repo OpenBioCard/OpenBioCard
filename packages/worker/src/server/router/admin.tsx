@@ -3,56 +3,6 @@ import { authMiddleware, requirePermission, AuthVariables } from '../middleware/
 import { CreateAccount } from '../types/siginup'
 import { hashPassword } from '../utils/password'
 
-// 使用持久化存储的用户列表
-class UserStore {
-  private static instance: UserStore
-  private users: Array<{username: string, type: string}> = []
-
-  private constructor() {
-    this.initialize()
-  }
-
-  static getInstance(): UserStore {
-    if (!UserStore.instance) {
-      UserStore.instance = new UserStore()
-    }
-    return UserStore.instance
-  }
-
-  private initialize() {
-    // 初始化默认用户
-    if (this.users.length === 0) {
-      this.users.push({ username: 'admin', type: 'admin' })
-      console.log('Initialized default admin user')
-    }
-  }
-
-  getUsers(): Array<{username: string, type: string}> {
-    return [...this.users]
-  }
-
-  addUser(username: string, type: string): boolean {
-    if (this.users.some(u => u.username === username)) {
-      return false // 用户已存在
-    }
-    this.users.push({ username, type })
-    console.log('User added:', username, 'Total users:', this.users.length)
-    return true
-  }
-
-  removeUser(username: string): boolean {
-    const initialLength = this.users.length
-    this.users = this.users.filter(u => u.username !== username)
-    const removed = initialLength > this.users.length
-    if (removed) {
-      console.log('User removed:', username, 'Remaining users:', this.users.length)
-    }
-    return removed
-  }
-}
-
-const userStore = UserStore.getInstance()
-
 export const admin = new Hono<{ Bindings: CloudflareBindings & { ADMIN_DO: DurableObjectNamespace }, Variables: AuthVariables }>()
 
 // 检查权限（用于前端权限验证）
@@ -64,17 +14,51 @@ admin.post('/check-permission', authMiddleware, requirePermission(['admin', 'roo
 // 获取用户列表（POST方式，用于前端）
 admin.post('/users/list', authMiddleware, requirePermission(['admin', 'root']), async (c) => {
   try {
+    console.log('Getting users list...')
+
+    // 检查 ADMIN_DO 是否存在
+    if (!c.env.ADMIN_DO) {
+      console.error('ADMIN_DO is not available in environment')
+      return c.json({ error: 'Service configuration error' }, 500)
+    }
+
     // 从 AdminDO 读取用户列表
     const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
+    console.log('Got admin ID:', adminId)
+
     const adminStub = c.env.ADMIN_DO.get(adminId)
+    console.log('Got admin stub, fetching users...')
+
     const doResponse = await adminStub.fetch('http://internal/users')
+    console.log('AdminDO response status:', doResponse.status)
 
     if (!doResponse.ok) {
-      console.error('Failed to fetch users from AdminDO')
+      const errorText = await doResponse.text()
+      console.error('Failed to fetch users from AdminDO:', errorText)
       return c.json({ error: 'Failed to fetch users' }, 500)
     }
 
     const { users: allUsers } = await doResponse.json() as { users: Array<{username: string, type: string}> }
+
+    // 如果用户列表为空，自动初始化默认 admin 用户
+    if (allUsers.length === 0) {
+      console.log('User list is empty, initializing default admin user')
+      const initResponse = await adminStub.fetch('http://internal/init-admin', {
+        method: 'POST'
+      })
+
+      if (initResponse.ok) {
+        // 重新获取用户列表
+        const retryResponse = await adminStub.fetch('http://internal/users')
+        if (retryResponse.ok) {
+          const { users: newUsers } = await retryResponse.json() as { users: Array<{username: string, type: string}> }
+          const users = newUsers.filter(u => u.username !== c.env.ROOT_USERNAME)
+          console.log('Returning users list after init:', users.length, 'users:', users.map(u => u.username))
+          return c.json({ users })
+        }
+      }
+    }
+
     console.log('Users from AdminDO:', allUsers.length, 'users:', allUsers.map(u => u.username))
 
     // 过滤掉root用户
@@ -83,6 +67,7 @@ admin.post('/users/list', authMiddleware, requirePermission(['admin', 'root']), 
     return c.json({ users })
   } catch (error: any) {
     console.error('Get users list error:', error)
+    console.error('Error stack:', error.stack)
     return c.json({ error: 'Internal server error' }, 500)
   }
 })
@@ -149,22 +134,7 @@ admin.post('/users', authMiddleware, requirePermission(['admin', 'root']), async
       return c.json({ error: 'Failed to create user account' }, 500)
     }
 
-    // 2. 添加到内存中的 UserStore
-    const success = userStore.addUser(newUsername, type)
-    if (!success) {
-      console.log('User already exists in store:', newUsername)
-      // 用户已存在，需要清理 UserDO
-      try {
-        const userId = c.env.USER_DO.idFromName(newUsername)
-        const userStub = c.env.USER_DO.get(userId)
-        await userStub.fetch('http://do/delate', { method: 'POST' })
-      } catch (cleanupError) {
-        console.error('Failed to cleanup UserDO:', cleanupError)
-      }
-      return c.json({ error: 'User already exists' }, 409)
-    }
-
-    // 3. 同步到 AdminDO 持久化存储
+    // 2. 同步到 AdminDO 持久化存储
     try {
       const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
       const adminStub = c.env.ADMIN_DO.get(adminId)
@@ -175,9 +145,19 @@ admin.post('/users', authMiddleware, requirePermission(['admin', 'root']), async
       })
 
       if (!doResponse.ok) {
-        console.error('Failed to sync user to AdminDO')
-        // 回滚：删除 UserDO 和内存中的用户
-        userStore.removeUser(newUsername)
+        const errorData = await doResponse.json() as { error?: string }
+        console.error('Failed to sync user to AdminDO:', errorData)
+
+        // 如果用户已存在，返回409
+        if (doResponse.status === 409) {
+          // 回滚：删除 UserDO
+          const userId = c.env.USER_DO.idFromName(newUsername)
+          const userStub = c.env.USER_DO.get(userId)
+          await userStub.fetch('http://do/delate', { method: 'POST' })
+          return c.json({ error: 'User already exists' }, 409)
+        }
+
+        // 其他错误，回滚 UserDO
         const userId = c.env.USER_DO.idFromName(newUsername)
         const userStub = c.env.USER_DO.get(userId)
         await userStub.fetch('http://do/delate', { method: 'POST' })
@@ -185,8 +165,7 @@ admin.post('/users', authMiddleware, requirePermission(['admin', 'root']), async
       }
     } catch (doError: any) {
       console.error('AdminDO sync error:', doError)
-      // 回滚：删除 UserDO 和内存中的用户
-      userStore.removeUser(newUsername)
+      // 回滚：删除 UserDO
       const userId = c.env.USER_DO.idFromName(newUsername)
       const userStub = c.env.USER_DO.get(userId)
       await userStub.fetch('http://do/delate', { method: 'POST' })
@@ -230,14 +209,7 @@ admin.delete('/users/:username', authMiddleware, requirePermission(['admin', 'ro
       return c.json({ error: 'Failed to delete user account' }, 500)
     }
 
-    // 2. 从内存中的 UserStore 删除用户
-    const success = userStore.removeUser(targetUsername)
-    if (!success) {
-      console.log('User not found in store:', targetUsername)
-      // 即使内存中没有，继续删除 AdminDO 中的记录
-    }
-
-    // 3. 从 AdminDO 持久化存储中删除
+    // 2. 从 AdminDO 持久化存储中删除
     try {
       const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
       const adminStub = c.env.ADMIN_DO.get(adminId)

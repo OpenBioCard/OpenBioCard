@@ -21,9 +21,18 @@ app.get('/init-admin', async (c) => {
   try {
     const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
     const adminStub = c.env.ADMIN_DO.get(adminId)
-    await adminStub.fetch('http://internal/init-admin')
+    const response = await adminStub.fetch('http://internal/init-admin', {
+      method: 'POST'
+    })
+
+    if (!response.ok) {
+      console.error('AdminDO init-admin failed:', await response.text())
+      return c.text('Failed to initialize admin', 500)
+    }
+
     return c.text('Admin initialized')
   } catch (error) {
+    console.error('Init admin error:', error)
     return c.text('Failed to initialize admin', 500)
   }
 })
