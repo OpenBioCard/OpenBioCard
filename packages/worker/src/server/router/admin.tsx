@@ -39,26 +39,6 @@ admin.post('/users/list', authMiddleware, requirePermission(['admin', 'root']), 
     }
 
     const { users: allUsers } = await doResponse.json() as { users: Array<{username: string, type: string}> }
-
-    // 如果用户列表为空，自动初始化默认 admin 用户
-    if (allUsers.length === 0) {
-      console.log('User list is empty, initializing default admin user')
-      const initResponse = await adminStub.fetch('http://internal/init-admin', {
-        method: 'POST'
-      })
-
-      if (initResponse.ok) {
-        // 重新获取用户列表
-        const retryResponse = await adminStub.fetch('http://internal/users')
-        if (retryResponse.ok) {
-          const { users: newUsers } = await retryResponse.json() as { users: Array<{username: string, type: string}> }
-          const users = newUsers.filter(u => u.username !== c.env.ROOT_USERNAME)
-          console.log('Returning users list after init:', users.length, 'users:', users.map(u => u.username))
-          return c.json({ users })
-        }
-      }
-    }
-
     console.log('Users from AdminDO:', allUsers.length, 'users:', allUsers.map(u => u.username))
 
     // 过滤掉root用户
