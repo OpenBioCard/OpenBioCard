@@ -15,7 +15,11 @@
   "packageManager": "pnpm@10.10.0",
   "devDependencies": {
     "@nx/vite": "^22.1.1",
-    "nx": "22.1.1"
+    "@types/jest": "^29.0.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.0.0",
+    "nx": "22.1.1",
+    "typescript": "^5.0.0"
   },
   "nx": {}
 }
