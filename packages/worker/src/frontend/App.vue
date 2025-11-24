@@ -111,7 +111,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100">
+  <div class="min-h-screen">
     <Login v-if="currentView === 'login'" @login="login" />
     <AdminPanel v-else-if="currentView === 'admin'" :user="user" :token="token" @logout="logout" />
   </div>

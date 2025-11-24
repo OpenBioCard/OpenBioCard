@@ -1,8 +1,9 @@
 <template>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="login-header">
-        <div class="logo">
+  <div class="login-page">
+    <!-- 左侧装饰区域 -->
+    <div class="login-left">
+      <div class="brand-section">
+        <div class="brand-logo">
           <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M12 2L2 7V17L12 22L22 17V7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
             <path d="M12 22V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -10,62 +11,104 @@
             <path d="M12 12L22 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <h1>OpenBioCard</h1>
-        <p>管理面板登录</p>
+        <h1 class="brand-title">OpenBioCard</h1>
+        <p class="brand-subtitle">现代化的生物信息卡管理平台</p>
+
+        <div class="features">
+          <div class="feature-item">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 16V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M12 8H12.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <h3>安全可靠</h3>
+              <p>企业级安全保护</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M13 2L3 14H12L11 22L21 10H12L13 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <h3>高效快速</h3>
+              <p>毫秒级响应速度</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M21 16V8C20.9996 7.64927 20.9071 7.30481 20.7315 7.00116C20.556 6.69751 20.3037 6.44536 20 6.27L13 2.27C12.696 2.09446 12.3511 2.00205 12 2.00205C11.6489 2.00205 11.304 2.09446 11 2.27L4 6.27C3.69626 6.44536 3.44398 6.69751 3.26846 7.00116C3.09294 7.30481 3.00036 7.64927 3 8V16C3.00036 16.3507 3.09294 16.6952 3.26846 16.9988C3.44398 17.3025 3.69626 17.5546 4 17.73L11 21.73C11.304 21.9055 11.6489 21.9979 12 21.9979C12.3511 21.9979 12.696 21.9055 13 21.73L20 17.73C20.3037 17.5546 20.556 17.3025 20.7315 16.9988C20.9071 16.6952 20.9996 16.3507 21 16Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <div>
+              <h3>易于使用</h3>
+              <p>直观的用户界面</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <form @submit.prevent="handleLogin" class="login-form">
-        <div class="form-group">
-          <label for="username">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            用户名
-          </label>
-          <input
-            id="username"
-            v-model="username"
-            type="text"
-            placeholder="请输入用户名"
-            required
-            autocomplete="username"
-          />
-        </div>
-
-        <div class="form-group">
-          <label for="password">
-            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
-            密码
-          </label>
-          <input
-            id="password"
-            v-model="password"
-            type="password"
-            placeholder="请输入密码"
-            required
-            autocomplete="current-password"
-          />
-        </div>
-
-        <button type="submit" class="login-button" :disabled="loading">
-          <span v-if="!loading">登录</span>
-          <span v-else class="loading-spinner"></span>
-        </button>
-      </form>
-
-      <div class="login-footer">
-        <p>首次使用？请联系管理员创建账号</p>
+      <div class="decorative-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
       </div>
     </div>
 
-    <div class="background-decoration">
-      <div class="circle circle-1"></div>
-      <div class="circle circle-2"></div>
-      <div class="circle circle-3"></div>
+    <!-- 右侧登录表单 -->
+    <div class="login-right">
+      <div class="login-container">
+        <div class="login-header">
+          <h2>欢迎回来</h2>
+          <p>登录到您的管理面板</p>
+        </div>
+
+        <form @submit.prevent="handleLogin" class="login-form">
+          <div class="input-group">
+            <label for="username">用户名</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <input
+                id="username"
+                v-model="username"
+                type="text"
+                placeholder="输入您的用户名"
+                required
+                autocomplete="username"
+              />
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="password">密码</label>
+            <div class="input-wrapper">
+              <svg class="input-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M7 11V7C7 5.67392 7.52678 4.40215 8.46447 3.46447C9.40215 2.52678 10.6739 2 12 2C13.3261 2 14.5979 2.52678 15.5355 3.46447C16.4732 4.40215 17 5.67392 17 7V11" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <input
+                id="password"
+                v-model="password"
+                type="password"
+                placeholder="输入您的密码"
+                required
+                autocomplete="current-password"
+              />
+            </div>
+          </div>
+
+          <button type="submit" class="submit-btn" :disabled="loading">
+            <span v-if="!loading">登录</span>
+            <div v-else class="spinner"></div>
+          </button>
+        </form>
+
+        <div class="login-footer">
+          <p>首次使用？请联系系统管理员创建账号</p>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -92,172 +135,278 @@ const handleLogin = async () => {
 </script>
 
 <style scoped>
-.login-container {
+.login-page {
+  display: flex;
   min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 左侧装饰区域 */
+.login-left {
+  flex: 1;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
-  position: relative;
+  padding: 60px;
   overflow: hidden;
 }
 
-.background-decoration {
+.brand-section {
+  position: relative;
+  z-index: 2;
+  color: white;
+  max-width: 500px;
+}
+
+.brand-logo {
+  width: 80px;
+  height: 80px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  animation: float 6s ease-in-out infinite;
+}
+
+.brand-logo svg {
+  width: 48px;
+  height: 48px;
+  color: white;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.brand-title {
+  font-size: 48px;
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  letter-spacing: -1px;
+}
+
+.brand-subtitle {
+  font-size: 18px;
+  opacity: 0.95;
+  margin: 0 0 48px 0;
+  font-weight: 300;
+}
+
+.features {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.feature-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+}
+
+.feature-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateX(10px);
+}
+
+.feature-item svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.feature-item h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.feature-item p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.decorative-shapes {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
   overflow: hidden;
+  z-index: 1;
 }
 
-.circle {
+.shape {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  animation: float 20s infinite ease-in-out;
+  background: rgba(255, 255, 255, 0.05);
+  animation: shapeFloat 20s ease-in-out infinite;
 }
 
-.circle-1 {
-  width: 300px;
-  height: 300px;
-  top: -150px;
-  left: -150px;
+.shape-1 {
+  width: 400px;
+  height: 400px;
+  top: -200px;
+  left: -200px;
   animation-delay: 0s;
 }
 
-.circle-2 {
-  width: 200px;
-  height: 200px;
-  bottom: -100px;
-  right: -100px;
+.shape-2 {
+  width: 300px;
+  height: 300px;
+  bottom: -150px;
+  right: -150px;
   animation-delay: 7s;
 }
 
-.circle-3 {
-  width: 150px;
-  height: 150px;
-  top: 50%;
+.shape-3 {
+  width: 250px;
+  height: 250px;
+  top: 40%;
   right: 10%;
   animation-delay: 14s;
 }
 
-@keyframes float {
+@keyframes shapeFloat {
   0%, 100% {
-    transform: translateY(0) rotate(0deg);
+    transform: translate(0, 0) rotate(0deg);
   }
-  50% {
-    transform: translateY(-20px) rotate(180deg);
+  33% {
+    transform: translate(30px, -30px) rotate(120deg);
+  }
+  66% {
+    transform: translate(-20px, 20px) rotate(240deg);
   }
 }
 
-.login-card {
+/* 右侧登录表单 */
+.login-right {
+  flex: 0 0 550px;
   background: white;
-  border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  padding: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+}
+
+.login-container {
   width: 100%;
   max-width: 420px;
-  position: relative;
-  z-index: 1;
-  animation: slideUp 0.6s ease-out;
+  animation: slideIn 0.6s ease-out;
 }
 
-@keyframes slideUp {
+@keyframes slideIn {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateX(30px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateX(0);
   }
 }
 
 .login-header {
-  text-align: center;
   margin-bottom: 40px;
 }
 
-.logo {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-}
-
-.logo svg {
-  width: 36px;
-  height: 36px;
-}
-
-.login-header h1 {
-  font-size: 28px;
+.login-header h2 {
+  font-size: 32px;
   font-weight: 700;
   color: #1a202c;
-  margin: 0 0 8px;
+  margin: 0 0 8px 0;
 }
 
 .login-header p {
-  font-size: 14px;
+  font-size: 16px;
   color: #718096;
   margin: 0;
 }
 
 .login-form {
-  margin-bottom: 24px;
-}
-
-.form-group {
-  margin-bottom: 24px;
-}
-
-.form-group label {
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.input-group label {
   font-size: 14px;
   font-weight: 600;
-  color: #4a5568;
-  margin-bottom: 8px;
+  color: #2d3748;
 }
 
-.form-group label svg {
-  width: 18px;
-  height: 18px;
-  margin-right: 8px;
-  color: #667eea;
+.input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.form-group input {
+.input-icon {
+  position: absolute;
+  left: 16px;
+  width: 20px;
+  height: 20px;
+  color: #a0aec0;
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.input-wrapper input {
   width: 100%;
-  padding: 14px 16px;
+  padding: 16px 16px 16px 48px;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   font-size: 15px;
+  color: #2d3748;
+  background: white;
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
 
-.form-group input:focus {
+.input-wrapper input:focus {
   outline: none;
   border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
 }
 
-.form-group input::placeholder {
-  color: #a0aec0;
+.input-wrapper input:focus + .input-icon,
+.input-wrapper input:not(:placeholder-shown) + .input-icon {
+  color: #667eea;
 }
 
-.login-button {
+.input-wrapper input::placeholder {
+  color: #cbd5e0;
+}
+
+.submit-btn {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
@@ -266,28 +415,30 @@ const handleLogin = async () => {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
 }
 
-.login-button:hover:not(:disabled) {
+.submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.5);
 }
 
-.login-button:active:not(:disabled) {
+.submit-btn:active:not(:disabled) {
   transform: translateY(0);
 }
 
-.login-button:disabled {
-  opacity: 0.7;
+.submit-btn:disabled {
+  opacity: 0.8;
   cursor: not-allowed;
 }
 
-.loading-spinner {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
+.spinner {
+  width: 24px;
+  height: 24px;
   border: 3px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
@@ -302,23 +453,38 @@ const handleLogin = async () => {
 
 .login-footer {
   text-align: center;
-  padding-top: 20px;
+  padding-top: 24px;
   border-top: 1px solid #e2e8f0;
 }
 
 .login-footer p {
-  font-size: 13px;
+  font-size: 14px;
   color: #718096;
   margin: 0;
 }
 
+/* 响应式设计 */
+@media (max-width: 1024px) {
+  .login-left {
+    display: none;
+  }
+
+  .login-right {
+    flex: 1;
+  }
+}
+
 @media (max-width: 480px) {
-  .login-card {
+  .login-right {
     padding: 32px 24px;
   }
 
-  .login-header h1 {
-    font-size: 24px;
+  .login-header h2 {
+    font-size: 28px;
+  }
+
+  .brand-title {
+    font-size: 36px;
   }
 }
 </style>
