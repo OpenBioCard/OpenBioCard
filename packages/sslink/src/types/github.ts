@@ -7,4 +7,5 @@ export interface UserInfo {
   displayName: string;
   bio: string;
   avatarBase64: string;
+  homepageUrl: string;
 }

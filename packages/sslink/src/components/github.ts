@@ -93,6 +93,7 @@ export async function getUserInfo(username: string, token?: string): Promise<Use
       displayName: user.name || user.login,
       bio: user.bio || '',
       avatarBase64,
+      homepageUrl: user.html_url,
     };
   } catch (error) {
     console.error('Error fetching user info:', error);
