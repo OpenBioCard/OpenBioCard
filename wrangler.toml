@@ -28,6 +28,10 @@ new_sqlite_classes = ["UserDO"]
 tag = "v2"
 new_sqlite_classes = ["AdminDO"]
 
+# Assets configuration
+[assets]
+directory = "dist/client"
+
 # Build configuration
 [build]
 command = "pnpm install && pnpm run build"
