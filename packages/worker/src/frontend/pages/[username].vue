@@ -77,6 +77,20 @@
           @update-description="updateProjectDescription"
           @upload-logo="handleProjectLogoUpload"
         />
+
+        <!-- 相册列表 -->
+        <GalleryList
+          :gallery="profileData.gallery"
+        />
+
+        <!-- 编辑相册 -->
+        <GalleryEdit
+          v-if="editMode && canEdit"
+          :gallery="editData.gallery"
+          @add="addPhoto"
+          @remove="removePhoto"
+          @update-caption="updatePhotoCaption"
+        />
       </div>
     </main>
 
@@ -102,6 +116,8 @@ import SocialLinksList from '../components/SocialLinksList.vue'
 import SocialLinksEdit from '../components/SocialLinksEdit.vue'
 import ProjectsList from '../components/ProjectsList.vue'
 import ProjectsEdit from '../components/ProjectsEdit.vue'
+import GalleryList from '../components/GalleryList.vue'
+import GalleryEdit from '../components/GalleryEdit.vue'
 import QRCodeModal from '../components/QRCodeModal.vue'
 import { useSocialLinksData } from '../composables/useGitHubData'
 
@@ -123,7 +139,8 @@ const profileData = ref({
   background: '',
   contacts: [],
   socialLinks: [],
-  projects: []
+  projects: [],
+  gallery: []
 })
 
 // 编辑状态
@@ -187,14 +204,18 @@ const loadProfile = async () => {
     if (response.ok) {
       const data = await response.json()
       profileData.value = { ...profileData.value, ...data }
-      // 确保 socialLinks 和 projects 是数组
+      // 确保 socialLinks、projects 和 gallery 是数组
       if (!profileData.value.socialLinks) {
         profileData.value.socialLinks = []
       }
       if (!profileData.value.projects) {
         profileData.value.projects = []
       }
-      editData.value = { ...profileData.value }
+      if (!profileData.value.gallery) {
+        profileData.value.gallery = []
+      }
+      // 使用深拷贝避免引用问题
+      editData.value = JSON.parse(JSON.stringify(profileData.value))
       // 初始化社交媒体链接数据（获取 GitHub 信息并启动定时更新）
       await initializeSocialLinks()
     }
@@ -230,7 +251,8 @@ const saveProfile = async () => {
     })
 
     if (response.ok) {
-      profileData.value = { ...editData.value }
+      // 使用深拷贝避免引用问题
+      profileData.value = JSON.parse(JSON.stringify(editData.value))
       editMode.value = false
       alert('保存成功')
     } else {
@@ -245,7 +267,8 @@ const saveProfile = async () => {
 
 // 取消编辑
 const cancelEdit = () => {
-  editData.value = { ...profileData.value }
+  // 使用深拷贝避免引用问题
+  editData.value = JSON.parse(JSON.stringify(profileData.value))
   editMode.value = false
 }
 
@@ -417,6 +440,24 @@ const handleProjectLogoUpload = (event, index) => {
     editData.value.projects[index].logo = e.target.result
   }
   reader.readAsDataURL(file)
+}
+
+// 添加相册照片
+const addPhoto = (photoData) => {
+  if (!editData.value.gallery) {
+    editData.value.gallery = []
+  }
+  editData.value.gallery.push(photoData)
+}
+
+// 删除相册照片
+const removePhoto = (index) => {
+  editData.value.gallery.splice(index, 1)
+}
+
+// 更新照片说明
+const updatePhotoCaption = (index, caption) => {
+  editData.value.gallery[index].caption = caption
 }
 
 // 退出登录
