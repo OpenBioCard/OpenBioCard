@@ -4,7 +4,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "cd src/frontend && vite",
     "build": "VITE_CLIENT_ONLY=true vite build && cp -r dist/client /tmp/openbiocard-client && VITE_WORKER_ONLY=true vite build && cp -r /tmp/openbiocard-client dist/openbiocard/client && node scripts/fix-wrangler.js",
     "preview": "pnpm run build && vite preview",
     "deploy": "pnpm run build && wrangler deploy",

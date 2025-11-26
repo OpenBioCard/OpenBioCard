@@ -46,16 +46,7 @@ app.get('/', (c) => {
 })
 
 app.get('/frontend', (c) => {
-  return c.html(`<!DOCTYPE html>
-<html>
-<head>
-  <title>Frontend</title>
-</head>
-<body>
-  <h1>Frontend</h1>
-  <p>The frontend is not available in this deployment.</p>
-</body>
-</html>`)
+  return c.render(<div id="app"></div>)
 })
 
 // 处理用户个人页面路由 /{username} - 放在最后，确保其他路由优先
@@ -68,16 +59,7 @@ app.get('/:username', async (c) => {
   }
 
   // 返回前端页面，让前端路由处理
-  return c.html(`<!DOCTYPE html>
-<html>
-<head>
-  <title>${username} - OpenBioCard</title>
-</head>
-<body>
-  <h1>${username}</h1>
-  <p>The user page is not available in this deployment.</p>
-</body>
-</html>`)
+  return c.render(<div id="app"></div>)
 })
 
 // 用户资料API

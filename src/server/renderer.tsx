@@ -8,7 +8,7 @@ export const renderer = jsxRenderer(({ children }) => {
       </head>
       <body>
         {children}
-        <script type="module" src="/assets/index-mdm1ZPRS.js"></script>
+        <script type="module" src="/assets/index-DF3tHg20.js"></script>
       </body>
     </html>
   )
