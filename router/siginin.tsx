@@ -6,27 +6,26 @@ import { verifyPassword } from '../utils/password'
 export const siginup = new Hono<{ Bindings: CloudflareBindings }>()
 
 async function authenticateUser(c: any, username: string, password: string) {
-    console.log('Authenticating user:', username)
-    console.log('ROOT_USERNAME:', c.env.ROOT_USERNAME)
-    console.log('ROOT_PASSWORD length:', c.env.ROOT_PASSWORD?.length)
+    // 先读取环境变量
+    const env = c.env
+    const ROOT_USERNAME = env.ROOT_USERNAME
+    const ROOT_PASSWORD = env.ROOT_PASSWORD
+    const USER_DO = env.USER_DO
 
     // 特殊处理root账户
-    if (username === c.env.ROOT_USERNAME) {
-        console.log('Root user login attempt')
-        if (password === c.env.ROOT_PASSWORD) {
+    if (username === ROOT_USERNAME) {
+        if (password === ROOT_PASSWORD) {
             // 为root生成一个固定的token或动态token
             const token = `root-${crypto.randomUUID()}`
-            console.log('Root login successful')
             return c.json({ token })
         } else {
-            console.log('Root password incorrect')
             return c.json({ error: 'Invalid credentials' }, 401)
         }
     }
 
     // 普通用户登录
-    const id = c.env.USER_DO.idFromName(username)
-    const stub = c.env.USER_DO.get(id)
+    const id = USER_DO.idFromName(username)
+    const stub = USER_DO.get(id)
     const response = await stub.fetch('http://internal/get')
     if (!response.ok) {
         return c.json({ error: 'Invalid credentials' }, 401)
