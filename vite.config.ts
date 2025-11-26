@@ -5,6 +5,7 @@ import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
 export default defineConfig({
+  // @ts-ignore
   plugins: [cloudflare(), ssrPlugin(), vue()],
   publicDir: 'public',
   build: {
