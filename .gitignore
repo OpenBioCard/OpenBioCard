@@ -7,6 +7,10 @@ dist
 build
 out
 
+# Cloudflare Workers local data
+.wrangler
+**/.wrangler
+
 # Nx
 .nx/cache
 .nx/workspace-data
@@ -15,6 +19,8 @@ out
 .env
 .env.local
 .env.production
+.dev.vars
+*.dev.vars
 
 # Logs
 *.log
