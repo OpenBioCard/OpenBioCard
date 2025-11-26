@@ -45,6 +45,38 @@
           @update-value="updateContactValue"
           @upload-qrcode="handleContactUpload"
         />
+
+        <!-- 社交媒体链接列表 -->
+        <SocialLinksList
+          :social-links="profileData.socialLinks"
+        />
+
+        <!-- 编辑社交媒体链接 -->
+        <SocialLinksEdit
+          v-if="editMode && canEdit"
+          :social-links="editData.socialLinks"
+          @add="addSocialLink"
+          @remove="removeSocialLink"
+          @update-type="updateSocialLinkType"
+          @update-value="updateSocialLinkValue"
+        />
+
+        <!-- 项目列表 -->
+        <ProjectsList
+          :projects="profileData.projects"
+        />
+
+        <!-- 编辑项目 -->
+        <ProjectsEdit
+          v-if="editMode && canEdit"
+          :projects="editData.projects"
+          @add="addProject"
+          @remove="removeProject"
+          @update-name="updateProjectName"
+          @update-url="updateProjectUrl"
+          @update-description="updateProjectDescription"
+          @upload-logo="handleProjectLogoUpload"
+        />
       </div>
     </main>
 
@@ -66,7 +98,12 @@ import ProfileHeader from '../components/ProfileHeader.vue'
 import ProfileEditForm from '../components/ProfileEditForm.vue'
 import ContactList from '../components/ContactList.vue'
 import ContactEdit from '../components/ContactEdit.vue'
+import SocialLinksList from '../components/SocialLinksList.vue'
+import SocialLinksEdit from '../components/SocialLinksEdit.vue'
+import ProjectsList from '../components/ProjectsList.vue'
+import ProjectsEdit from '../components/ProjectsEdit.vue'
 import QRCodeModal from '../components/QRCodeModal.vue'
+import { useSocialLinksData } from '../composables/useGitHubData'
 
 const route = useRoute()
 const username = route.params.username
@@ -84,7 +121,9 @@ const profileData = ref({
   location: '',
   website: '',
   background: '',
-  contacts: []
+  contacts: [],
+  socialLinks: [],
+  projects: []
 })
 
 // 编辑状态
@@ -138,6 +177,9 @@ const getContactLabel = (type) => {
   return labels[type] || type
 }
 
+// 社交媒体链接数据管理
+const { fetchAllData: fetchSocialLinksData, initialize: initializeSocialLinks } = useSocialLinksData(profileData)
+
 // 加载用户资料
 const loadProfile = async () => {
   try {
@@ -145,7 +187,16 @@ const loadProfile = async () => {
     if (response.ok) {
       const data = await response.json()
       profileData.value = { ...profileData.value, ...data }
+      // 确保 socialLinks 和 projects 是数组
+      if (!profileData.value.socialLinks) {
+        profileData.value.socialLinks = []
+      }
+      if (!profileData.value.projects) {
+        profileData.value.projects = []
+      }
       editData.value = { ...profileData.value }
+      // 初始化社交媒体链接数据（获取 GitHub 信息并启动定时更新）
+      await initializeSocialLinks()
     }
   } catch (error) {
     console.error('加载用户资料失败:', error)
@@ -258,6 +309,114 @@ const closeQrCodeModal = () => {
     image: '',
     label: ''
   }
+}
+
+// 添加社交媒体链接
+const addSocialLink = () => {
+  if (!editData.value.socialLinks) {
+    editData.value.socialLinks = []
+  }
+  editData.value.socialLinks.push({ type: 'github', value: '' })
+}
+
+// 删除社交媒体链接
+const removeSocialLink = (index) => {
+  editData.value.socialLinks.splice(index, 1)
+}
+
+// 更新社交媒体链接类型
+const updateSocialLinkType = (index, type) => {
+  editData.value.socialLinks[index].type = type
+  // 清除旧的 GitHub 数据
+  if (type !== 'github') {
+    delete editData.value.socialLinks[index].githubData
+  }
+}
+
+// 更新社交媒体链接值
+const updateSocialLinkValue = async (index, value) => {
+  editData.value.socialLinks[index].value = value
+
+  // 如果是 GitHub 链接，立即获取数据
+  if (editData.value.socialLinks[index].type === 'github' && value) {
+    try {
+      const response = await fetch(`https://api.github.com/users/${value}`)
+      if (response.ok) {
+        const result = await response.json()
+        editData.value.socialLinks[index].githubData = {
+          login: result.login,
+          name: result.name,
+          avatar_url: result.avatar_url,
+          bio: result.bio,
+          location: result.location,
+          blog: result.blog,
+          twitter_username: result.twitter_username,
+          public_repos: result.public_repos,
+          followers: result.followers,
+          following: result.following,
+          created_at: result.created_at,
+          updated_at: result.updated_at
+        }
+      }
+    } catch (err) {
+      console.error('获取 GitHub 信息失败:', err)
+    }
+  }
+}
+
+// 添加项目
+const addProject = () => {
+  if (!editData.value.projects) {
+    editData.value.projects = []
+  }
+  editData.value.projects.push({
+    name: '',
+    url: '',
+    description: '',
+    logo: ''
+  })
+}
+
+// 删除项目
+const removeProject = (index) => {
+  editData.value.projects.splice(index, 1)
+}
+
+// 更新项目名称
+const updateProjectName = (index, name) => {
+  editData.value.projects[index].name = name
+}
+
+// 更新项目地址
+const updateProjectUrl = (index, url) => {
+  editData.value.projects[index].url = url
+}
+
+// 更新项目描述
+const updateProjectDescription = (index, description) => {
+  editData.value.projects[index].description = description
+}
+
+// 处理项目 Logo 上传
+const handleProjectLogoUpload = (event, index) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  if (file.size > 2 * 1024 * 1024) {
+    alert('项目 Logo 大小不能超过 2MB')
+    return
+  }
+
+  if (!file.type.startsWith('image/')) {
+    alert('请选择图片文件')
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    editData.value.projects[index].logo = e.target.result
+  }
+  reader.readAsDataURL(file)
 }
 
 // 退出登录
