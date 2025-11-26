@@ -8,6 +8,25 @@ import { AdminDO } from './durable-objects/admin'
 
 const app = new Hono<{ Bindings: CloudflareBindings & { ADMIN_DO: DurableObjectNamespace } }>()
 
+// CORS middleware
+app.use('*', async (c, next) => {
+  const allowedOrigins = c.env.CORS_ALLOWED_ORIGINS || '*'
+  const allowedMethods = c.env.CORS_ALLOWED_METHODS?.split(',') || ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+  const allowedHeaders = c.env.CORS_ALLOWED_HEADERS?.split(',') || ['Content-Type', 'Authorization']
+
+  // Set CORS headers
+  c.header('Access-Control-Allow-Origin', allowedOrigins)
+  c.header('Access-Control-Allow-Methods', allowedMethods.join(', '))
+  c.header('Access-Control-Allow-Headers', allowedHeaders.join(', '))
+
+  // Handle preflight requests
+  if (c.req.method === 'OPTIONS') {
+    return c.text('', 200)
+  }
+
+  await next()
+})
+
 
 app.route('/signup', siginup)
 app.route('/signin', signin)
