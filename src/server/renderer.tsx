@@ -1,15 +1,14 @@
 import { jsxRenderer } from 'hono/jsx-renderer'
-import { Link } from 'vite-ssr-components/hono'
 
 export const renderer = jsxRenderer(({ children }) => {
   return (
     <html>
       <head>
-        <Link href="/src/server/style.css" rel="stylesheet" />
+        <title>OpenBioCard</title>
       </head>
       <body>
         {children}
-        <script type="module" src="/assets/index-CWOPS2PB.js"></script>
+        <script type="module" src="/assets/index-e7H7A8B2.js"></script>
       </body>
     </html>
   )

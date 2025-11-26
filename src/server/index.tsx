@@ -11,6 +11,22 @@ const app = new Hono<{ Bindings: CloudflareBindings & { ADMIN_DO: DurableObjectN
 
 app.use(renderer)
 
+// Serve static assets
+app.get('/assets/*', async (c) => {
+  const path = c.req.path
+  try {
+    const assetUrl = new URL(path, 'asset://')
+    const response = await fetch(assetUrl)
+    return new Response(response.body, {
+      headers: {
+        'Content-Type': response.headers.get('Content-Type') || 'application/javascript',
+      },
+    })
+  } catch (error) {
+    return c.text('Asset not found', 404)
+  }
+})
+
 app.route('/signup', siginup)
 app.route('/signin', signin)
 app.route('/delete', delate)
