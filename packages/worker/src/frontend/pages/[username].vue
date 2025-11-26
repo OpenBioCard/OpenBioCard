@@ -12,15 +12,15 @@
           </svg>
         </div>
         <h1 style="font-size: 3rem; font-weight: bold; color: var(--color-text-primary); margin: 0 0 1rem;">404</h1>
-        <p style="font-size: 1.25rem; color: var(--color-text-tertiary); margin: 0 0 2rem;">用户不存在</p>
-        <p style="color: var(--color-text-tertiary); margin: 0 0 2rem;">找不到用户名为 <strong>{{ username }}</strong> 的账号。</p>
+        <p style="font-size: 1.25rem; color: var(--color-text-tertiary); margin: 0 0 2rem;">{{ $t('error.userNotFound') }}</p>
+        <p style="color: var(--color-text-tertiary); margin: 0 0 2rem;">{{ $t('error.userNotFoundMessage', { username }) }}</p>
         <a
           href="/frontend"
           style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--color-primary); color: var(--color-text-inverse); border-radius: 0.5rem; text-decoration: none; transition: background-color 0.2s; font-weight: 500;"
           onmouseover="this.style.backgroundColor='var(--color-primary-hover)'"
           onmouseout="this.style.backgroundColor='var(--color-primary)'"
         >
-          返回首页
+          {{ $t('error.goBackHome') }}
         </a>
       </div>
     </div>
@@ -129,6 +129,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue'
 import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 import Navigation from '../components/Navigation.vue'
 import ProfileHeader from '../components/ProfileHeader.vue'
 import ProfileEditForm from '../components/ProfileEditForm.vue'
@@ -144,6 +145,7 @@ import QRCodeModal from '../components/QRCodeModal.vue'
 import { useSocialLinksData } from '../composables/useGitHubData'
 
 const route = useRoute()
+const { t } = useI18n()
 const username = route.params.username
 
 // 用户状态
@@ -204,15 +206,15 @@ const isBase64Image = (str) => {
 // 获取联系方式标签
 const getContactLabel = (type) => {
   const labels = {
-    email: '邮箱',
-    phone: '电话',
-    wechat: '微信',
-    qq: 'QQ',
-    whatsapp: 'WhatsApp',
-    telegram: 'Telegram',
-    discord: 'Discord',
-    line: 'Line',
-    wecom: '企业微信'
+    email: t('contact.types.email'),
+    phone: t('contact.types.phone'),
+    wechat: t('contact.types.wechat'),
+    qq: t('contact.types.qq'),
+    whatsapp: t('contact.types.whatsapp'),
+    telegram: t('contact.types.telegram'),
+    discord: t('contact.types.discord'),
+    line: t('contact.types.line'),
+    wecom: t('contact.types.wechat_work')
   }
   return labels[type] || type
 }
@@ -285,12 +287,12 @@ const saveProfile = async () => {
       // 使用深拷贝避免引用问题
       profileData.value = JSON.parse(JSON.stringify(editData.value))
       editMode.value = false
-      alert('保存成功')
+      alert(t('profile.saveSuccess'))
     } else {
-      alert('保存失败')
+      alert(t('profile.saveFailed'))
     }
   } catch (error) {
-    alert('保存失败')
+    alert(t('profile.saveFailed'))
   } finally {
     saving.value = false
   }
@@ -329,12 +331,12 @@ const handleContactUpload = (event, index) => {
   if (!file) return
 
   if (file.size > 2 * 1024 * 1024) {
-    alert('二维码图片大小不能超过2MB')
+    alert(t('contact.qrCodeTooLarge'))
     return
   }
 
   if (!file.type.startsWith('image/')) {
-    alert('请选择图片文件')
+    alert(t('contact.selectImageFile'))
     return
   }
 
@@ -457,12 +459,12 @@ const handleProjectLogoUpload = (event, index) => {
   if (!file) return
 
   if (file.size > 2 * 1024 * 1024) {
-    alert('项目 Logo 大小不能超过 2MB')
+    alert(t('projects.uploadLogo'))
     return
   }
 
   if (!file.type.startsWith('image/')) {
-    alert('请选择图片文件')
+    alert(t('contact.selectImageFile'))
     return
   }
 

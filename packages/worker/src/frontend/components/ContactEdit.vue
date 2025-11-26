@@ -5,7 +5,7 @@
         <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; color: #000000;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
         </svg>
-        管理联系方式
+        {{ $t('contact.manage') }}
       </h4>
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div
@@ -20,15 +20,15 @@
             onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
             onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
           >
-            <option value="email">邮箱</option>
-            <option value="phone">电话</option>
-            <option value="wechat">微信</option>
-            <option value="qq">QQ</option>
-            <option value="whatsapp">WhatsApp</option>
-            <option value="telegram">Telegram</option>
-            <option value="discord">Discord</option>
-            <option value="line">Line</option>
-            <option value="wecom">企业微信</option>
+            <option value="email">{{ $t('contact.types.email') }}</option>
+            <option value="phone">{{ $t('contact.types.phone') }}</option>
+            <option value="wechat">{{ $t('contact.types.wechat') }}</option>
+            <option value="qq">{{ $t('contact.types.qq') }}</option>
+            <option value="whatsapp">{{ $t('contact.types.whatsapp') }}</option>
+            <option value="telegram">{{ $t('contact.types.telegram') }}</option>
+            <option value="discord">{{ $t('contact.types.discord') }}</option>
+            <option value="line">{{ $t('contact.types.line') }}</option>
+            <option value="wecom">{{ $t('contact.types.wechat_work') }}</option>
           </select>
           <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
             <template v-if="getContactInputConfig(contact.type).type === 'file'">
@@ -53,7 +53,7 @@
                   <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
                   </svg>
-                  <span>{{ isBase64Image(contact.value) ? '更换二维码' : '上传二维码' }}</span>
+                  <span>{{ isBase64Image(contact.value) ? $t('contact.changeQRCode') : $t('contact.uploadQRCode') }}</span>
                 </button>
               </div>
             </template>
@@ -89,7 +89,7 @@
           <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
-          <span>添加联系方式</span>
+          <span>{{ $t('contact.add') }}</span>
         </button>
       </div>
     </div>
@@ -97,6 +97,10 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   contacts: {
     type: Array,
@@ -112,17 +116,17 @@ const isBase64Image = (str) => {
 
 const getContactInputConfig = (type) => {
   const configs = {
-    email: { type: 'text', placeholder: '请输入邮箱地址' },
-    phone: { type: 'text', placeholder: '请输入电话号码（带国家区号，如+86）' },
-    wechat: { type: 'text', placeholder: '请输入微信号' },
-    qq: { type: 'text', placeholder: '请输入QQ号码' },
-    whatsapp: { type: 'text', placeholder: '请输入WhatsApp号码（带国家区号）' },
-    telegram: { type: 'text', placeholder: '请输���Telegram用户名' },
-    discord: { type: 'text', placeholder: '请输入Discord用户名' },
-    line: { type: 'file', placeholder: '上传Line二维码图片' },
-    wecom: { type: 'file', placeholder: '上传企业微信二维码图片' }
+    email: { type: 'text', placeholder: t('contact.placeholders.email') },
+    phone: { type: 'text', placeholder: t('contact.placeholders.phone') },
+    wechat: { type: 'text', placeholder: t('contact.placeholders.wechat') },
+    qq: { type: 'text', placeholder: t('contact.placeholders.qq') },
+    whatsapp: { type: 'text', placeholder: t('contact.placeholders.whatsapp') },
+    telegram: { type: 'text', placeholder: t('contact.placeholders.telegram') },
+    discord: { type: 'text', placeholder: t('contact.placeholders.discord') },
+    line: { type: 'file', placeholder: t('contact.placeholders.line') },
+    wecom: { type: 'file', placeholder: t('contact.placeholders.wechat_work') }
   }
-  return configs[type] || { type: 'text', placeholder: '请输入联系方式' }
+  return configs[type] || { type: 'text', placeholder: t('contact.placeholders.email') }
 }
 
 const triggerFileInput = (index) => {

@@ -4,7 +4,7 @@
       <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
       </svg>
-      我的项目
+      {{ $t('projects.title') }}
     </h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 1.5rem;">
       <div
@@ -27,7 +27,7 @@
           </div>
           <div style="flex: 1; min-width: 0;">
             <h4 style="font-weight: 600; color: var(--color-text-primary); font-size: 1.125rem; margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
-              {{ project.name || '未命名项目' }}
+              {{ project.name || $t('projects.untitled') }}
             </h4>
             <div v-if="project.url" style="display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem;">
               <svg style="width: 0.875rem; height: 0.875rem; color: var(--color-text-tertiary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -47,7 +47,7 @@
 
         <!-- 访问链接提示 -->
         <div v-if="project.url" style="display: flex; align-items: center; gap: 0.5rem; color: var(--color-primary); font-size: 0.875rem; font-weight: 500; margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--color-border-primary);">
-          <span>访问项目</span>
+          <span>{{ $t('projects.visit') }}</span>
           <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
           </svg>

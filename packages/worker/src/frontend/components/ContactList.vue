@@ -4,7 +4,7 @@
       <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
       </svg>
-      联系方式
+      {{ $t('contact.title') }}
     </h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
       <div
@@ -39,13 +39,17 @@
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
           </svg>
         </div>
-        <p style="color: var(--color-text-tertiary);">暂无联系方式</p>
+        <p style="color: var(--color-text-tertiary);">{{ $t('contact.noContacts') }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   contacts: {
     type: Array,
@@ -75,17 +79,17 @@ const getContactIcon = (type) => {
 }
 
 const getContactLabel = (type) => {
-  const labels = {
-    email: '邮箱',
-    phone: '电话',
-    wechat: '微信',
-    qq: 'QQ',
-    whatsapp: 'WhatsApp',
-    telegram: 'Telegram',
-    discord: 'Discord',
-    line: 'Line',
-    wecom: '企业微信'
+  const typeMap = {
+    email: 'email',
+    phone: 'phone',
+    wechat: 'wechat',
+    qq: 'qq',
+    whatsapp: 'whatsapp',
+    telegram: 'telegram',
+    discord: 'discord',
+    line: 'line',
+    wecom: 'wechat_work'
   }
-  return labels[type] || type
+  return t(`contact.types.${typeMap[type] || type}`)
 }
 </script>

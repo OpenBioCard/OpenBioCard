@@ -47,7 +47,7 @@
               @{{ profileData.username }}
             </span>
           </div>
-          <p style="color: var(--color-text-tertiary); font-size: 1.125rem; margin-bottom: 1rem; line-height: 1.75;">{{ profileData.bio || '这个人很懒，还没有写简介...' }}</p>
+          <p style="color: var(--color-text-tertiary); font-size: 1.125rem; margin-bottom: 1rem; line-height: 1.75;">{{ profileData.bio || $t('profile.defaultBio') }}</p>
           <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.875rem; color: var(--color-text-tertiary);">
             <span v-if="profileData.location" style="display: flex; align-items: center; gap: 0.25rem;">
               📍 {{ profileData.location }}

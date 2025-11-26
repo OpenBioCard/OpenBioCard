@@ -14,8 +14,8 @@
             <line x1="35" y1="145" x2="165" y2="145" stroke="var(--color-text-primary)" stroke-width="1" stroke-dasharray="4,4"/>
           </svg>
         </div>
-        <h1 style="font-size: 2rem; font-weight: bold; color: var(--color-text-primary); margin: 0 0 0.5rem;">OpenBioCard</h1>
-        <p style="color: var(--color-text-tertiary); margin: 0;">登录到您的账户</p>
+        <h1 style="font-size: 2rem; font-weight: bold; color: var(--color-text-primary); margin: 0 0 0.5rem;">{{ $t('app.name') }}</h1>
+        <p style="color: var(--color-text-tertiary); margin: 0;">{{ $t('auth.signInToAccount') }}</p>
       </div>
 
       <!-- 登录表单 -->
@@ -23,13 +23,13 @@
         <form @submit.prevent="handleLogin" style="display: flex; flex-direction: column; gap: 1.5rem;">
           <div>
             <label for="username" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 0.5rem;">
-              用户名
+              {{ $t('common.username') }}
             </label>
             <input
               id="username"
               v-model="username"
               type="text"
-              placeholder="请输入用户名"
+              :placeholder="$t('auth.enterUsername')"
               required
               autocomplete="username"
               style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.5rem; outline: none; transition: all 0.2s; font-size: 0.9375rem; box-sizing: border-box; background: var(--color-bg-primary); color: var(--color-text-primary);"
@@ -40,13 +40,13 @@
 
           <div>
             <label for="password" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 0.5rem;">
-              密码
+              {{ $t('common.password') }}
             </label>
             <input
               id="password"
               v-model="password"
               type="password"
-              placeholder="请输入密码"
+              :placeholder="$t('auth.enterPassword')"
               required
               autocomplete="current-password"
               style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.5rem; outline: none; transition: all 0.2s; font-size: 0.9375rem; box-sizing: border-box; background: var(--color-bg-primary); color: var(--color-text-primary);"
@@ -63,14 +63,14 @@
             onmouseover="if(!this.disabled) this.style.backgroundColor='var(--color-primary-hover)'"
             onmouseout="this.style.backgroundColor='var(--color-primary)'"
           >
-            <span v-if="!loading">登录</span>
+            <span v-if="!loading">{{ $t('auth.signIn') }}</span>
             <div v-else style="width: 1.25rem; height: 1.25rem; border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite;"></div>
           </button>
         </form>
 
         <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--color-border-tertiary); text-align: center;">
           <p style="font-size: 0.875rem; color: var(--color-text-tertiary); margin: 0;">
-            首次使用？请联系系统管理员创建账号
+            {{ $t('auth.firstTimeUser') }}
           </p>
         </div>
       </div>

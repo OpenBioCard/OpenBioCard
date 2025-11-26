@@ -4,7 +4,7 @@
       <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
       </svg>
-      社交媒体
+      {{ $t('social.listTitle') }}
     </h3>
     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
       <div
@@ -60,7 +60,10 @@
 </template>
 
 <script setup>
-import { getSocialLinkLabel, getSocialLinkIcon, useSSLink } from '../config/socialLinks'
+import { useI18n } from 'vue-i18n'
+import { getSocialLinkIcon } from '../config/socialLinks'
+
+const { t } = useI18n()
 
 defineProps({
   socialLinks: {
@@ -68,6 +71,10 @@ defineProps({
     default: () => []
   }
 })
+
+const getSocialLinkLabel = (type) => {
+  return t(`social.platforms.${type}`)
+}
 
 const handleLinkClick = (link) => {
   // GitHub 点击处理：打开 GitHub 主页

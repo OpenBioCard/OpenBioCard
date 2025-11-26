@@ -1,109 +1,110 @@
 // 社交媒体链接配置
+// Note: Labels use translation keys that will be resolved at runtime
 export const socialLinkTypes = [
   {
     key: 'github',
-    label: 'GitHub',
+    label: 'social.platforms.github',
     icon: '/src/frontend/assets/link/GitHub.svg',
-    placeholder: '请输入 GitHub 用户名',
+    placeholder: 'social.placeholders.github',
     useSSLink: true, // 使用特殊的 SSLink 组件
     updateInterval: 10 * 60 * 1000 // 10分钟更新一次
   },
   {
     key: 'twitter',
-    label: 'Twitter',
+    label: 'social.platforms.twitter',
     icon: '/src/frontend/assets/link/tuite-copy-copy.svg',
-    placeholder: '请输入 Twitter 主页链接',
+    placeholder: 'social.placeholders.twitter',
     useSSLink: false
   },
   {
     key: 'facebook',
-    label: 'Facebook',
+    label: 'social.platforms.facebook',
     icon: '/src/frontend/assets/link/facebook.svg',
-    placeholder: '请输入 Facebook 主页链接',
+    placeholder: 'social.placeholders.facebook',
     useSSLink: false
   },
   {
     key: 'instagram',
-    label: 'Instagram',
+    label: 'social.platforms.instagram',
     icon: '/src/frontend/assets/link/instagram.svg',
-    placeholder: '请输入 Instagram 主页链接',
+    placeholder: 'social.placeholders.instagram',
     useSSLink: false
   },
   {
     key: 'youtube',
-    label: 'YouTube',
+    label: 'social.platforms.youtube',
     icon: '/src/frontend/assets/link/youtube.svg',
-    placeholder: '请输入 YouTube 频道链接',
+    placeholder: 'social.placeholders.youtube',
     useSSLink: false
   },
   {
     key: 'bilibili',
-    label: 'Bilibili',
+    label: 'social.platforms.bilibili',
     icon: '/src/frontend/assets/link/bilibili.svg',
-    placeholder: '请输入 Bilibili 主页链接',
+    placeholder: 'social.placeholders.bilibili',
     useSSLink: false
   },
   {
     key: 'xiaohongshu',
-    label: '小红书',
+    label: 'social.platforms.xiaohongshu',
     icon: '/src/frontend/assets/link/小红书.svg',
-    placeholder: '请输入小红书主页链接',
+    placeholder: 'social.placeholders.xiaohongshu',
     useSSLink: false
   },
   {
     key: 'weibo',
-    label: '微博',
+    label: 'social.platforms.weibo',
     icon: '/src/frontend/assets/link/微博.svg',
-    placeholder: '请输入微博主页链接',
+    placeholder: 'social.placeholders.weibo',
     useSSLink: false
   },
   {
     key: 'threads',
-    label: 'Threads',
+    label: 'social.platforms.threads',
     icon: '/src/frontend/assets/link/threads.svg',
-    placeholder: '请输入 Threads 主页链接',
+    placeholder: 'social.placeholders.threads',
     useSSLink: false
   },
   {
     key: 'huggingface',
-    label: 'Hugging Face',
+    label: 'social.platforms.huggingface',
     icon: '/src/frontend/assets/link/huggingface.svg',
-    placeholder: '请输入 Hugging Face 主页链接',
+    placeholder: 'social.placeholders.huggingface',
     useSSLink: false
   },
   {
     key: 'steam',
-    label: 'Steam',
+    label: 'social.platforms.steam',
     icon: '/src/frontend/assets/link/steam.svg',
-    placeholder: '请输入 Steam 个人资料链接',
+    placeholder: 'social.placeholders.steam',
     useSSLink: false
   },
   {
     key: 'spotify',
-    label: 'Spotify',
+    label: 'social.platforms.spotify',
     icon: '/src/frontend/assets/link/spotify.svg',
-    placeholder: '请输入 Spotify 主页链接',
+    placeholder: 'social.placeholders.spotify',
     useSSLink: false
   },
   {
     key: 'qqmusic',
-    label: 'QQ音乐',
+    label: 'social.platforms.qqmusic',
     icon: '/src/frontend/assets/link/QQ音乐.svg',
-    placeholder: '请输入QQ音乐主页链接',
+    placeholder: 'social.placeholders.qqmusic',
     useSSLink: false
   },
   {
     key: 'neteasemusic',
-    label: '网易云音乐',
+    label: 'social.platforms.neteasemusic',
     icon: '/src/frontend/assets/link/网易云音乐.svg',
-    placeholder: '请输入网易云音乐主页链接',
+    placeholder: 'social.placeholders.neteasemusic',
     useSSLink: false
   },
   {
     key: 'kugoumusic',
-    label: '酷狗音乐',
+    label: 'social.platforms.kugoumusic',
     icon: '/src/frontend/assets/link/酷狗音乐.svg',
-    placeholder: '请输入酷狗音乐主页链接',
+    placeholder: 'social.placeholders.kugoumusic',
     useSSLink: false
   }
 ]
@@ -113,7 +114,7 @@ export function getSocialLinkConfig(key) {
   return socialLinkTypes.find(type => type.key === key) || socialLinkTypes[0]
 }
 
-// 获取社交媒体标签
+// 获取社交媒体标签 (returns translation key)
 export function getSocialLinkLabel(key) {
   const config = getSocialLinkConfig(key)
   return config ? config.label : key

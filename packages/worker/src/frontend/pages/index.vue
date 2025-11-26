@@ -7,8 +7,11 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import Login from '../components/Login.vue'
 import AdminPanel from '../components/AdminPanel.vue'
+
+const { t } = useI18n()
 
 const currentView = ref('login')
 const user = ref(null)
@@ -96,10 +99,10 @@ const login = async (username, password) => {
         window.location.href = `/${username}`
       }
     } else {
-      alert('登录失败')
+      alert(t('auth.loginFailed'))
     }
   } catch (error) {
-    alert('登录错误')
+    alert(t('auth.loginError'))
   }
 }
 

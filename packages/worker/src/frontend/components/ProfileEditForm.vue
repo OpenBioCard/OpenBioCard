@@ -5,24 +5,24 @@
         <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: var(--color-primary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
         </svg>
-        编辑个人资料
+        {{ $t('profile.edit') }}
       </h3>
       <form @submit.prevent="$emit('save')" style="display: flex; flex-direction: column; gap: 1.5rem;">
         <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">姓名</label>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.name') }}</label>
             <input
               :value="editData.name"
               @input="$emit('update:name', $event.target.value)"
               type="text"
               style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; outline: none; transition: all 0.2s; background: var(--color-bg-primary); color: var(--color-text-primary);"
-              placeholder="请输入姓名"
+              :placeholder="$t('profile.enterName')"
               onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
               onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
             />
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">头像</label>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.avatar') }}</label>
             <div style="display: flex; gap: 1rem; align-items: center;">
               <div style="width: 4rem; height: 4rem; background: var(--color-primary); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: var(--color-text-inverse); font-size: 1.5rem; font-weight: bold; border: 2px solid var(--color-bg-primary); overflow: hidden;">
                 <template v-if="isBase64Image(editData.avatar)">
@@ -38,7 +38,7 @@
                   @input="$emit('update:avatar', $event.target.value)"
                   type="text"
                   style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; outline: none; transition: all 0.2s; background: var(--color-bg-primary); color: var(--color-text-primary);"
-                  placeholder="请输入头像字符或emoji"
+                  :placeholder="$t('profile.enterAvatar')"
                   onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
                   onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
                 />
@@ -57,29 +57,29 @@
                     onmouseover="this.style.backgroundColor='var(--color-border-primary)'"
                     onmouseout="this.style.backgroundColor='var(--color-bg-tertiary)'"
                   >
-                    📷 上传图片
+                    {{ $t('profile.uploadImage') }}
                   </button>
                 </div>
               </div>
             </div>
-            <p style="font-size: 0.75rem; color: var(--color-text-tertiary); margin: 0;">支持字符、emoji或上传图片（最大2MB）</p>
+            <p style="font-size: 0.75rem; color: var(--color-text-tertiary); margin: 0;">{{ $t('profile.avatarHelp') }}</p>
           </div>
         </div>
         <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-          <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">简介</label>
+          <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.bio') }}</label>
           <textarea
             :value="editData.bio"
             @input="$emit('update:bio', $event.target.value)"
             rows="4"
             style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; outline: none; resize: none; transition: all 0.2s; background: var(--color-bg-primary); color: var(--color-text-primary);"
-            placeholder="请输入个人简介"
+            :placeholder="$t('profile.enterBio')"
             onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
             onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
           ></textarea>
         </div>
         <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">背景图片</label>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.backgroundImage') }}</label>
             <div style="display: flex; gap: 1rem; align-items: center;">
               <div style="width: 6rem; height: 3rem; border-radius: 0.5rem; overflow: hidden; border: 2px solid var(--color-border-primary);">
                 <div
@@ -91,7 +91,7 @@
                   v-else
                   style="width: 100%; height: 100%; background: var(--color-primary); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: var(--color-text-inverse);"
                 >
-                  默认
+                  {{ $t('common.default') }}
                 </div>
               </div>
               <div style="flex: 1;">
@@ -110,7 +110,7 @@
                     onmouseover="this.style.backgroundColor='var(--color-border-primary)'"
                     onmouseout="this.style.backgroundColor='var(--color-bg-tertiary)'"
                   >
-                    🖼️ 上传背景
+                    {{ $t('profile.uploadBackground') }}
                   </button>
                 </div>
                 <button
@@ -121,32 +121,32 @@
                   onmouseover="this.style.backgroundColor='var(--color-danger-light)'"
                   onmouseout="this.style.backgroundColor='var(--color-danger-bg)'"
                 >
-                  移除背景
+                  {{ $t('profile.removeBackground') }}
                 </button>
               </div>
             </div>
-            <p style="font-size: 0.75rem; color: var(--color-text-tertiary); margin: 0;">上传背景图片（最大3MB），不上传则使用默认渐变背景</p>
+            <p style="font-size: 0.75rem; color: var(--color-text-tertiary); margin: 0;">{{ $t('profile.backgroundHelp') }}</p>
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">位置</label>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.location') }}</label>
             <input
               :value="editData.location"
               @input="$emit('update:location', $event.target.value)"
               type="text"
               style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; outline: none; transition: all 0.2s; background: var(--color-bg-primary); color: var(--color-text-primary);"
-              placeholder="请输入位置"
+              :placeholder="$t('profile.enterLocation')"
               onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
               onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
             />
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
-            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">网站</label>
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.website') }}</label>
             <input
               :value="editData.website"
               @input="$emit('update:website', $event.target.value)"
               type="text"
               style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; outline: none; transition: all 0.2s; background: var(--color-bg-primary); color: var(--color-text-primary);"
-              placeholder="请输入网站链接"
+              :placeholder="$t('profile.enterWebsite')"
               onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
               onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
             />
@@ -160,7 +160,7 @@
             onmouseover="this.style.backgroundColor='var(--color-bg-secondary)'"
             onmouseout="this.style.backgroundColor='var(--color-bg-primary)'"
           >
-            取消
+            {{ $t('common.cancel') }}
           </button>
           <button
             type="submit"
@@ -169,7 +169,7 @@
             onmouseover="this.style.transform='translateY(-1px)'; this.style.backgroundColor='var(--color-primary-hover)'"
             onmouseout="this.style.transform='translateY(0)'; this.style.backgroundColor='var(--color-primary)'"
           >
-            {{ saving ? '保存中...' : '保存资料' }}
+            {{ saving ? $t('common.saving') : $t('profile.saveProfile') }}
           </button>
         </div>
       </form>
@@ -178,6 +178,10 @@
 </template>
 
 <script setup>
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
+
 defineProps({
   editData: {
     type: Object,
@@ -204,12 +208,12 @@ const handleAvatarUpload = (event) => {
   if (!file) return
 
   if (file.size > 2 * 1024 * 1024) {
-    alert('图片大小不能超过2MB')
+    alert(t('profile.imageTooLarge'))
     return
   }
 
   if (!file.type.startsWith('image/')) {
-    alert('请选择图片文件')
+    alert(t('contact.selectImageFile'))
     return
   }
 
@@ -226,12 +230,12 @@ const handleBackgroundUpload = (event) => {
   if (!file) return
 
   if (file.size > 3 * 1024 * 1024) {
-    alert('背景图片大小不能超过3MB')
+    alert(t('profile.backgroundTooLarge'))
     return
   }
 
   if (!file.type.startsWith('image/')) {
-    alert('请选择图片文件')
+    alert(t('contact.selectImageFile'))
     return
   }
 

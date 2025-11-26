@@ -5,7 +5,7 @@
         <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; color: #000000;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
         </svg>
-        管理相册
+        {{ $t('gallery.manage') }}
       </h4>
 
       <!-- 图片网格 -->
@@ -46,7 +46,7 @@
               :value="photo.caption"
               @input="$emit('update-caption', index, $event.target.value)"
               type="text"
-              placeholder="添加图片说明..."
+              :placeholder="$t('gallery.addCaption')"
               style="width: 100%; padding: 0.5rem; border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 0.5rem; outline: none; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); font-size: 0.875rem;"
               onfocus="this.style.borderColor='rgba(0, 0, 0, 0.5)'; this.style.backgroundColor='rgba(255, 255, 255, 0.95)'"
               onblur="this.style.borderColor='rgba(255, 255, 255, 0.3)'; this.style.backgroundColor='rgba(255, 255, 255, 0.9)'"
@@ -64,7 +64,7 @@
           <svg style="width: 3rem; height: 3rem; color: #9ca3af; margin-bottom: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
-          <span style="color: #6b7280; font-size: 0.875rem; font-weight: 500;">添加照片</span>
+          <span style="color: #6b7280; font-size: 0.875rem; font-weight: 500;">{{ $t('gallery.add') }}</span>
         </div>
       </div>
 
@@ -86,7 +86,7 @@
           </svg>
           <div style="flex: 1;">
             <p style="color: #1e40af; font-size: 0.875rem; margin: 0; line-height: 1.4;">
-              <strong>提示：</strong>每张图片大小不超过 2MB。支持一次上传多张图片。
+              <strong>{{ $t('common.tips') }}</strong>{{ $t('gallery.uploadHelp') }}
             </p>
           </div>
         </div>
@@ -97,6 +97,9 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+const { t } = useI18n()
 
 defineProps({
   gallery: {
@@ -125,12 +128,12 @@ const handleFileUpload = (event) => {
 
   Array.from(files).forEach(file => {
     if (file.size > 2 * 1024 * 1024) {
-      alert(`图片 ${file.name} 大小超过 2MB，已跳过`)
+      alert(t('gallery.imageTooLarge', { filename: file.name }))
       return
     }
 
     if (!file.type.startsWith('image/')) {
-      alert(`${file.name} 不是图片文件，已跳过`)
+      alert(t('gallery.notImageFile', { filename: file.name }))
       return
     }
 

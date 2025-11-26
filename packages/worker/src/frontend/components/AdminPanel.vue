@@ -17,12 +17,12 @@
               </svg>
             </div>
             <h1 style="font-size: 1.25rem; font-weight: bold; color: var(--color-text-primary); margin: 0;">
-              OpenBioCard <span style="font-size: 0.875rem; font-weight: normal; color: var(--color-text-tertiary);">管理面板</span>
+              OpenBioCard <span style="font-size: 0.875rem; font-weight: normal; color: var(--color-text-tertiary);">{{ $t('admin.panel') }}</span>
             </h1>
           </div>
           <div style="display: flex; align-items: center; gap: 0.75rem;">
             <span style="font-size: 0.875rem; color: var(--color-text-tertiary); font-weight: 500;">
-              {{ user.username }} <span style="color: var(--color-text-tertiary);">({{ user.type === 'root' ? 'ROOT' : '管理员' }})</span>
+              {{ user.username }} <span style="color: var(--color-text-tertiary);">({{ user.type === 'root' ? 'ROOT' : $t('admin.systemAdmin') }})</span>
             </span>
             <!-- 主题切换按钮 -->
             <button
@@ -30,7 +30,7 @@
               style="font-size: 0.875rem; padding: 0.5rem; color: var(--color-text-tertiary); border-radius: 0.375rem; transition: all 0.2s; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;"
               onmouseover="this.style.backgroundColor='var(--color-bg-hover)'; this.style.color='var(--color-text-primary)'"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-text-tertiary)'"
-              title="切换主题"
+              :title="$t('navigation.toggleTheme')"
             >
               <!-- 太阳图标 (浅色模式) -->
               <svg v-if="isDark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -55,7 +55,7 @@
               onmouseover="this.style.backgroundColor='var(--color-bg-hover)'; this.style.color='var(--color-text-primary)'"
               onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-text-tertiary)'"
             >
-              退出登录
+              {{ $t('auth.signOut') }}
             </button>
           </div>
         </div>
@@ -67,14 +67,14 @@
       <!-- 用户统计 -->
       <div style="margin-bottom: 2rem; display: flex; align-items: center; justify-content: space-between;">
         <div>
-          <h2 style="font-size: 2rem; font-weight: bold; color: var(--color-text-primary); margin: 0 0 0.5rem;">用户管理</h2>
-          <p style="color: var(--color-text-tertiary); margin: 0;">管理系统用户和权限</p>
+          <h2 style="font-size: 2rem; font-weight: bold; color: var(--color-text-primary); margin: 0 0 0.5rem;">{{ $t('admin.userManagement') }}</h2>
+          <p style="color: var(--color-text-tertiary); margin: 0;">{{ $t('admin.manageUsers') }}</p>
         </div>
         <div style="padding: 0.75rem 1.5rem; background: rgba(0, 0, 0, 0.05); border-radius: 0.5rem; font-weight: 600; color: var(--color-text-primary);">
           <svg style="width: 1.25rem; height: 1.25rem; display: inline-block; vertical-align: middle; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11Z"></path>
           </svg>
-          {{ users.length }} 位用户
+          {{ users.length }} {{ $t('admin.users') }}
         </div>
       </div>
 
@@ -84,20 +84,20 @@
           <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21M20 8V14M23 11H17M8.5 11C10.7091 11 12.5 9.20914 12.5 7C12.5 4.79086 10.7091 3 8.5 3C6.29086 3 4.5 4.79086 4.5 7C4.5 9.20914 6.29086 11 8.5 11Z"></path>
           </svg>
-          创建新用户
+          {{ $t('admin.createNewUser') }}
         </h3>
 
         <form @submit.prevent="createUser" style="display: flex; flex-direction: column; gap: 1.5rem;">
           <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
             <div>
               <label for="username" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 0.5rem;">
-                用户名
+                {{ $t('common.username') }}
               </label>
               <input
                 id="username"
                 v-model="newUser.username"
                 type="text"
-                placeholder="输入用户名"
+                :placeholder="$t('admin.enterUsername')"
                 required
                 style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.5rem; outline: none; transition: all 0.2s; font-size: 0.9375rem; box-sizing: border-box; background: var(--color-bg-primary); color: var(--color-text-primary);"
                 onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
@@ -107,13 +107,13 @@
 
             <div>
               <label for="password" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 0.5rem;">
-                密码
+                {{ $t('common.password') }}
               </label>
               <input
                 id="password"
                 v-model="newUser.password"
                 type="password"
-                placeholder="输入密码"
+                :placeholder="$t('admin.enterPassword')"
                 required
                 style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.5rem; outline: none; transition: all 0.2s; font-size: 0.9375rem; box-sizing: border-box; background: var(--color-bg-primary); color: var(--color-text-primary);"
                 onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
@@ -123,7 +123,7 @@
 
             <div>
               <label for="type" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 0.5rem;">
-                用户类型
+                {{ $t('admin.userType') }}
               </label>
               <select
                 id="type"
@@ -132,8 +132,8 @@
                 onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
                 onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
               >
-                <option value="user">普通用户</option>
-                <option value="admin">管理员</option>
+                <option value="user">{{ $t('admin.regularUser') }}</option>
+                <option value="admin">{{ $t('admin.admin') }}</option>
               </select>
             </div>
           </div>
@@ -149,7 +149,7 @@
             <svg v-if="!creating" style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5V19M5 12H19"></path>
             </svg>
-            <span v-if="!creating">创建用户</span>
+            <span v-if="!creating">{{ $t('admin.createUser') }}</span>
             <div v-else style="width: 1.25rem; height: 1.25rem; border: 2px solid rgba(255, 255, 255, 0.3); border-top-color: white; border-radius: 50%; animation: spin 0.6s linear infinite;"></div>
           </button>
         </form>
@@ -161,7 +161,7 @@
           <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 21V19C17 17.9391 16.5786 16.9217 15.8284 16.1716C15.0783 15.4214 14.0609 15 13 15H5C3.93913 15 2.92172 15.4214 2.17157 16.1716C1.42143 16.9217 1 17.9391 1 19V21M9 11C11.2091 11 13 9.20914 13 7C13 4.79086 11.2091 3 9 3C6.79086 3 5 4.79086 5 7C5 9.20914 6.79086 11 9 11ZM23 21V19C22.9993 18.1137 22.7044 17.2528 22.1614 16.5523C21.6184 15.8519 20.8581 15.3516 20 15.13M16 3.13C16.8604 3.35031 17.623 3.85071 18.1676 4.55232C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89318 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88"></path>
           </svg>
-          所有用户
+          {{ $t('admin.allUsers') }}
         </h3>
 
         <!-- 空状态 -->
@@ -171,8 +171,8 @@
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"></path>
             </svg>
           </div>
-          <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-tertiary); margin: 0 0 0.5rem;">暂无用户</h4>
-          <p style="margin: 0; font-size: 0.875rem;">创建第一个用户开始使用系统</p>
+          <h4 style="font-size: 1.125rem; font-weight: 600; color: var(--color-text-tertiary); margin: 0 0 0.5rem;">{{ $t('admin.noUsers') }}</h4>
+          <p style="margin: 0; font-size: 0.875rem;">{{ $t('admin.createFirstUser') }}</p>
         </div>
 
         <!-- 用户网格 -->
@@ -204,7 +204,7 @@
                     <path v-else-if="u.type === 'admin'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM12 16V12M12 8H12.01"></path>
                     <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 21V19C20 17.9391 19.5786 16.9217 18.8284 16.1716C18.0783 15.4214 17.0609 15 16 15H8C6.93913 15 5.92172 15.4214 5.17157 16.1716C4.42143 16.9217 4 17.9391 4 19V21M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"></path>
                   </svg>
-                  {{ u.type === 'root' ? 'ROOT' : u.type === 'admin' ? '管理员' : '普通用户' }}
+                  {{ u.type === 'root' ? 'ROOT' : u.type === 'admin' ? $t('admin.systemAdmin') : $t('admin.regularUser') }}
                 </span>
               </div>
             </div>
@@ -220,7 +220,7 @@
               <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"></path>
               </svg>
-              删除用户
+              {{ $t('admin.deleteUser') }}
             </button>
             <div
               v-else
@@ -229,7 +229,7 @@
               <svg style="width: 1.125rem; height: 1.125rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM9 12L11 14L15 10"></path>
               </svg>
-              {{ u.username === user.username ? '当前用户' : '系统管理员' }}
+              {{ u.username === user.username ? $t('admin.currentUser') : $t('admin.systemAdmin') }}
             </div>
           </div>
         </div>
@@ -240,6 +240,7 @@
 
 <script setup>
 import { ref, onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
 import { useTheme } from '../composables/useTheme'
 
 const props = defineProps({
@@ -250,6 +251,7 @@ const props = defineProps({
 const emit = defineEmits(['logout'])
 
 const { isDark, toggleTheme } = useTheme()
+const { t } = useI18n()
 
 const users = ref([])
 const newUser = ref({
@@ -280,13 +282,13 @@ const fetchUsers = async () => {
       console.error('获取用户列表失败:', response.status, await response.text())
     }
   } catch (error) {
-    console.error('获取用户列表失败:', error)
+    console.error('获取���户列表失败:', error)
   }
 }
 
 const createUser = async () => {
   if (!props.user || !props.token) {
-    alert('用户信息不完整')
+    alert(t('admin.userCreateError'))
     return
   }
 
@@ -305,17 +307,17 @@ const createUser = async () => {
       })
     })
     if (response.ok) {
-      alert('用户创建成功')
+      alert(t('admin.userCreated'))
       newUser.value = { username: '', password: '', type: 'user' }
       console.log('Refreshing user list after creation')
       await fetchUsers()
     } else {
       const errorData = await response.json()
-      alert(`创建用户失败: ${errorData.error || '未知错误'}`)
+      alert(`${t('admin.userCreateFailed')}: ${errorData.error || t('admin.userCreateError')}`)
     }
   } catch (error) {
     console.error('Create user error:', error)
-    alert('创建用户错误')
+    alert(t('admin.userCreateError'))
   } finally {
     creating.value = false
   }
@@ -323,11 +325,11 @@ const createUser = async () => {
 
 const deleteUser = async (username) => {
   if (!props.user || !props.token) {
-    alert('用户信息不完整')
+    alert(t('admin.userDeleteError'))
     return
   }
 
-  if (!confirm(`确定要删除用户 ${username} 吗？`)) return
+  if (!confirm(t('admin.deleteUserConfirm', { username }))) return
 
   try {
     console.log('Deleting user:', username)
@@ -337,16 +339,16 @@ const deleteUser = async (username) => {
       body: JSON.stringify({ username: props.user.username, token: props.token })
     })
     if (response.ok) {
-      alert('用户删除成功')
+      alert(t('admin.userDeleted'))
       console.log('Refreshing user list after deletion')
       await fetchUsers()
     } else {
       const errorData = await response.json()
-      alert(`删除用户失败: ${errorData.error || '未知错误'}`)
+      alert(`${t('admin.userDeleteFailed')}: ${errorData.error || t('admin.userDeleteError')}`)
     }
   } catch (error) {
     console.error('Delete user error:', error)
-    alert('删除用户错误')
+    alert(t('admin.userDeleteError'))
   }
 }
 

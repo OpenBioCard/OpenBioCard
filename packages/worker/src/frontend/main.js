@@ -2,6 +2,7 @@ import { createApp } from 'vue'
 import { createRouter, createWebHistory } from 'vue-router'
 import './style.css'
 import App from './App.vue'
+import i18n from './i18n'
 
 // 导入页面组件
 import Index from './pages/index.vue'
@@ -28,5 +29,6 @@ const router = createRouter({
 
 const app = createApp(App)
 app.use(router)
+app.use(i18n)
 app.mount('#app')
 console.log('app mounted')

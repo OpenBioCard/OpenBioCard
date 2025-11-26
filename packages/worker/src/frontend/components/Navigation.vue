@@ -20,15 +20,17 @@
         </div>
         <div style="display: flex; align-items: center; gap: 0.75rem;">
           <span v-if="currentUser" style="font-size: 0.875rem; color: var(--color-text-tertiary); font-weight: 500;">
-            欢迎，{{ currentUser.username }}
+            {{ $t('navigation.welcome', { username: currentUser.username }) }}
           </span>
+          <!-- 语言切换器 -->
+          <LanguageSwitcher />
           <!-- 主题切换按钮 -->
           <button
             @click="toggleTheme"
             style="font-size: 0.875rem; padding: 0.5rem; color: var(--color-text-tertiary); border-radius: 0.375rem; transition: all 0.2s; border: none; background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center;"
             onmouseover="this.style.backgroundColor='var(--color-bg-hover)'; this.style.color='var(--color-text-primary)'"
             onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-text-tertiary)'"
-            title="切换主题"
+            :title="$t('navigation.toggleTheme')"
           >
             <!-- 太阳图标 (浅色模式) -->
             <svg v-if="isDark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -54,7 +56,7 @@
             onmouseover="this.style.backgroundColor='var(--color-bg-hover)'; this.style.color='var(--color-text-primary)'"
             onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-text-tertiary)'"
           >
-            退出登录
+            {{ $t('navigation.signOut') }}
           </button>
           <button
             v-else
@@ -63,7 +65,7 @@
             onmouseover="this.style.backgroundColor='var(--color-primary-hover)'"
             onmouseout="this.style.backgroundColor='var(--color-primary)'"
           >
-            登录
+            {{ $t('navigation.signIn') }}
           </button>
         </div>
       </div>
@@ -73,6 +75,7 @@
 
 <script setup>
 import { useTheme } from '../composables/useTheme'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 
 defineProps({
   currentUser: {

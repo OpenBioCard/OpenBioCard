@@ -5,7 +5,7 @@
         <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; color: #000000;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
         </svg>
-        管理项目
+        {{ $t('projects.manage') }}
       </h4>
       <div style="display: flex; flex-direction: column; gap: 1rem;">
         <div
@@ -38,7 +38,7 @@
                 onmouseover="this.style.borderColor='#000000'; this.style.backgroundColor='#f3f4f6'"
                 onmouseout="this.style.borderColor='#d1d5db'; this.style.backgroundColor='white'"
               >
-                {{ isBase64Image(project.logo) ? '更换' : '上传' }}
+                {{ isBase64Image(project.logo) ? $t('projects.changeLogo') : $t('projects.uploadLogo') }}
               </button>
             </div>
 
@@ -48,7 +48,7 @@
                 :value="project.name"
                 @input="$emit('update-name', index, $event.target.value)"
                 type="text"
-                placeholder="项目名称"
+                :placeholder="$t('projects.name')"
                 style="width: 100%; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; transition: all 0.2s; font-weight: 600;"
                 onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                 onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
@@ -57,7 +57,7 @@
                 :value="project.url"
                 @input="$emit('update-url', index, $event.target.value)"
                 type="text"
-                placeholder="项目地址（如：https://github.com/username/project）"
+                :placeholder="$t('projects.url')"
                 style="width: 100%; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; transition: all 0.2s;"
                 onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                 onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
@@ -65,7 +65,7 @@
               <textarea
                 :value="project.description"
                 @input="$emit('update-description', index, $event.target.value)"
-                placeholder="项目描述（选填）"
+                :placeholder="$t('projects.description')"
                 rows="3"
                 style="width: 100%; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; transition: all 0.2s; resize: vertical; font-family: inherit;"
                 onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
@@ -97,7 +97,7 @@
           <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
           </svg>
-          <span>添加项目</span>
+          <span>{{ $t('projects.add') }}</span>
         </button>
       </div>
     </div>
