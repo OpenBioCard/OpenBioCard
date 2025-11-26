@@ -11,10 +11,6 @@ out
 .wrangler
 **/.wrangler
 
-# Nx
-.nx/cache
-.nx/workspace-data
-
 # Environment variables
 .env
 .env.local

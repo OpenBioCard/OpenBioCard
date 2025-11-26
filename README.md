@@ -68,7 +68,7 @@ Before you begin, ensure you have the following installed:
 
 ### 1. Environment Variables
 
-Create environment files in the `packages/worker` directory:
+Create environment files in the project root directory:
 
 #### `.env` (For build-time configuration)
 
@@ -88,7 +88,7 @@ Create environment files in the `packages/worker` directory:
 
 ### 2. Wrangler Configuration
 
-The Wrangler configuration is located at `packages/worker/wrangler.jsonc`:
+The Wrangler configuration is located at `wrangler.jsonc`:
 
 ```jsonc
 {
@@ -116,7 +116,6 @@ The Wrangler configuration is located at `packages/worker/wrangler.jsonc`:
 1. **Login to Wrangler**
 
    ```bash
-   cd packages/worker
    pnpm wrangler login
    ```
 
@@ -134,16 +133,7 @@ The Wrangler configuration is located at `packages/worker/wrangler.jsonc`:
 
 ### Start Development Server
 
-From the project root:
-
 ```bash
-pnpm run dev
-```
-
-Or from the worker directory:
-
-```bash
-cd packages/worker
 pnpm run dev
 ```
 
@@ -158,7 +148,7 @@ The application will be available at `http://localhost:8787` (or the port shown 
 
 Local Durable Objects data is stored in:
 ```
-packages/worker/.wrangler/state/v3/do/
+.wrangler/state/v3/do/
 ├── openbiocard-AdminDO/
 └── openbiocard-UserDO/
 ```
@@ -170,15 +160,12 @@ packages/worker/.wrangler/state/v3/do/
 To generate TypeScript types based on your Worker configuration:
 
 ```bash
-cd packages/worker
 pnpm run cf-typegen
 ```
 
 ## Building
 
 ### Build for Production
-
-From the project root:
 
 ```bash
 pnpm run build
@@ -188,7 +175,7 @@ This will:
 1. Build the Vue 3 client application
 2. Build the SSR (Server-Side Rendering) bundle
 3. Build the Cloudflare Worker bundle
-4. Output to `packages/worker/dist/`
+4. Output to `dist/`
 
 Build outputs:
 ```
@@ -203,13 +190,6 @@ dist/
 └── index.js         # SSR entry
 ```
 
-### Troubleshooting Build Issues
-
-If you encounter a build loop, ensure:
-1. The root `project.json` has correct build targets
-2. Vite config properly externalizes `cloudflare:*` modules
-3. No circular dependencies in the NX configuration
-
 ## Deployment
 
 ### Deploy to Cloudflare Workers
@@ -217,7 +197,6 @@ If you encounter a build loop, ensure:
 1. **Ensure you're logged in**
 
    ```bash
-   cd packages/worker
    pnpm wrangler login
    ```
 
@@ -225,12 +204,6 @@ If you encounter a build loop, ensure:
 
    ```bash
    pnpm run deploy
-   ```
-
-   Or from the root:
-
-   ```bash
-   cd packages/worker && pnpm run deploy
    ```
 
 3. **First-time Durable Objects Setup**
@@ -272,42 +245,37 @@ pnpm wrangler secret put SECRET_NAME
 
 ```
 OpenBioCard/
-├── packages/
-│   ├── worker/                    # Main Cloudflare Worker application
-│   │   ├── src/
-│   │   │   ├── frontend/         # Vue 3 frontend application
-│   │   │   │   ├── components/   # Vue components
-│   │   │   │   ├── pages/        # Page components
-│   │   │   │   ├── i18n/         # Internationalization
-│   │   │   │   ├── App.vue       # Root component
-│   │   │   │   ├── main.js       # Client entry
-│   │   │   │   ├── index.html    # HTML template
-│   │   │   │   └── style.css     # Global styles
-│   │   │   ├── server/           # Cloudflare Worker backend
-│   │   │   │   ├── durable-objects/  # Durable Objects classes
-│   │   │   │   │   ├── admin.ts      # AdminDO
-│   │   │   │   │   └── user.ts       # UserDO
-│   │   │   │   ├── router/       # API routes
-│   │   │   │   ├── middleware/   # Hono middleware
-│   │   │   │   ├── types/        # TypeScript types
-│   │   │   │   ├── utils/        # Utility functions
-│   │   │   │   ├── index.tsx     # Worker entry
-│   │   │   │   └── renderer.tsx  # SSR renderer
-│   │   │   └── public/           # Static assets
-│   │   ├── dist/                 # Build output (gitignored)
-│   │   ├── .wrangler/            # Local dev data (gitignored)
-│   │   ├── vite.config.ts        # Vite configuration
-│   │   ├── wrangler.jsonc        # Wrangler configuration
-│   │   ├── package.json          # Worker dependencies
-│   │   └── project.json          # NX project config
-│   └── sslink/                   # Additional package
-├── node_modules/                 # Dependencies (gitignored)
-├── .nx/                          # NX cache (gitignored)
-├── nx.json                       # NX workspace configuration
-├── package.json                  # Root package.json
-├── pnpm-workspace.yaml           # PNPM workspace config
-├── .gitignore                    # Git ignore rules
-└── README.md                     # This file
+├── src/
+│   ├── frontend/             # Vue 3 frontend application
+│   │   ├── components/       # Vue components
+│   │   ├── pages/            # Page components
+│   │   ├── i18n/             # Internationalization
+│   │   ├── App.vue           # Root component
+│   │   ├── main.js           # Client entry
+│   │   ├── index.html        # HTML template
+│   │   └── style.css         # Global styles
+│   └── server/               # Cloudflare Worker backend
+│       ├── durable-objects/  # Durable Objects classes
+│       │   ├── admin.ts      # AdminDO
+│       │   └── user.ts       # UserDO
+│       ├── router/           # API routes
+│       ├── middleware/       # Hono middleware
+│       ├── types/            # TypeScript types
+│       ├── utils/            # Utility functions
+│       ├── index.tsx         # Worker entry
+│       └── renderer.tsx      # SSR renderer
+├── public/                   # Static assets
+├── dist/                     # Build output (gitignored)
+├── .wrangler/                # Local dev data (gitignored)
+├── node_modules/             # Dependencies (gitignored)
+├── vite.config.ts            # Vite configuration
+├── wrangler.jsonc            # Wrangler configuration
+├── tsconfig.json             # TypeScript configuration
+├── tailwind.config.js        # Tailwind CSS configuration
+├── postcss.config.js         # PostCSS configuration
+├── package.json              # Project dependencies
+├── .gitignore                # Git ignore rules
+└── README.md                 # This file
 ```
 
 ## Technology Stack
@@ -326,7 +294,6 @@ OpenBioCard/
 
 ### Build Tools
 - **Vite 6**: Next-generation frontend tooling
-- **NX**: Smart monorepo build system
 - **Wrangler**: Cloudflare Workers CLI
 - **PNPM**: Fast, disk space efficient package manager
 
