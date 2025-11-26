@@ -1,24 +1,24 @@
 <template>
-  <div style="min-height: 100vh; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 50%, #f9fafb 100%);">
+  <div style="min-height: 100vh; background: var(--gradient-bg);">
     <!-- 导航栏 -->
     <Navigation :current-user="currentUser" @logout="logout" />
 
     <!-- 404 页面 -->
     <div v-if="userNotFound" style="max-width: 1152px; margin: 0 auto; padding: 4rem 1rem; text-align: center;">
-      <div style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8); padding: 4rem 2rem;">
-        <div style="width: 6rem; height: 6rem; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
-          <svg style="width: 3rem; height: 3rem; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <div style="background: var(--color-bg-overlay); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border-tertiary); padding: 4rem 2rem;">
+        <div style="width: 6rem; height: 6rem; background: var(--color-bg-tertiary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+          <svg style="width: 3rem; height: 3rem; color: var(--color-text-tertiary);" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
           </svg>
         </div>
-        <h1 style="font-size: 3rem; font-weight: bold; color: #111827; margin: 0 0 1rem;">404</h1>
-        <p style="font-size: 1.25rem; color: #6b7280; margin: 0 0 2rem;">用户不存在</p>
-        <p style="color: #9ca3af; margin: 0 0 2rem;">找不到用户名为 <strong>{{ username }}</strong> 的账号。</p>
+        <h1 style="font-size: 3rem; font-weight: bold; color: var(--color-text-primary); margin: 0 0 1rem;">404</h1>
+        <p style="font-size: 1.25rem; color: var(--color-text-tertiary); margin: 0 0 2rem;">用户不存在</p>
+        <p style="color: var(--color-text-tertiary); margin: 0 0 2rem;">找不到用户名为 <strong>{{ username }}</strong> 的账号。</p>
         <a
           href="/frontend"
-          style="display: inline-block; padding: 0.75rem 1.5rem; background: #000000; color: white; border-radius: 0.5rem; text-decoration: none; transition: background-color 0.2s; font-weight: 500;"
-          onmouseover="this.style.backgroundColor='#333333'"
-          onmouseout="this.style.backgroundColor='#000000'"
+          style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--color-primary); color: var(--color-text-inverse); border-radius: 0.5rem; text-decoration: none; transition: background-color 0.2s; font-weight: 500;"
+          onmouseover="this.style.backgroundColor='var(--color-primary-hover)'"
+          onmouseout="this.style.backgroundColor='var(--color-primary)'"
         >
           返回首页
         </a>
@@ -27,7 +27,7 @@
 
     <!-- 主要内容 -->
     <main v-else style="max-width: 1152px; margin: 0 auto; padding: 2rem 1rem;">
-      <div style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8); overflow: hidden;">
+      <div style="background: var(--color-bg-overlay); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border-tertiary); overflow: hidden;">
         <!-- 资料头部 -->
         <ProfileHeader
           :profile-data="profileData"

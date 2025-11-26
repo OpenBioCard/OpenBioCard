@@ -9,14 +9,110 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color-scheme: light;
-  color: #1a202c;
-  background-color: #ffffff;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* 浅色模式变量 */
+  --color-bg-primary: #ffffff;
+  --color-bg-secondary: #f9fafb;
+  --color-bg-tertiary: #f3f4f6;
+  --color-bg-overlay: rgba(255, 255, 255, 0.7);
+  --color-bg-hover: #f3f4f6;
+
+  --color-text-primary: #111827;
+  --color-text-secondary: #4a5568;
+  --color-text-tertiary: #6b7280;
+  --color-text-inverse: #ffffff;
+
+  --color-border-primary: #e5e7eb;
+  --color-border-secondary: #d1d5db;
+  --color-border-tertiary: rgba(229, 231, 235, 0.8);
+
+  --color-primary: #000000;
+  --color-primary-hover: #333333;
+
+  --color-accent: #667eea;
+  --color-accent-hover: #764ba2;
+  --color-accent-light: rgba(102, 126, 234, 0.3);
+
+  --color-success: #16a34a;
+  --color-success-light: #bbf7d0;
+  --color-success-bg: #f0fdf4;
+
+  --color-danger: #dc2626;
+  --color-danger-light: #fecaca;
+  --color-danger-bg: #fef2f2;
+
+  --color-warning: #fbbf24;
+
+  --color-scrollbar-track: #f1f1f1;
+  --color-scrollbar-thumb: #c1c1c1;
+  --color-scrollbar-thumb-hover: #a8a8a8;
+
+  --color-code-bg: #f7fafc;
+
+  --gradient-bg: linear-gradient(135deg, #f9fafb 0%, #ffffff 50%, #f9fafb 100%);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --shadow-focus: 0 0 0 3px rgba(0, 0, 0, 0.1);
+
+  color-scheme: light;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
+}
+
+/* 深色模式变量 */
+:root.dark {
+  --color-bg-primary: #0f172a;
+  --color-bg-secondary: #1e293b;
+  --color-bg-tertiary: #334155;
+  --color-bg-overlay: rgba(30, 41, 59, 0.7);
+  --color-bg-hover: #1e293b;
+
+  --color-text-primary: #f1f5f9;
+  --color-text-secondary: #cbd5e1;
+  --color-text-tertiary: #94a3b8;
+  --color-text-inverse: #0f172a;
+
+  --color-border-primary: #334155;
+  --color-border-secondary: #475569;
+  --color-border-tertiary: rgba(51, 65, 85, 0.8);
+
+  --color-primary: #ffffff;
+  --color-primary-hover: #e2e8f0;
+
+  --color-accent: #818cf8;
+  --color-accent-hover: #a78bfa;
+  --color-accent-light: rgba(129, 140, 248, 0.3);
+
+  --color-success: #22c55e;
+  --color-success-light: #166534;
+  --color-success-bg: #14532d;
+
+  --color-danger: #ef4444;
+  --color-danger-light: #7f1d1d;
+  --color-danger-bg: #450a0a;
+
+  --color-warning: #fbbf24;
+
+  --color-scrollbar-track: #1e293b;
+  --color-scrollbar-thumb: #475569;
+  --color-scrollbar-thumb-hover: #64748b;
+
+  --color-code-bg: #1e293b;
+
+  --gradient-bg: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);
+
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
+  --shadow-focus: 0 0 0 3px rgba(255, 255, 255, 0.1);
+
+  color-scheme: dark;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg-primary);
 }
 
 * {
@@ -45,27 +141,27 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--color-scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c1c1c1;
+  background: var(--color-scrollbar-thumb);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a8a8a8;
+  background: var(--color-scrollbar-thumb-hover);
 }
 
 /* 选择文本样式 */
 ::selection {
-  background: rgba(102, 126, 234, 0.3);
-  color: #1a202c;
+  background: var(--color-accent-light);
+  color: var(--color-text-primary);
 }
 
 ::-moz-selection {
-  background: rgba(102, 126, 234, 0.3);
-  color: #1a202c;
+  background: var(--color-accent-light);
+  color: var(--color-text-primary);
 }
 
 /* 焦点样式 */
@@ -73,7 +169,7 @@ button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid #667eea;
+  outline: 2px solid var(--color-accent);
   outline-offset: 2px;
 }
 
@@ -88,13 +184,13 @@ textarea:disabled {
 
 /* 链接样式 */
 a {
-  color: #667eea;
+  color: var(--color-accent);
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 a:hover {
-  color: #764ba2;
+  color: var(--color-accent-hover);
 }
 
 /* 表单元素重置 */
@@ -122,13 +218,13 @@ img {
 h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 1.2;
-  color: #1a202c;
+  color: var(--color-text-primary);
 }
 
 /* 段落样式 */
 p {
   line-height: 1.6;
-  color: #4a5568;
+  color: var(--color-text-secondary);
 }
 
 /* 列表样式 */
@@ -139,10 +235,11 @@ ul, ol {
 /* 代码块样式 */
 code, pre {
   font-family: 'Monaco', 'Courier New', monospace;
-  background: #f7fafc;
+  background: var(--color-code-bg);
   padding: 2px 6px;
   border-radius: 4px;
   font-size: 0.9em;
+  color: var(--color-text-primary);
 }
 
 pre {

@@ -4,5 +4,6 @@ import ssrPlugin from 'vite-ssr-components/plugin'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  plugins: [cloudflare(), ssrPlugin(), vue()]
+  plugins: [cloudflare(), ssrPlugin(), vue()],
+  publicDir: 'public'
 })

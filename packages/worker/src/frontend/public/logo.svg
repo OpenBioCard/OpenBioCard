@@ -1,0 +1,19 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- 名片外框，內部填充白色 -->
+  <rect x="25" y="50" width="150" height="100" rx="15" ry="15" fill="#fff" stroke="#000" stroke-width="4"/>
+  
+  <!-- 左側抽象頭像 -->
+  <circle cx="50" cy="90" r="15" fill="none" stroke="#000" stroke-width="3"/>
+  <line x1="50" y1="105" x2="50" y2="120" stroke="#000" stroke-width="2"/> <!-- 身體 -->
+
+  <!-- 右側信息 -->
+  <!-- 第一行：console.log("Open")，完全在框內 -->
+  <text x="70" y="85" font-family="monospace" font-size="8" fill="#000">console.log("Open")</text>
+  
+  <!-- 第二行、第三行信息線條 -->
+  <line x1="70" y1="95" x2="150" y2="95" stroke="#000" stroke-width="1.5"/>
+  <line x1="70" y1="110" x2="130" y2="110" stroke="#000" stroke-width="1.5"/> 
+
+  <!-- 底部虛線裝飾 -->
+  <line x1="35" y1="145" x2="165" y2="145" stroke="#000" stroke-width="1" stroke-dasharray="4,4"/>
+</svg>
