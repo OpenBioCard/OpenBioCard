@@ -56,6 +56,38 @@ export class UserDO extends DurableObject {
       })
     }
 
+    if (request.method === 'GET' && url.pathname === '/get-profile') {
+      const data = await this.ctx.storage.get('user') as CreateAccount | undefined
+      if (data) {
+        const profile = await this.ctx.storage.get('profile') || {}
+        return new Response(JSON.stringify({
+          username: data.username,
+          name: '',
+          avatar: '',
+          bio: '',
+          location: '',
+          website: '',
+          contacts: [],
+          ...profile
+        }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      } else {
+        return new Response(JSON.stringify({ error: 'User not found' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+    }
+
+    if (request.method === 'POST' && url.pathname === '/update-profile') {
+      const profileData = await request.json()
+      await this.ctx.storage.put('profile', profileData)
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
     if (request.method === 'GET' && url.pathname === '/get-users') {
       // 特殊端点：如果这是admin-manager实例，返回所有用户
       const url = new URL(request.url)
