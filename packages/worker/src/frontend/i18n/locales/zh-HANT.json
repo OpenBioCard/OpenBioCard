@@ -65,6 +65,8 @@
     "edit": "編輯個人資料",
     "name": "姓名",
     "enterName": "請輸入姓名",
+    "pronouns": "人稱代詞",
+    "enterPronouns": "如：他/him、她/her、TA/they",
     "avatar": "頭像",
     "enterAvatar": "請輸入頭像字元或emoji",
     "uploadImage": "📷 上傳圖片",

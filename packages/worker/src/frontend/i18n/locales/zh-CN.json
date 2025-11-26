@@ -65,6 +65,8 @@
     "edit": "编辑个人资料",
     "name": "姓名",
     "enterName": "请输入姓名",
+    "pronouns": "人称代词",
+    "enterPronouns": "如：他/him、她/her、TA/they",
     "avatar": "头像",
     "enterAvatar": "请输入头像字符或emoji",
     "uploadImage": "📷 上传图片",

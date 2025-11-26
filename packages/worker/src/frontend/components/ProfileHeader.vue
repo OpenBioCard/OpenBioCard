@@ -41,10 +41,13 @@
           </button>
         </div>
         <div style="flex: 1; padding-top: 1rem;">
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
             <h2 style="font-size: 1.875rem; font-weight: bold; color: var(--color-text-primary);">{{ profileData.name || profileData.username }}</h2>
             <span style="padding: 0.25rem 0.75rem; background: var(--color-bg-tertiary); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-primary);">
               @{{ profileData.username }}
+            </span>
+            <span v-if="profileData.pronouns" style="padding: 0.25rem 0.75rem; background: var(--color-bg-secondary); color: var(--color-text-secondary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-secondary);">
+              {{ profileData.pronouns }}
             </span>
           </div>
           <p style="color: var(--color-text-tertiary); font-size: 1.125rem; margin-bottom: 1rem; line-height: 1.75;">{{ profileData.bio || $t('profile.defaultBio') }}</p>

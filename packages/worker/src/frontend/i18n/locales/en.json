@@ -65,6 +65,8 @@
     "edit": "Edit Profile",
     "name": "Name",
     "enterName": "Enter name",
+    "pronouns": "Pronouns",
+    "enterPronouns": "e.g., he/him, she/her, they/them",
     "avatar": "Avatar",
     "enterAvatar": "Enter avatar character or emoji",
     "uploadImage": "📷 Upload Image",

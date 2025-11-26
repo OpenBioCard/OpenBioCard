@@ -22,6 +22,18 @@
             />
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.pronouns') }} <span style="font-weight: normal; color: var(--color-text-tertiary);">({{ $t('common.optional') }})</span></label>
+            <input
+              :value="editData.pronouns"
+              @input="$emit('update:pronouns', $event.target.value)"
+              type="text"
+              style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; outline: none; transition: all 0.2s; background: var(--color-bg-primary); color: var(--color-text-primary);"
+              :placeholder="$t('profile.enterPronouns')"
+              onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
+              onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
+            />
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.avatar') }}</label>
             <div style="display: flex; gap: 1rem; align-items: center;">
               <div style="width: 4rem; height: 4rem; background: var(--color-primary); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: var(--color-text-inverse); font-size: 1.5rem; font-weight: bold; border: 2px solid var(--color-bg-primary); overflow: hidden;">
@@ -197,7 +209,7 @@ defineProps({
   }
 })
 
-defineEmits(['save', 'cancel', 'update:name', 'update:avatar', 'update:bio', 'update:background', 'update:location', 'update:website', 'avatar-upload', 'background-upload'])
+defineEmits(['save', 'cancel', 'update:name', 'update:pronouns', 'update:avatar', 'update:bio', 'update:background', 'update:location', 'update:website', 'avatar-upload', 'background-upload'])
 
 const isBase64Image = (str) => {
   return str && str.startsWith('data:image/') && str.includes('base64,')

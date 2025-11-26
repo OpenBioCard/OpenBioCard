@@ -44,6 +44,7 @@
           @save="saveProfile"
           @cancel="cancelEdit"
           @update:name="editData.name = $event"
+          @update:pronouns="editData.pronouns = $event"
           @update:avatar="editData.avatar = $event"
           @update:bio="editData.bio = $event"
           @update:background="editData.background = $event"
@@ -157,6 +158,7 @@ const userNotFound = ref(false)
 const profileData = ref({
   username: username,
   name: '',
+  pronouns: '',
   avatar: '',
   bio: '',
   location: '',
