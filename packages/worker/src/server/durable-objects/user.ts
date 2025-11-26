@@ -50,7 +50,9 @@ export class UserDO extends DurableObject {
     }
 
     if (request.method === 'POST' && url.pathname === '/delate') {
+      // 删除账号时同时删除所有相关资料
       await this.ctx.storage.delete('user')
+      await this.ctx.storage.delete('profile')
       return new Response(JSON.stringify({ success: true }), {
         headers: { 'Content-Type': 'application/json' }
       })

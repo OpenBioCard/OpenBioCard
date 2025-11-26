@@ -3,8 +3,30 @@
     <!-- 导航栏 -->
     <Navigation :current-user="currentUser" @logout="logout" />
 
+    <!-- 404 页面 -->
+    <div v-if="userNotFound" style="max-width: 1152px; margin: 0 auto; padding: 4rem 1rem; text-align: center;">
+      <div style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8); padding: 4rem 2rem;">
+        <div style="width: 6rem; height: 6rem; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 2rem;">
+          <svg style="width: 3rem; height: 3rem; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+          </svg>
+        </div>
+        <h1 style="font-size: 3rem; font-weight: bold; color: #111827; margin: 0 0 1rem;">404</h1>
+        <p style="font-size: 1.25rem; color: #6b7280; margin: 0 0 2rem;">用户不存在</p>
+        <p style="color: #9ca3af; margin: 0 0 2rem;">找不到用户名为 <strong>{{ username }}</strong> 的账号。</p>
+        <a
+          href="/frontend"
+          style="display: inline-block; padding: 0.75rem 1.5rem; background: #000000; color: white; border-radius: 0.5rem; text-decoration: none; transition: background-color 0.2s; font-weight: 500;"
+          onmouseover="this.style.backgroundColor='#333333'"
+          onmouseout="this.style.backgroundColor='#000000'"
+        >
+          返回首页
+        </a>
+      </div>
+    </div>
+
     <!-- 主要内容 -->
-    <main style="max-width: 1152px; margin: 0 auto; padding: 2rem 1rem;">
+    <main v-else style="max-width: 1152px; margin: 0 auto; padding: 2rem 1rem;">
       <div style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8); overflow: hidden;">
         <!-- 资料头部 -->
         <ProfileHeader
@@ -127,6 +149,7 @@ const username = route.params.username
 // 用户状态
 const currentUser = ref(null)
 const token = ref('')
+const userNotFound = ref(false)
 
 // 资料数据
 const profileData = ref({
@@ -218,9 +241,17 @@ const loadProfile = async () => {
       editData.value = JSON.parse(JSON.stringify(profileData.value))
       // 初始化社交媒体链接数据（获取 GitHub 信息并启动定时更新）
       await initializeSocialLinks()
+      userNotFound.value = false
+    } else if (response.status === 404) {
+      // 用户不存在，显示404页面
+      userNotFound.value = true
+    } else {
+      console.error('加载用户资料失败:', response.status)
+      userNotFound.value = true
     }
   } catch (error) {
     console.error('加载用户资料失败:', error)
+    userNotFound.value = true
   }
 }
 

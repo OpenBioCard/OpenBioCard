@@ -17,21 +17,21 @@
           <button
             v-if="currentUser"
             @click="$emit('logout')"
-            style="font-size: 0.875rem; padding: 0.375rem 0.75rem; color: #6b7280; border-radius: 0.375rem; transition: all 0.2s; border: none; background: transparent;"
+            style="font-size: 0.875rem; padding: 0.375rem 0.75rem; color: #6b7280; border-radius: 0.375rem; transition: all 0.2s; border: none; background: transparent; cursor: pointer;"
             onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.color='#111827'"
             onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
           >
             退出登录
           </button>
-          <a
+          <button
             v-else
-            href="/"
-            style="font-size: 0.875rem; padding: 0.375rem 0.75rem; background: #000000; color: white; border-radius: 0.375rem; text-decoration: none; transition: background-color 0.2s;"
+            @click="goToLogin"
+            style="font-size: 0.875rem; padding: 0.375rem 0.75rem; background: #000000; color: white; border-radius: 0.375rem; border: none; cursor: pointer; transition: background-color 0.2s; font-weight: 500;"
             onmouseover="this.style.backgroundColor='#333333'"
             onmouseout="this.style.backgroundColor='#000000'"
           >
             登录
-          </a>
+          </button>
         </div>
       </div>
     </div>
@@ -47,4 +47,8 @@ defineProps({
 })
 
 defineEmits(['logout'])
+
+const goToLogin = () => {
+  window.location.href = '/frontend'
+}
 </script>

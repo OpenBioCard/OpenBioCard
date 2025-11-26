@@ -50,7 +50,7 @@
     <div
       v-if="lightboxOpen"
       @click="closeLightbox"
-      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 2rem;"
+      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 2rem; overflow-y: auto;"
     >
       <!-- 关闭按钮 -->
       <button
@@ -91,12 +91,15 @@
       </button>
 
       <!-- 图片容器 -->
-      <div @click.stop style="max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; gap: 1rem;">
+      <div
+        @click.stop
+        style="max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; gap: 1rem; user-select: none;"
+      >
         <img
           v-if="gallery[currentImageIndex]?.image && isBase64Image(gallery[currentImageIndex].image)"
           :src="gallery[currentImageIndex].image"
           :alt="gallery[currentImageIndex].caption || '相册图片'"
-          style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 0.5rem; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);"
+          style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 0.5rem; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); pointer-events: none;"
         />
         <div v-else style="color: white; padding: 2rem;">
           <p>图片加载失败</p>
@@ -107,9 +110,11 @@
         >
           {{ gallery[currentImageIndex].caption }}
         </p>
-        <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin: 0;">
-          {{ currentImageIndex + 1 }} / {{ gallery.length }}
-        </p>
+        <div style="display: flex; align-items: center; gap: 1rem;">
+          <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin: 0;">
+            {{ currentImageIndex + 1 }} / {{ gallery.length }}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -135,14 +140,10 @@ const isBase64Image = (str) => {
 const openLightbox = (index) => {
   currentImageIndex.value = index
   lightboxOpen.value = true
-  // 禁止背景滚动
-  document.body.style.overflow = 'hidden'
 }
 
 const closeLightbox = () => {
   lightboxOpen.value = false
-  // 恢复背景滚动
-  document.body.style.overflow = ''
 }
 
 const previousImage = () => {
@@ -177,7 +178,5 @@ onMounted(() => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeyPress)
-  // 确保组件卸载时恢复滚动
-  document.body.style.overflow = ''
 })
 </script>
