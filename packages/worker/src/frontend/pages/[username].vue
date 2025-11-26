@@ -1,27 +1,36 @@
 <template>
-  <div class="min-h-screen bg-gray-50">
+  <div style="min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #faf5ff 100%);">
     <!-- 导航栏 -->
-    <nav class="bg-white shadow-sm border-b">
-      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <div class="flex items-center">
-            <h1 class="text-xl font-semibold text-gray-900">OpenBioCard</h1>
+    <nav style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 50;">
+      <div style="max-width: 1152px; margin: 0 auto; padding: 0 1rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; height: 4rem;">
+          <div style="display: flex; align-items: center; gap: 0.75rem;">
+            <div style="width: 2rem; height: 2rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+              <span style="color: white; font-weight: bold; font-size: 0.875rem;">O</span>
+            </div>
+            <h1 style="font-size: 1.25rem; font-weight: bold; background: linear-gradient(90deg, #2563eb, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+              OpenBioCard
+            </h1>
           </div>
-          <div class="flex items-center space-x-4">
-            <span v-if="currentUser" class="text-sm text-gray-600">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <span v-if="currentUser" style="font-size: 0.875rem; color: #6b7280; font-weight: 500;">
               欢迎，{{ currentUser.username }}
             </span>
             <button
               v-if="currentUser"
               @click="logout"
-              class="text-sm text-gray-600 hover:text-gray-900"
+              style="font-size: 0.875rem; padding: 0.375rem 0.75rem; color: #6b7280; border-radius: 0.375rem; transition: all 0.2s; border: none; background: transparent;"
+              onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.color='#111827'"
+              onmouseout="this.style.backgroundColor='transparent'; this.style.color='#6b7280'"
             >
               退出登录
             </button>
             <a
               v-else
               href="/"
-              class="text-sm text-blue-600 hover:text-blue-800"
+              style="font-size: 0.875rem; padding: 0.375rem 0.75rem; background: #3b82f6; color: white; border-radius: 0.375rem; text-decoration: none; transition: background-color 0.2s;"
+              onmouseover="this.style.backgroundColor='#2563eb'"
+              onmouseout="this.style.backgroundColor='#3b82f6'"
             >
               登录
             </a>
@@ -31,161 +40,244 @@
     </nav>
 
     <!-- 主要内容 -->
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="bg-white rounded-lg shadow-sm p-8">
-        <!-- 用户头像和基本信息 -->
-        <div class="flex flex-col md:flex-row items-start md:items-center space-y-4 md:space-y-0 md:space-x-6 mb-8">
-          <div class="relative">
-            <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
-              {{ profileData.avatar || profileData.username.charAt(0).toUpperCase() }}
-            </div>
-            <button
-              v-if="canEdit"
-              @click="editMode = !editMode"
-              class="absolute -bottom-2 -right-2 bg-blue-500 text-white rounded-full p-2 hover:bg-blue-600 transition-colors"
-            >
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-              </svg>
-            </button>
-          </div>
-          <div class="flex-1">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">{{ profileData.name || profileData.username }}</h2>
-            <p class="text-gray-600 mb-4">{{ profileData.bio || '暂无简介' }}</p>
-            <div class="flex flex-wrap gap-4 text-sm text-gray-500">
-              <span v-if="profileData.location">📍 {{ profileData.location }}</span>
-              <span v-if="profileData.website">🌐 {{ profileData.website }}</span>
-            </div>
-          </div>
+    <main style="max-width: 1152px; margin: 0 auto; padding: 2rem 1rem;">
+      <div style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e5e7eb; overflow: hidden;">
+        <!-- 头部横幅 -->
+        <div style="height: 8rem; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899); position: relative;">
+          <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.1);"></div>
         </div>
 
-        <!-- 编辑模式 -->
-        <div v-if="editMode && canEdit" class="mb-8 p-6 bg-blue-50 rounded-lg border border-blue-200">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">编辑个人资料</h3>
-          <form @submit.prevent="saveProfile" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
-                <input
-                  v-model="editData.name"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="请输入姓名"
-                />
+        <!-- 主要内容区域 -->
+        <div style="padding: 2rem;">
+          <!-- 用户头像和基本信息 -->
+          <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; margin-top: -4rem; position: relative; z-index: 10;">
+            <div style="position: relative;">
+              <div style="width: 8rem; height: 8rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: bold; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25); border: 4px solid white;">
+                {{ profileData.avatar || profileData.username.charAt(0).toUpperCase() }}
               </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">头像</label>
-                <input
-                  v-model="editData.avatar"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="请输入头像字符或emoji"
-                />
-              </div>
-            </div>
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">简介</label>
-              <textarea
-                v-model="editData.bio"
-                rows="3"
-                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="请输入个人简介"
-              ></textarea>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">位置</label>
-                <input
-                  v-model="editData.location"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="请输入位置"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">网站</label>
-                <input
-                  v-model="editData.website"
-                  type="text"
-                  class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="请输入网站链接"
-                />
-              </div>
-            </div>
-            <div class="flex justify-end space-x-3">
+              <!-- 编辑按钮 - 更明显 -->
               <button
-                type="button"
-                @click="cancelEdit"
-                class="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-50"
+                v-if="canEdit"
+                @click="editMode = !editMode"
+                style="position: absolute; bottom: -0.5rem; right: -0.5rem; width: 3rem; height: 3rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; transform: scale(1);"
+                onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1)'"
+                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'"
               >
-                取消
-              </button>
-              <button
-                type="submit"
-                :disabled="saving"
-                class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:opacity-50"
-              >
-                {{ saving ? '保存中...' : '保存' }}
-              </button>
-            </div>
-          </form>
-        </div>
-
-        <!-- 联系方式 -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div v-for="contact in profileData.contacts" :key="contact.type" class="bg-gray-50 rounded-lg p-4">
-            <div class="flex items-center space-x-3">
-              <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-                <span class="text-lg">{{ getContactIcon(contact.type) }}</span>
-              </div>
-              <div class="flex-1">
-                <h4 class="font-medium text-gray-900">{{ getContactLabel(contact.type) }}</h4>
-                <p class="text-gray-600 text-sm">{{ contact.value }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- 编辑联系方式 -->
-        <div v-if="editMode && canEdit" class="mt-8 p-6 bg-gray-50 rounded-lg">
-          <h3 class="text-lg font-semibold text-gray-900 mb-4">编辑联系方式</h3>
-          <div class="space-y-4">
-            <div v-for="(contact, index) in editData.contacts" :key="index" class="flex items-center space-x-3">
-              <select
-                v-model="contact.type"
-                class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              >
-                <option value="email">邮箱</option>
-                <option value="phone">电话</option>
-                <option value="wechat">微信</option>
-                <option value="github">GitHub</option>
-                <option value="linkedin">LinkedIn</option>
-                <option value="twitter">Twitter</option>
-              </select>
-              <input
-                v-model="contact.value"
-                type="text"
-                class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                :placeholder="`请输入${getContactLabel(contact.type)}`"
-              />
-              <button
-                @click="removeContact(index)"
-                class="text-red-500 hover:text-red-700"
-              >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                 </svg>
               </button>
             </div>
-            <button
-              @click="addContact"
-              class="flex items-center space-x-2 text-blue-500 hover:text-blue-700"
-            >
-              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            <div style="flex: 1; padding-top: 1rem;">
+              <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
+                <h2 style="font-size: 1.875rem; font-weight: bold; color: #111827;">{{ profileData.name || profileData.username }}</h2>
+                <span style="padding: 0.25rem 0.75rem; background: #dbeafe; color: #1e40af; font-size: 0.875rem; font-weight: 500; border-radius: 9999px;">
+                  @{{ profileData.username }}
+                </span>
+              </div>
+              <p style="color: #6b7280; font-size: 1.125rem; margin-bottom: 1rem; line-height: 1.75;">{{ profileData.bio || '这个人很懒，还没有写简介...' }}</p>
+              <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.875rem; color: #9ca3af;">
+                <span v-if="profileData.location" style="display: flex; align-items: center; gap: 0.25rem;">
+                  📍 {{ profileData.location }}
+                </span>
+                <span v-if="profileData.website" style="display: flex; align-items: center; gap: 0.25rem;">
+                  🌐 <a :href="profileData.website" target="_blank" style="color: #3b82f6; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{ profileData.website }}</a>
+                </span>
+              </div>
+            </div>
+          </div>
+
+          <!-- 编辑模式 -->
+          <div v-if="editMode && canEdit" style="margin-top: 2rem; margin-bottom: 2rem;">
+            <div style="background: linear-gradient(90deg, #eff6ff, #f3e8ff); border-radius: 1rem; padding: 2rem; border: 1px solid #bfdbfe;">
+              <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                </svg>
+                编辑个人资料
+              </h3>
+              <form @submit.prevent="saveProfile" style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">姓名</label>
+                    <input
+                      v-model="editData.name"
+                      type="text"
+                      style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
+                      placeholder="请输入姓名"
+                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                      onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">头像</label>
+                    <input
+                      v-model="editData.avatar"
+                      type="text"
+                      style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
+                      placeholder="请输入头像字符或emoji"
+                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                      onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                    />
+                  </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                  <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">简介</label>
+                  <textarea
+                    v-model="editData.bio"
+                    rows="4"
+                    style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; resize: none; transition: all 0.2s;"
+                    placeholder="请输入个人简介"
+                    onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                    onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                  ></textarea>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">位置</label>
+                    <input
+                      v-model="editData.location"
+                      type="text"
+                      style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
+                      placeholder="请输入位置"
+                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                      onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                    />
+                  </div>
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">网站</label>
+                    <input
+                      v-model="editData.website"
+                      type="text"
+                      style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
+                      placeholder="请输入网站链接"
+                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                      onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                    />
+                  </div>
+                </div>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1rem;">
+                  <button
+                    type="button"
+                    @click="cancelEdit"
+                    style="padding: 0.75rem 1.5rem; color: #374151; background: white; border: 1px solid #d1d5db; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-weight: 500;"
+                    onmouseover="this.style.backgroundColor='#f9fafb'"
+                    onmouseout="this.style.backgroundColor='white'"
+                  >
+                    取消
+                  </button>
+                  <button
+                    type="submit"
+                    :disabled="saving"
+                    style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-weight: 500; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"
+                    onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'"
+                  >
+                    {{ saving ? '保存中...' : '保存资料' }}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- 联系方式 -->
+          <div style="margin-top: 2rem;">
+            <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem; display: flex; align-items: center;">
+              <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
               </svg>
-              <span>添加联系方式</span>
-            </button>
+              联系方式
+            </h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem;">
+              <div
+                v-for="contact in profileData.contacts"
+                :key="contact.type"
+                style="background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; transition: all 0.3s; cursor: pointer;"
+                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'"
+              >
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                  <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
+                    {{ getContactIcon(contact.type) }}
+                  </div>
+                  <div style="flex: 1; min-width: 0;">
+                    <h4 style="font-weight: 600; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ getContactLabel(contact.type) }}</h4>
+                    <p style="color: #6b7280; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ contact.value }}</p>
+                  </div>
+                </div>
+              </div>
+              <!-- 空状态 -->
+              <div v-if="profileData.contacts.length === 0" style="grid-column: 1 / -1; text-align: center; padding: 3rem 0;">
+                <div style="width: 4rem; height: 4rem; background: #f3f4f6; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                  <svg style="width: 2rem; height: 2rem; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                  </svg>
+                </div>
+                <p style="color: #9ca3af;">暂无联系方式</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- 编辑联系方式 -->
+          <div v-if="editMode && canEdit" style="margin-top: 2rem;">
+            <div style="background: linear-gradient(90deg, #faf5ff, #fdf2f8); border-radius: 1rem; padding: 2rem; border: 1px solid #e9d5ff;">
+              <h4 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                </svg>
+                管理联系方式
+              </h4>
+              <div style="display: flex; flex-direction: column; gap: 1rem;">
+                <div
+                  v-for="(contact, index) in editData.contacts"
+                  :key="index"
+                  style="display: flex; align-items: center; gap: 1rem; background: white; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;"
+                >
+                  <select
+                    v-model="contact.type"
+                    style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; background: white; transition: all 0.2s;"
+                    onfocus="this.style.borderColor='#8b5cf6'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                    onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                  >
+                    <option value="email">📧 邮箱</option>
+                    <option value="phone">📱 电话</option>
+                    <option value="wechat">💬 微信</option>
+                    <option value="github">🐙 GitHub</option>
+                    <option value="linkedin">💼 LinkedIn</option>
+                    <option value="twitter">🐦 Twitter</option>
+                  </select>
+                  <input
+                    v-model="contact.value"
+                    type="text"
+                    style="flex: 1; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; transition: all 0.2s;"
+                    :placeholder="`请输入${getContactLabel(contact.type)}`"
+                    onfocus="this.style.borderColor='#8b5cf6'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                    onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                  />
+                  <button
+                    @click="removeContact(index)"
+                    style="padding: 0.5rem; color: #ef4444; border-radius: 0.5rem; border: none; background: transparent; cursor: pointer; transition: all 0.2s;"
+                    onmouseover="this.style.backgroundColor='#fef2f2'; this.style.color='#dc2626'"
+                    onmouseout="this.style.backgroundColor='transparent'; this.style.color='#ef4444'"
+                  >
+                    <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                    </svg>
+                  </button>
+                </div>
+                <button
+                  @click="addContact"
+                  style="width: 100%; padding: 1rem; border: 2px dashed #d8b4fe; border-radius: 0.75rem; color: #8b5cf6; background: transparent; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500;"
+                  onmouseover="this.style.borderColor='#c084fc'; this.style.backgroundColor='#faf5ff'"
+                  onmouseout="this.style.borderColor='#d8b4fe'; this.style.backgroundColor='transparent'"
+                >
+                  <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                  </svg>
+                  <span>添加联系方式</span>
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
