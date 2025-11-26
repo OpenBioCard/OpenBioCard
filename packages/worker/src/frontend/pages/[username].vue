@@ -286,6 +286,7 @@
               <div
                 v-for="contact in profileData.contacts"
                 :key="contact.type"
+                @click="openQrCodeModal(contact)"
                 style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8); transition: all 0.3s; cursor: pointer;"
                 onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)'"
                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0, 0, 0, 0.1)'"
@@ -353,24 +354,28 @@
                   <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
                     <template v-if="getContactInputConfig(contact.type).type === 'file'">
                       <div style="display: flex; align-items: center; gap: 0.5rem;">
-                        <div v-if="isBase64Image(contact.value)" style="width: 2rem; height: 2rem; border-radius: 0.25rem; overflow: hidden; border: 1px solid #e5e7eb;">
+                        <div v-if="isBase64Image(contact.value)" style="width: 3rem; height: 3rem; border-radius: 0.5rem; overflow: hidden; border: 2px solid #e5e7eb; flex-shrink: 0;">
                           <img :src="contact.value" style="width: 100%; height: 100%; object-fit: cover;" />
                         </div>
                         <input
                           :ref="`contactInput${index}`"
                           type="file"
                           accept="image/*"
+                          :data-input-index="index"
                           style="position: absolute; opacity: 0; width: 0; height: 0;"
                           @change="(e) => handleContactUpload(e, index)"
                         />
                         <button
                           type="button"
                           @click="triggerContactFileInput(index)"
-                          style="flex: 1; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: white; cursor: pointer; transition: all 0.2s; text-align: left; font-size: 0.875rem; color: #6b7280;"
-                          onmouseover="this.style.borderColor='#000000'"
-                          onmouseout="this.style.borderColor='#d1d5db'"
+                          style="flex: 1; padding: 0.5rem 1rem; border: 2px dashed #d1d5db; border-radius: 0.5rem; background: #f9fafb; cursor: pointer; transition: all 0.2s; text-align: center; font-size: 0.875rem; color: #374151; font-weight: 500; display: flex; align-items: center; justify-content: center; gap: 0.5rem;"
+                          onmouseover="this.style.borderColor='#000000'; this.style.backgroundColor='#f3f4f6'"
+                          onmouseout="this.style.borderColor='#d1d5db'; this.style.backgroundColor='#f9fafb'"
                         >
-                          {{ isBase64Image(contact.value) ? '更换二维码' : '上传二维码' }}
+                          <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                          </svg>
+                          <span>{{ isBase64Image(contact.value) ? '更换二维码' : '上传二维码' }}</span>
                         </button>
                       </div>
                     </template>
@@ -413,6 +418,49 @@
         </div>
       </div>
     </main>
+
+    <!-- 二维码弹窗 -->
+    <div
+      v-if="qrCodeModal.show"
+      @click="closeQrCodeModal"
+      style="position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); z-index: 100; display: flex; align-items: center; justify-content: center; padding: 1rem;"
+    >
+      <div
+        @click.stop
+        style="background: white; border-radius: 1rem; padding: 2rem; max-width: 500px; width: 100%; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3); position: relative;"
+      >
+        <!-- 关闭按钮 -->
+        <button
+          @click="closeQrCodeModal"
+          style="position: absolute; top: 1rem; right: 1rem; width: 2.5rem; height: 2.5rem; border-radius: 50%; background: #f3f4f6; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+          onmouseover="this.style.backgroundColor='#e5e7eb'"
+          onmouseout="this.style.backgroundColor='#f3f4f6'"
+        >
+          <svg style="width: 1.25rem; height: 1.25rem; color: #374151;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- 标题 -->
+        <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem; text-align: center;">
+          {{ qrCodeModal.label }}
+        </h3>
+
+        <!-- 二维码图片 -->
+        <div style="display: flex; justify-content: center; align-items: center; background: #f9fafb; border-radius: 0.75rem; padding: 2rem; border: 2px solid #e5e7eb;">
+          <img
+            :src="qrCodeModal.image"
+            style="max-width: 100%; height: auto; border-radius: 0.5rem;"
+            alt="QR Code"
+          />
+        </div>
+
+        <!-- 提示文字 -->
+        <p style="text-align: center; color: #6b7280; font-size: 0.875rem; margin-top: 1rem; margin-bottom: 0;">
+          扫描二维码添加联系方式
+        </p>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -443,6 +491,13 @@ const profileData = ref({
 const editMode = ref(false)
 const saving = ref(false)
 const editData = ref({ ...profileData.value })
+
+// 二维码弹窗状态
+const qrCodeModal = ref({
+  show: false,
+  image: '',
+  label: ''
+})
 
 // 文件输入引用
 const fileInput = ref(null)
@@ -640,8 +695,8 @@ const handleBackgroundUpload = (event) => {
 
 // 触发联系方式文件输入
 const triggerContactFileInput = (index) => {
-  // 使用document.querySelector来查找动态ref
-  const input = document.querySelector(`input[ref="contactInput${index}"]`)
+  // 使用data属性来查找动态创建的input
+  const input = document.querySelector(`input[data-input-index="${index}"]`)
   if (input) {
     input.click()
   }
@@ -678,6 +733,26 @@ const logout = () => {
   currentUser.value = null
   token.value = ''
   window.location.href = '/'
+}
+
+// 打开二维码弹窗
+const openQrCodeModal = (contact) => {
+  if (isBase64Image(contact.value)) {
+    qrCodeModal.value = {
+      show: true,
+      image: contact.value,
+      label: getContactLabel(contact.type)
+    }
+  }
+}
+
+// 关闭二维码弹窗
+const closeQrCodeModal = () => {
+  qrCodeModal.value = {
+    show: false,
+    image: '',
+    label: ''
+  }
 }
 
 onMounted(() => {
