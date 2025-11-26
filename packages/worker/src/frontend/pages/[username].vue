@@ -499,7 +499,7 @@ const logout = () => {
   deleteCookie('auth_username')
   currentUser.value = null
   token.value = ''
-  window.location.href = '/'
+  window.location.href = '/frontend'
 }
 
 onMounted(() => {
