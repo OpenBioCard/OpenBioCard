@@ -43,7 +43,16 @@
     <main style="max-width: 1152px; margin: 0 auto; padding: 2rem 1rem;">
       <div style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e5e7eb; overflow: hidden;">
         <!-- 头部横幅 -->
-        <div style="height: 8rem; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899); position: relative;">
+        <div style="height: 8rem; position: relative; overflow: hidden;">
+          <div
+            v-if="isBase64Image(profileData.background)"
+            style="width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;"
+            :style="{ backgroundImage: `url(${profileData.background})` }"
+          ></div>
+          <div
+            v-else
+            style="width: 100%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);"
+          ></div>
           <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.1);"></div>
         </div>
 
@@ -169,6 +178,55 @@
                   ></textarea>
                 </div>
                 <div style="display: grid; grid-template-columns: 1fr; gap: 1.5rem;">
+                  <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                    <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">背景图片</label>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                      <div style="width: 6rem; height: 3rem; border-radius: 0.5rem; overflow: hidden; border: 2px solid #e5e7eb;">
+                        <div
+                          v-if="isBase64Image(editData.background)"
+                          style="width: 100%; height: 100%; background-size: cover; background-position: center; background-repeat: no-repeat;"
+                          :style="{ backgroundImage: `url(${editData.background})` }"
+                        ></div>
+                        <div
+                          v-else
+                          style="width: 100%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: white;"
+                        >
+                          默认
+                        </div>
+                      </div>
+                      <div style="flex: 1;">
+                        <div style="position: relative;">
+                          <input
+                            ref="backgroundInput"
+                            type="file"
+                            accept="image/*"
+                            style="position: absolute; opacity: 0; width: 0; height: 0;"
+                            @change="handleBackgroundUpload"
+                          />
+                          <button
+                            type="button"
+                            @click="$refs.backgroundInput.click()"
+                            style="width: 100%; padding: 0.5rem 1rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: #374151;"
+                            onmouseover="this.style.backgroundColor='#e5e7eb'"
+                            onmouseout="this.style.backgroundColor='#f3f4f6'"
+                          >
+                            🖼️ 上传背景
+                          </button>
+                        </div>
+                        <button
+                          v-if="editData.background"
+                          type="button"
+                          @click="editData.background = ''"
+                          style="width: 100%; margin-top: 0.5rem; padding: 0.25rem 0.5rem; background: #fee2e2; border: 1px solid #fecaca; border-radius: 0.375rem; cursor: pointer; transition: all 0.2s; font-size: 0.75rem; color: #dc2626;"
+                          onmouseover="this.style.backgroundColor='#fecaca'"
+                          onmouseout="this.style.backgroundColor='#fee2e2'"
+                        >
+                          移除背景
+                        </button>
+                      </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">上传背景图片（最大3MB），不上传则使用默认渐变背景</p>
+                  </div>
                   <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">位置</label>
                     <input
@@ -340,6 +398,7 @@ const profileData = ref({
   bio: '',
   location: '',
   website: '',
+  background: '',
   contacts: []
 })
 
@@ -350,6 +409,7 @@ const editData = ref({ ...profileData.value })
 
 // 文件输入引用
 const fileInput = ref(null)
+const backgroundInput = ref(null)
 
 // 获取cookie
 const getCookie = (name) => {
@@ -490,6 +550,30 @@ const handleAvatarUpload = (event) => {
   const reader = new FileReader()
   reader.onload = (e) => {
     editData.value.avatar = e.target.result // base64数据
+  }
+  reader.readAsDataURL(file)
+}
+
+// 处理背景上传
+const handleBackgroundUpload = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // 检查文件大小（最大3MB）
+  if (file.size > 3 * 1024 * 1024) {
+    alert('背景图片大小不能超过3MB')
+    return
+  }
+
+  // 检查文件类型
+  if (!file.type.startsWith('image/')) {
+    alert('请选择图片文件')
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    editData.value.background = e.target.result // base64数据
   }
   reader.readAsDataURL(file)
 }
