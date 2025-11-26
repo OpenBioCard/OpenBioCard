@@ -1,14 +1,14 @@
 <template>
-  <div style="min-height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #faf5ff 100%);">
+  <div style="min-height: 100vh; background: linear-gradient(135deg, #f9fafb 0%, #ffffff 50%, #f9fafb 100%);">
     <!-- 导航栏 -->
-    <nav style="background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border-bottom: 1px solid #e5e7eb; position: sticky; top: 0; z-index: 50;">
+    <nav style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border-bottom: 1px solid rgba(229, 231, 235, 0.8); position: sticky; top: 0; z-index: 50;">
       <div style="max-width: 1152px; margin: 0 auto; padding: 0 1rem;">
         <div style="display: flex; justify-content: space-between; align-items: center; height: 4rem;">
           <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <div style="width: 2rem; height: 2rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
+            <div style="width: 2rem; height: 2rem; background: #000000; border-radius: 0.5rem; display: flex; align-items: center; justify-content: center;">
               <span style="color: white; font-weight: bold; font-size: 0.875rem;">O</span>
             </div>
-            <h1 style="font-size: 1.25rem; font-weight: bold; background: linear-gradient(90deg, #2563eb, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">
+            <h1 style="font-size: 1.25rem; font-weight: bold; color: #000000;">
               OpenBioCard
             </h1>
           </div>
@@ -28,9 +28,9 @@
             <a
               v-else
               href="/"
-              style="font-size: 0.875rem; padding: 0.375rem 0.75rem; background: #3b82f6; color: white; border-radius: 0.375rem; text-decoration: none; transition: background-color 0.2s;"
-              onmouseover="this.style.backgroundColor='#2563eb'"
-              onmouseout="this.style.backgroundColor='#3b82f6'"
+              style="font-size: 0.875rem; padding: 0.375rem 0.75rem; background: #000000; color: white; border-radius: 0.375rem; text-decoration: none; transition: background-color 0.2s;"
+              onmouseover="this.style.backgroundColor='#333333'"
+              onmouseout="this.style.backgroundColor='#000000'"
             >
               登录
             </a>
@@ -41,7 +41,7 @@
 
     <!-- 主要内容 -->
     <main style="max-width: 1152px; margin: 0 auto; padding: 2rem 1rem;">
-      <div style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); border-radius: 1rem; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border: 1px solid #e5e7eb; overflow: hidden;">
+      <div style="background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8); overflow: hidden;">
         <!-- 头部横幅 -->
         <div style="height: 8rem; position: relative; overflow: hidden;">
           <div
@@ -51,7 +51,7 @@
           ></div>
           <div
             v-else
-            style="width: 100%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);"
+            style="width: 100%; height: 100%; background: #000000;"
           ></div>
           <div style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.1);"></div>
         </div>
@@ -61,7 +61,7 @@
           <!-- 用户头像和基本信息 -->
           <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; margin-top: -4rem; position: relative; z-index: 10;">
             <div style="position: relative;">
-              <div style="width: 8rem; height: 8rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: bold; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25); border: 4px solid white; overflow: hidden;">
+              <div style="width: 8rem; height: 8rem; background: #000000; border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: bold; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 4px solid white; overflow: hidden;">
                 <template v-if="isBase64Image(profileData.avatar)">
                   <img :src="profileData.avatar" style="width: 100%; height: 100%; object-fit: cover;" />
                 </template>
@@ -73,9 +73,9 @@
               <button
                 v-if="canEdit"
                 @click="editMode = !editMode"
-                style="position: absolute; bottom: -0.5rem; right: -0.5rem; width: 3rem; height: 3rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border-radius: 50%; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; transform: scale(1);"
-                onmouseover="this.style.transform='scale(1.1)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1)'"
-                onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'"
+                style="position: absolute; bottom: -0.5rem; right: -0.5rem; width: 3rem; height: 3rem; background: #000000; color: white; border-radius: 50%; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; transform: scale(1);"
+                onmouseover="this.style.transform='scale(1.1)'; this.style.backgroundColor='#333333'"
+                onmouseout="this.style.transform='scale(1)'; this.style.backgroundColor='#000000'"
               >
                 <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
@@ -85,7 +85,7 @@
             <div style="flex: 1; padding-top: 1rem;">
               <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem;">
                 <h2 style="font-size: 1.875rem; font-weight: bold; color: #111827;">{{ profileData.name || profileData.username }}</h2>
-                <span style="padding: 0.25rem 0.75rem; background: #dbeafe; color: #1e40af; font-size: 0.875rem; font-weight: 500; border-radius: 9999px;">
+                <span style="padding: 0.25rem 0.75rem; background: #f3f4f6; color: #111827; font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid #e5e7eb;">
                   @{{ profileData.username }}
                 </span>
               </div>
@@ -95,7 +95,7 @@
                   📍 {{ profileData.location }}
                 </span>
                 <span v-if="profileData.website" style="display: flex; align-items: center; gap: 0.25rem;">
-                  🌐 <a :href="profileData.website" target="_blank" style="color: #3b82f6; text-decoration: none;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{ profileData.website }}</a>
+                  🌐 <a :href="profileData.website" target="_blank" style="color: #000000; text-decoration: none; font-weight: 500;" onmouseover="this.style.textDecoration='underline'" onmouseout="this.style.textDecoration='none'">{{ profileData.website }}</a>
                 </span>
               </div>
             </div>
@@ -103,9 +103,9 @@
 
           <!-- 编辑模式 -->
           <div v-if="editMode && canEdit" style="margin-top: 2rem; margin-bottom: 2rem;">
-            <div style="background: linear-gradient(90deg, #eff6ff, #f3e8ff); border-radius: 1rem; padding: 2rem; border: 1px solid #bfdbfe;">
+            <div style="background: rgba(249, 250, 251, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 1rem; padding: 2rem; border: 1px solid rgba(229, 231, 235, 0.8);">
               <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem; display: flex; align-items: center;">
-                <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: #3b82f6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: #000000;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                 </svg>
                 编辑个人资料
@@ -119,14 +119,14 @@
                       type="text"
                       style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
                       placeholder="请输入姓名"
-                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                      onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                       onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
                     />
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">头像</label>
                     <div style="display: flex; gap: 1rem; align-items: center;">
-                      <div style="width: 4rem; height: 4rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold; border: 2px solid white; overflow: hidden;">
+                      <div style="width: 4rem; height: 4rem; background: #000000; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold; border: 2px solid white; overflow: hidden;">
                         <template v-if="isBase64Image(editData.avatar)">
                           <img :src="editData.avatar" style="width: 100%; height: 100%; object-fit: cover;" />
                         </template>
@@ -140,7 +140,7 @@
                           type="text"
                           style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
                           placeholder="请输入头像字符或emoji"
-                          onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                          onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                           onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
                         />
                         <div style="position: relative;">
@@ -173,7 +173,7 @@
                     rows="4"
                     style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; resize: none; transition: all 0.2s;"
                     placeholder="请输入个人简介"
-                    onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                    onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                     onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
                   ></textarea>
                 </div>
@@ -189,7 +189,7 @@
                         ></div>
                         <div
                           v-else
-                          style="width: 100%; height: 100%; background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: white;"
+                          style="width: 100%; height: 100%; background: #000000; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: white;"
                         >
                           默认
                         </div>
@@ -234,7 +234,7 @@
                       type="text"
                       style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
                       placeholder="请输入位置"
-                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                      onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                       onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
                     />
                   </div>
@@ -245,7 +245,7 @@
                       type="text"
                       style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
                       placeholder="请输入网站链接"
-                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                      onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                       onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
                     />
                   </div>
@@ -263,9 +263,9 @@
                   <button
                     type="submit"
                     :disabled="saving"
-                    style="padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); color: white; border: none; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-weight: 500; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);"
-                    onmouseover="this.style.transform='translateY(-1px)'; this.style.boxShadow='0 10px 15px -3px rgba(0, 0, 0, 0.1)'"
-                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'"
+                    style="padding: 0.75rem 1.5rem; background: #000000; color: white; border: none; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-weight: 500; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);"
+                    onmouseover="this.style.transform='translateY(-1px)'; this.style.backgroundColor='#333333'"
+                    onmouseout="this.style.transform='translateY(0)'; this.style.backgroundColor='#000000'"
                   >
                     {{ saving ? '保存中...' : '保存资料' }}
                   </button>
@@ -277,7 +277,7 @@
           <!-- 联系方式 -->
           <div style="margin-top: 2rem;">
             <h3 style="font-size: 1.5rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem; display: flex; align-items: center;">
-              <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg style="width: 1.5rem; height: 1.5rem; margin-right: 0.75rem; color: #000000;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
               </svg>
               联系方式
@@ -286,17 +286,24 @@
               <div
                 v-for="contact in profileData.contacts"
                 :key="contact.type"
-                style="background: white; border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb; transition: all 0.3s; cursor: pointer;"
-                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 25px -5px rgba(0, 0, 0, 0.1)'"
-                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 6px -1px rgba(0, 0, 0, 0.1)'"
+                style="background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 0.75rem; padding: 1.5rem; box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8); transition: all 0.3s; cursor: pointer;"
+                onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 4px 6px rgba(0, 0, 0, 0.1)'"
+                onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 1px 3px rgba(0, 0, 0, 0.1)'"
               >
                 <div style="display: flex; align-items: center; gap: 1rem;">
-                  <div style="width: 3rem; height: 3rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.25rem;">
-                    {{ getContactIcon(contact.type) }}
+                  <div style="width: 3rem; height: 3rem; background: #f3f4f6; border-radius: 0.75rem; display: flex; align-items: center; justify-content: center;">
+                    <img :src="getContactIcon(contact.type)" style="width: 1.5rem; height: 1.5rem;" />
                   </div>
                   <div style="flex: 1; min-width: 0;">
                     <h4 style="font-weight: 600; color: #111827; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ getContactLabel(contact.type) }}</h4>
-                    <p style="color: #6b7280; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ contact.value }}</p>
+                    <p style="color: #6b7280; font-size: 0.875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                      <template v-if="isBase64Image(contact.value)">
+                        <img :src="contact.value" style="width: 2rem; height: 2rem; object-fit: cover; border-radius: 0.25rem;" />
+                      </template>
+                      <template v-else>
+                        {{ contact.value }}
+                      </template>
+                    </p>
                   </div>
                 </div>
               </div>
@@ -314,9 +321,9 @@
 
           <!-- 编辑联系方式 -->
           <div v-if="editMode && canEdit" style="margin-top: 2rem;">
-            <div style="background: linear-gradient(90deg, #faf5ff, #fdf2f8); border-radius: 1rem; padding: 2rem; border: 1px solid #e9d5ff;">
+            <div style="background: rgba(249, 250, 251, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border-radius: 1rem; padding: 2rem; border: 1px solid rgba(229, 231, 235, 0.8);">
               <h4 style="font-size: 1.25rem; font-weight: bold; color: #111827; margin-bottom: 1.5rem; display: flex; align-items: center;">
-                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; color: #8b5cf6;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.75rem; color: #000000;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
                 管理联系方式
@@ -325,29 +332,59 @@
                 <div
                   v-for="(contact, index) in editData.contacts"
                   :key="index"
-                  style="display: flex; align-items: center; gap: 1rem; background: white; border-radius: 0.75rem; padding: 1rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid #e5e7eb;"
+                  style="display: flex; align-items: center; gap: 1rem; background: rgba(255, 255, 255, 0.8); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px); border-radius: 0.75rem; padding: 1rem; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1); border: 1px solid rgba(229, 231, 235, 0.8);"
                 >
                   <select
                     v-model="contact.type"
                     style="padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; background: white; transition: all 0.2s;"
-                    onfocus="this.style.borderColor='#8b5cf6'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
+                    onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
                     onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
                   >
-                    <option value="email">📧 邮箱</option>
-                    <option value="phone">📱 电话</option>
-                    <option value="wechat">💬 微信</option>
-                    <option value="github">🐙 GitHub</option>
-                    <option value="linkedin">💼 LinkedIn</option>
-                    <option value="twitter">🐦 Twitter</option>
+                    <option value="email">邮箱</option>
+                    <option value="phone">电话</option>
+                    <option value="wechat">微信</option>
+                    <option value="qq">QQ</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="telegram">Telegram</option>
+                    <option value="discord">Discord</option>
+                    <option value="line">Line</option>
+                    <option value="wecom">企业微信</option>
                   </select>
-                  <input
-                    v-model="contact.value"
-                    type="text"
-                    style="flex: 1; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; transition: all 0.2s;"
-                    :placeholder="`请输入${getContactLabel(contact.type)}`"
-                    onfocus="this.style.borderColor='#8b5cf6'; this.style.boxShadow='0 0 0 3px rgba(139, 92, 246, 0.1)'"
-                    onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
-                  />
+                  <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                    <template v-if="getContactInputConfig(contact.type).type === 'file'">
+                      <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <div v-if="isBase64Image(contact.value)" style="width: 2rem; height: 2rem; border-radius: 0.25rem; overflow: hidden; border: 1px solid #e5e7eb;">
+                          <img :src="contact.value" style="width: 100%; height: 100%; object-fit: cover;" />
+                        </div>
+                        <input
+                          :ref="`contactInput${index}`"
+                          type="file"
+                          accept="image/*"
+                          style="position: absolute; opacity: 0; width: 0; height: 0;"
+                          @change="(e) => handleContactUpload(e, index)"
+                        />
+                        <button
+                          type="button"
+                          @click="triggerContactFileInput(index)"
+                          style="flex: 1; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; background: white; cursor: pointer; transition: all 0.2s; text-align: left; font-size: 0.875rem; color: #6b7280;"
+                          onmouseover="this.style.borderColor='#000000'"
+                          onmouseout="this.style.borderColor='#d1d5db'"
+                        >
+                          {{ isBase64Image(contact.value) ? '更换二维码' : '上传二维码' }}
+                        </button>
+                      </div>
+                    </template>
+                    <template v-else>
+                      <input
+                        v-model="contact.value"
+                        type="text"
+                        style="width: 100%; padding: 0.5rem 1rem; border: 1px solid #d1d5db; border-radius: 0.5rem; outline: none; transition: all 0.2s;"
+                        :placeholder="getContactInputConfig(contact.type).placeholder"
+                        onfocus="this.style.borderColor='#000000'; this.style.boxShadow='0 0 0 3px rgba(0, 0, 0, 0.1)'"
+                        onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                      />
+                    </template>
+                  </div>
                   <button
                     @click="removeContact(index)"
                     style="padding: 0.5rem; color: #ef4444; border-radius: 0.5rem; border: none; background: transparent; cursor: pointer; transition: all 0.2s;"
@@ -361,9 +398,9 @@
                 </div>
                 <button
                   @click="addContact"
-                  style="width: 100%; padding: 1rem; border: 2px dashed #d8b4fe; border-radius: 0.75rem; color: #8b5cf6; background: transparent; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500;"
-                  onmouseover="this.style.borderColor='#c084fc'; this.style.backgroundColor='#faf5ff'"
-                  onmouseout="this.style.borderColor='#d8b4fe'; this.style.backgroundColor='transparent'"
+                  style="width: 100%; padding: 1rem; border: 2px dashed #d1d5db; border-radius: 0.75rem; color: #000000; background: transparent; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500;"
+                  onmouseover="this.style.borderColor='#000000'; this.style.backgroundColor='#f9fafb'"
+                  onmouseout="this.style.borderColor='#d1d5db'; this.style.backgroundColor='transparent'"
                 >
                   <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
@@ -410,6 +447,7 @@ const editData = ref({ ...profileData.value })
 // 文件输入引用
 const fileInput = ref(null)
 const backgroundInput = ref(null)
+const contactInputRefs = ref([])
 
 // 获取cookie
 const getCookie = (name) => {
@@ -434,17 +472,20 @@ const isBase64Image = (str) => {
   return str && str.startsWith('data:image/') && str.includes('base64,')
 }
 
-// 获取联系方式图标
+// 获取联系方式图标路径
 const getContactIcon = (type) => {
-  const icons = {
-    email: '📧',
-    phone: '📱',
-    wechat: '💬',
-    github: '🐙',
-    linkedin: '💼',
-    twitter: '🐦'
+  const iconMap = {
+    email: '/src/frontend/assets/ss/email.svg',
+    phone: '/src/frontend/assets/ss/tel.svg',
+    wechat: '/src/frontend/assets/ss/wechat.svg',
+    qq: '/src/frontend/assets/ss/QQ.svg',
+    whatsapp: '/src/frontend/assets/ss/whatsapp.svg',
+    telegram: '/src/frontend/assets/ss/telegram.svg',
+    discord: '/src/frontend/assets/ss/discord-copy.svg',
+    line: '/src/frontend/assets/ss/line.svg',
+    wecom: '/src/frontend/assets/ss/wecom.svg'
   }
-  return icons[type] || '📞'
+  return iconMap[type] || '/src/frontend/assets/ss/email.svg'
 }
 
 // 获取联系方式标签
@@ -453,11 +494,30 @@ const getContactLabel = (type) => {
     email: '邮箱',
     phone: '电话',
     wechat: '微信',
-    github: 'GitHub',
-    linkedin: 'LinkedIn',
-    twitter: 'Twitter'
+    qq: 'QQ',
+    whatsapp: 'WhatsApp',
+    telegram: 'Telegram',
+    discord: 'Discord',
+    line: 'Line',
+    wecom: '企业微信'
   }
   return labels[type] || type
+}
+
+// 获取输入类型和占位符
+const getContactInputConfig = (type) => {
+  const configs = {
+    email: { type: 'text', placeholder: '请输入邮箱地址' },
+    phone: { type: 'text', placeholder: '请输入电话号码（带国家区号，如+86）' },
+    wechat: { type: 'text', placeholder: '请输入微信号' },
+    qq: { type: 'text', placeholder: '请输入QQ号码' },
+    whatsapp: { type: 'text', placeholder: '请输入WhatsApp号码（带国家区号）' },
+    telegram: { type: 'text', placeholder: '请输入Telegram用户名' },
+    discord: { type: 'text', placeholder: '请输入Discord用户名' },
+    line: { type: 'file', placeholder: '上传Line二维码图片' },
+    wecom: { type: 'file', placeholder: '上传企业微信二维码图片' }
+  }
+  return configs[type] || { type: 'text', placeholder: '请输入联系方式' }
 }
 
 // 加载用户资料
@@ -574,6 +634,39 @@ const handleBackgroundUpload = (event) => {
   const reader = new FileReader()
   reader.onload = (e) => {
     editData.value.background = e.target.result // base64数据
+  }
+  reader.readAsDataURL(file)
+}
+
+// 触发联系方式文件输入
+const triggerContactFileInput = (index) => {
+  // 使用document.querySelector来查找动态ref
+  const input = document.querySelector(`input[ref="contactInput${index}"]`)
+  if (input) {
+    input.click()
+  }
+}
+
+// 处理联系方式上传（二维码）
+const handleContactUpload = (event, index) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // 检查文件大小（最大2MB）
+  if (file.size > 2 * 1024 * 1024) {
+    alert('二维码图片大小不能超过2MB')
+    return
+  }
+
+  // 检查文件类型
+  if (!file.type.startsWith('image/')) {
+    alert('请选择图片文件')
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    editData.value.contacts[index].value = e.target.result // base64数据
   }
   reader.readAsDataURL(file)
 }
