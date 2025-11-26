@@ -167,7 +167,7 @@ const handleLogin = () => {
 }
 
 const goToLogin = () => {
-  window.location.href = '/frontend'
+  window.location.href = '/'
 }
 
 // 点击外部关闭移动菜单

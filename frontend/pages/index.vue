@@ -10,6 +10,7 @@ import { ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import Login from '../components/Login.vue'
 import AdminPanel from '../components/AdminPanel.vue'
+import { authAPI } from '../api/index.js'
 
 const { t } = useI18n()
 
@@ -48,12 +49,8 @@ const checkLogin = async () => {
 
     // 验证token是否仍然有效
     try {
-      const adminResponse = await fetch('/admin/check-permission', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username: savedUsername, token: savedToken })
-      })
-      if (adminResponse.ok) {
+      const hasPermission = await authAPI.checkPermission(savedToken, savedUsername)
+      if (hasPermission) {
         user.value.type = 'admin'
         currentView.value = 'admin'
       } else {
@@ -71,12 +68,7 @@ const checkLogin = async () => {
 
 const login = async (username, password) => {
   try {
-    const response = await fetch('/signin', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, password, token: '' })
-    })
-    const data = await response.json()
+    const data = await authAPI.login({ username, password })
     if (data.token) {
       token.value = data.token
       user.value = { username, token: data.token, type: 'user' } // 默认类型
@@ -86,12 +78,8 @@ const login = async (username, password) => {
       setCookie('auth_username', username)
 
       // 尝试访问管理接口来检查权限
-      const adminResponse = await fetch('/admin/check-permission', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, token: data.token })
-      })
-      if (adminResponse.ok) {
+      const hasPermission = await authAPI.checkPermission(data.token, username)
+      if (hasPermission) {
         user.value.type = 'admin'
         currentView.value = 'admin'
       } else {

@@ -1,5 +1,4 @@
 import { Hono } from 'hono'
-import { renderer } from './renderer'
 import { siginup } from './router/siginup'
 import { siginup as signin } from './router/siginin'
 import { delate } from './router/delate'
@@ -8,23 +7,6 @@ import { UserDO } from './durable-objects/user'
 import { AdminDO } from './durable-objects/admin'
 
 const app = new Hono<{ Bindings: CloudflareBindings & { ADMIN_DO: DurableObjectNamespace } }>()
-
-app.use(renderer)
-
-// Serve static assets
-app.get('/assets/*', async (c) => {
-  const path = c.req.path
-  const assetPath = path.replace('/assets/', '')
-  const assets = (globalThis as any).ASSETS
-  if (assets && assets[assetPath]) {
-    return new Response(assets[assetPath], {
-      headers: {
-        'Content-Type': 'application/javascript',
-      },
-    })
-  }
-  return c.text('Asset not found', 404)
-})
 
 
 app.route('/signup', siginup)
@@ -54,27 +36,15 @@ app.get('/init-admin', async (c) => {
 })
 
 app.get('/', (c) => {
-  return c.render(<div>
-    <h1>Welcome to OpenBioCard API</h1>
-    <p>API is working</p>
-  </div>)
-})
-
-app.get('/frontend', (c) => {
-  return c.render(<div id="app"></div>)
-})
-
-// 处理用户个人页面路由 /{username} - 放在最后，确保其他路由优先
-app.get('/:username', async (c) => {
-  const username = c.req.param('username')
-
-  // 排除已定义的路由和保留用户名
-  if (['signup', 'signin', 'delete', 'admin', 'init-admin', 'frontend'].includes(username)) {
-    return c.notFound()
-  }
-
-  // 返回前端页面，让前端路由处理
-  return c.render(<div id="app"></div>)
+  return c.json({
+    message: 'OpenBioCard API',
+    version: '1.0.0',
+    endpoints: {
+      auth: ['/signup', '/signin'],
+      user: ['/user/:username'],
+      admin: ['/admin', '/init-admin']
+    }
+  })
 })
 
 // 用户资料API

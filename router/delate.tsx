@@ -1,5 +1,4 @@
 import { Hono } from 'hono'
-import { Delate } from '../types/delate'
 import { authMiddleware, AuthVariables } from '../middleware/auth'
 
 export const delate = new Hono<{ Bindings: { USERNAME: string; PASSWORD: string; USER_DO: any }, Variables: AuthVariables }>()

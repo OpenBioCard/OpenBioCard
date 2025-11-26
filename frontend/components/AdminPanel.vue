@@ -229,6 +229,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTheme } from '../composables/useTheme'
+import { adminAPI } from '../api/index.js'
 
 const props = defineProps({
   user: Object,
@@ -270,18 +271,9 @@ const fetchUsers = async () => {
 
   try {
     console.log('Fetching users for:', props.user.username)
-    const response = await fetch('/admin/users/list', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: props.user.username, token: props.token })
-    })
-    if (response.ok) {
-      const data = await response.json()
-      console.log('Received users:', data.users)
-      users.value = data.users || []
-    } else {
-      console.error('获取用户列表失败:', response.status, await response.text())
-    }
+    const data = await adminAPI.getUsers(props.token, props.user.username)
+    console.log('Received users:', data.users)
+    users.value = data.users || []
   } catch (error) {
     console.error('获取用户列表失败:', error)
   }
@@ -296,29 +288,14 @@ const createUser = async () => {
   creating.value = true
   try {
     console.log('Creating user:', newUser.value.username)
-    const response = await fetch('/admin/users', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: props.user.username,
-        token: props.token,
-        newUsername: newUser.value.username,
-        password: newUser.value.password,
-        type: newUser.value.type
-      })
-    })
-    if (response.ok) {
-      alert(t('admin.userCreated'))
-      newUser.value = { username: '', password: '', type: 'user' }
-      console.log('Refreshing user list after creation')
-      await fetchUsers()
-    } else {
-      const errorData = await response.json()
-      alert(`${t('admin.userCreateFailed')}: ${errorData.error || t('admin.userCreateError')}`)
-    }
+    await adminAPI.createUser(newUser.value, props.token, props.user.username)
+    alert(t('admin.userCreated'))
+    newUser.value = { username: '', password: '', type: 'user' }
+    console.log('Refreshing user list after creation')
+    await fetchUsers()
   } catch (error) {
     console.error('Create user error:', error)
-    alert(t('admin.userCreateError'))
+    alert(`${t('admin.userCreateFailed')}: ${error.message}`)
   } finally {
     creating.value = false
   }
@@ -334,22 +311,13 @@ const deleteUser = async (username) => {
 
   try {
     console.log('Deleting user:', username)
-    const response = await fetch(`/admin/users/${username}`, {
-      method: 'DELETE',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: props.user.username, token: props.token })
-    })
-    if (response.ok) {
-      alert(t('admin.userDeleted'))
-      console.log('Refreshing user list after deletion')
-      await fetchUsers()
-    } else {
-      const errorData = await response.json()
-      alert(`${t('admin.userDeleteFailed')}: ${errorData.error || t('admin.userDeleteError')}`)
-    }
+    await adminAPI.deleteUser(username, props.token, props.user.username)
+    alert(t('admin.userDeleted'))
+    console.log('Refreshing user list after deletion')
+    await fetchUsers()
   } catch (error) {
     console.error('Delete user error:', error)
-    alert(t('admin.userDeleteError'))
+    alert(`${t('admin.userDeleteFailed')}: ${error.message}`)
   }
 }
 

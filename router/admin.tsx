@@ -1,6 +1,5 @@
 import { Hono } from 'hono'
 import { authMiddleware, requirePermission, AuthVariables } from '../middleware/auth'
-import { CreateAccount } from '../types/siginup'
 import { hashPassword } from '../utils/password'
 
 export const admin = new Hono<{ Bindings: CloudflareBindings & { ADMIN_DO: DurableObjectNamespace }, Variables: AuthVariables }>()

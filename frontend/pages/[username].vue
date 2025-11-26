@@ -15,7 +15,7 @@
         <p style="font-size: 1.25rem; color: var(--color-text-tertiary); margin: 0 0 2rem;">{{ $t('error.userNotFound') }}</p>
         <p style="color: var(--color-text-tertiary); margin: 0 0 2rem;">{{ $t('error.userNotFoundMessage', { username }) }}</p>
         <a
-          href="/frontend"
+          href="/"
           style="display: inline-block; padding: 0.75rem 1.5rem; background: var(--color-primary); color: var(--color-text-inverse); border-radius: 0.5rem; text-decoration: none; transition: background-color 0.2s; font-weight: 500;"
           onmouseover="this.style.backgroundColor='var(--color-primary-hover)'"
           onmouseout="this.style.backgroundColor='var(--color-primary)'"
@@ -144,6 +144,7 @@ import GalleryList from '../components/GalleryList.vue'
 import GalleryEdit from '../components/GalleryEdit.vue'
 import QRCodeModal from '../components/QRCodeModal.vue'
 import { useSocialLinksData } from '../composables/useGitHubData'
+import { userAPI } from '../api/index.js'
 
 const route = useRoute()
 const { t } = useI18n()
@@ -227,35 +228,31 @@ const { fetchAllData: fetchSocialLinksData, initialize: initializeSocialLinks } 
 // 加载用户资料
 const loadProfile = async () => {
   try {
-    const response = await fetch(`/user/${username}`)
-    if (response.ok) {
-      const data = await response.json()
-      profileData.value = { ...profileData.value, ...data }
-      // 确保 socialLinks、projects 和 gallery 是数组
-      if (!profileData.value.socialLinks) {
-        profileData.value.socialLinks = []
-      }
-      if (!profileData.value.projects) {
-        profileData.value.projects = []
-      }
-      if (!profileData.value.gallery) {
-        profileData.value.gallery = []
-      }
-      // 使用深拷贝避免引用问题
-      editData.value = JSON.parse(JSON.stringify(profileData.value))
-      // 初始化社交媒体链接数据（获取 GitHub 信息并启动定时更新）
-      await initializeSocialLinks()
-      userNotFound.value = false
-    } else if (response.status === 404) {
+    const data = await userAPI.getProfile(username)
+    profileData.value = { ...profileData.value, ...data }
+    // 确保 socialLinks、projects 和 gallery 是数组
+    if (!profileData.value.socialLinks) {
+      profileData.value.socialLinks = []
+    }
+    if (!profileData.value.projects) {
+      profileData.value.projects = []
+    }
+    if (!profileData.value.gallery) {
+      profileData.value.gallery = []
+    }
+    // 使用深拷贝避免引用问题
+    editData.value = JSON.parse(JSON.stringify(profileData.value))
+    // 初始化社交媒体链接数据（获取 GitHub 信息并启动定时更新）
+    await initializeSocialLinks()
+    userNotFound.value = false
+  } catch (error) {
+    if (error.message === 'User not found') {
       // 用户不存在，显示404页面
       userNotFound.value = true
     } else {
-      console.error('加载用户资料失败:', response.status)
+      console.error('加载用户资料失败:', error)
       userNotFound.value = true
     }
-  } catch (error) {
-    console.error('加载用户资料失败:', error)
-    userNotFound.value = true
   }
 }
 
@@ -276,23 +273,11 @@ const saveProfile = async () => {
 
   saving.value = true
   try {
-    const response = await fetch(`/user/${username}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token.value}`
-      },
-      body: JSON.stringify(editData.value)
-    })
-
-    if (response.ok) {
-      // 使用深拷贝避免引用问题
-      profileData.value = JSON.parse(JSON.stringify(editData.value))
-      editMode.value = false
-      alert(t('profile.saveSuccess'))
-    } else {
-      alert(t('profile.saveFailed'))
-    }
+    await userAPI.updateProfile(username, editData.value, token.value)
+    // 使用深拷贝避免引用问题
+    profileData.value = JSON.parse(JSON.stringify(editData.value))
+    editMode.value = false
+    alert(t('profile.saveSuccess'))
   } catch (error) {
     alert(t('profile.saveFailed'))
   } finally {
@@ -501,7 +486,7 @@ const logout = () => {
   deleteCookie('auth_username')
   currentUser.value = null
   token.value = ''
-  window.location.href = '/frontend'
+  window.location.href = '/'
 }
 
 onMounted(() => {

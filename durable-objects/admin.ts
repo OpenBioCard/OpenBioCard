@@ -1,4 +1,3 @@
-import { CreateAccount } from '../types/siginup'
 import { DurableObject } from 'cloudflare:workers'
 
 export class AdminDO extends DurableObject {

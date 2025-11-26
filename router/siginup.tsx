@@ -1,5 +1,4 @@
 import { Hono } from 'hono'
-import { renderer } from '../renderer'
 import { CreateAccount } from '../types/siginup'
 import { hashPassword } from '../utils/password'
 
