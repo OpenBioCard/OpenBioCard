@@ -18,13 +18,13 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_classes": [
+      "new_sqlite_classes": [
         "UserDO"
       ]
     },
     {
       "tag": "v2",
-      "new_classes": [
+      "new_sqlite_classes": [
         "AdminDO"
       ]
     }

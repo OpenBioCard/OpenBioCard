@@ -22,11 +22,11 @@ class_name = "AdminDO"
 # Durable Objects migrations
 [[migrations]]
 tag = "v1"
-new_classes = ["UserDO"]
+new_sqlite_classes = ["UserDO"]
 
 [[migrations]]
 tag = "v2"
-new_classes = ["AdminDO"]
+new_sqlite_classes = ["AdminDO"]
 
 # Build configuration
 [build]
