@@ -47,23 +47,14 @@ app.get('/init-admin', async (c) => {
 })
 
 app.get('/', (c) => {
-  return c.text('Welcome to OpenBioCard API')
+  return c.render(<div>
+    <h1>Welcome to OpenBioCard API</h1>
+    <p>API is working</p>
+  </div>)
 })
 
 app.get('/frontend', (c) => {
-  return c.html(`<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/frontend/main.js"></script>
-  </body>
-</html>`)
+  return c.render(<div id="app"></div>)
 })
 
 // 处理用户个人页面路由 /{username} - 放在最后，确保其他路由优先
@@ -76,19 +67,7 @@ app.get('/:username', async (c) => {
   }
 
   // 返回前端页面，让前端路由处理
-  return c.html(`<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>${username} - OpenBioCard</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/frontend/main.js"></script>
-  </body>
-</html>`)
+  return c.render(<div id="app"></div>)
 })
 
 // 用户资料API

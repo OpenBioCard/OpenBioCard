@@ -8,7 +8,10 @@ export const renderer = jsxRenderer(({ children }) => {
         <ViteClient />
         <Link href="/src/server/style.css" rel="stylesheet" />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <script type="module" src="/assets/index-CVxLinS3.js"></script>
+      </body>
     </html>
   )
 })
