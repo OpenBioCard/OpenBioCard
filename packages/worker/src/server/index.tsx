@@ -38,7 +38,7 @@ app.get('/init-admin', async (c) => {
 })
 
 app.get('/', (c) => {
-  return c.render(<h1>Hello!</h1>)
+  return c.render(<h1>Welcome to OpenBioCard API</h1>)
 })
 
 app.get('/frontend', (c) => {
