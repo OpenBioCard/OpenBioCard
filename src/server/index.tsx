@@ -11,15 +11,6 @@ const app = new Hono<{ Bindings: CloudflareBindings & { ADMIN_DO: DurableObjectN
 
 app.use(renderer)
 
-// Serve static assets
-app.get('/assets/*', async (c) => {
-  const path = c.req.path
-  const assetPath = path.replace('/assets/', '')
-  // In production, assets are embedded in the worker
-  // For now, return 404
-  return c.text('Asset not found', 404)
-})
-
 app.route('/signup', siginup)
 app.route('/signin', signin)
 app.route('/delete', delate)
