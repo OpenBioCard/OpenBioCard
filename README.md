@@ -4,6 +4,14 @@
 
 [中文文档](./README.zh-CN.md)
 
+## Quick Deploy
+
+[![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/OpenBioCard/OpenBioCard)
+
+Click the button above to deploy OpenBioCard to Cloudflare Workers in one click. You'll need a Cloudflare account (free tier works).
+
+**📚 [Detailed Deployment Guide](./DEPLOY.md)** | **📚 [中文部署指南](./DEPLOY.zh-CN.md)**
+
 ## Table of Contents
 
 - [Overview](#overview)

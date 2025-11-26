@@ -4,6 +4,14 @@
 
 [English Documentation](./README.md)
 
+## 快速部署
+
+[![部署到 Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/OpenBioCard/OpenBioCard)
+
+点击上方按钮一键部署 OpenBioCard 到 Cloudflare Workers。你需要一个 Cloudflare 账户（免费版即可）。
+
+**📚 [详细部署指南](./DEPLOY.zh-CN.md)** | **📚 [English Deployment Guide](./DEPLOY.md)**
+
 ## 目录
 
 - [项目简介](#项目简介)
