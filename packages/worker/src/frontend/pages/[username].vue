@@ -52,8 +52,13 @@
           <!-- 用户头像和基本信息 -->
           <div style="display: flex; flex-direction: column; align-items: flex-start; gap: 1.5rem; margin-top: -4rem; position: relative; z-index: 10;">
             <div style="position: relative;">
-              <div style="width: 8rem; height: 8rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: bold; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25); border: 4px solid white;">
-                {{ profileData.avatar || profileData.username.charAt(0).toUpperCase() }}
+              <div style="width: 8rem; height: 8rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 1rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 2.5rem; font-weight: bold; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.25); border: 4px solid white; overflow: hidden;">
+                <template v-if="isBase64Image(profileData.avatar)">
+                  <img :src="profileData.avatar" style="width: 100%; height: 100%; object-fit: cover;" />
+                </template>
+                <template v-else>
+                  {{ profileData.avatar || profileData.username.charAt(0).toUpperCase() }}
+                </template>
               </div>
               <!-- 编辑按钮 - 更明显 -->
               <button
@@ -111,14 +116,45 @@
                   </div>
                   <div style="display: flex; flex-direction: column; gap: 0.5rem;">
                     <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151;">头像</label>
-                    <input
-                      v-model="editData.avatar"
-                      type="text"
-                      style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
-                      placeholder="请输入头像字符或emoji"
-                      onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
-                      onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
-                    />
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                      <div style="width: 4rem; height: 4rem; background: linear-gradient(135deg, #3b82f6, #8b5cf6, #ec4899); border-radius: 0.75rem; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold; border: 2px solid white; overflow: hidden;">
+                        <template v-if="isBase64Image(editData.avatar)">
+                          <img :src="editData.avatar" style="width: 100%; height: 100%; object-fit: cover;" />
+                        </template>
+                        <template v-else>
+                          {{ editData.avatar || profileData.username.charAt(0).toUpperCase() }}
+                        </template>
+                      </div>
+                      <div style="flex: 1; display: flex; flex-direction: column; gap: 0.5rem;">
+                        <input
+                          v-model="editData.avatar"
+                          type="text"
+                          style="width: 100%; padding: 0.75rem 1rem; border: 1px solid #d1d5db; border-radius: 0.75rem; outline: none; transition: all 0.2s;"
+                          placeholder="请输入头像字符或emoji"
+                          onfocus="this.style.borderColor='#3b82f6'; this.style.boxShadow='0 0 0 3px rgba(59, 130, 246, 0.1)'"
+                          onblur="this.style.borderColor='#d1d5db'; this.style.boxShadow='none'"
+                        />
+                        <div style="position: relative;">
+                          <input
+                            ref="fileInput"
+                            type="file"
+                            accept="image/*"
+                            style="position: absolute; opacity: 0; width: 0; height: 0;"
+                            @change="handleAvatarUpload"
+                          />
+                          <button
+                            type="button"
+                            @click="$refs.fileInput.click()"
+                            style="width: 100%; padding: 0.5rem 1rem; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: #374151;"
+                            onmouseover="this.style.backgroundColor='#e5e7eb'"
+                            onmouseout="this.style.backgroundColor='#f3f4f6'"
+                          >
+                            📷 上传图片
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <p style="font-size: 0.75rem; color: #6b7280; margin: 0;">支持字符、emoji或上传图片（最大2MB）</p>
                   </div>
                 </div>
                 <div style="display: flex; flex-direction: column; gap: 0.5rem;">
@@ -312,6 +348,9 @@ const editMode = ref(false)
 const saving = ref(false)
 const editData = ref({ ...profileData.value })
 
+// 文件输入引用
+const fileInput = ref(null)
+
 // 获取cookie
 const getCookie = (name) => {
   const value = `; ${document.cookie}`
@@ -329,6 +368,11 @@ const deleteCookie = (name) => {
 const canEdit = computed(() => {
   return currentUser.value && currentUser.value.username === username
 })
+
+// 检查是否为base64图片
+const isBase64Image = (str) => {
+  return str && str.startsWith('data:image/') && str.includes('base64,')
+}
 
 // 获取联系方式图标
 const getContactIcon = (type) => {
@@ -424,6 +468,30 @@ const addContact = () => {
 // 删除联系方式
 const removeContact = (index) => {
   editData.value.contacts.splice(index, 1)
+}
+
+// 处理头像上传
+const handleAvatarUpload = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // 检查文件大小（最大2MB）
+  if (file.size > 2 * 1024 * 1024) {
+    alert('图片大小不能超过2MB')
+    return
+  }
+
+  // 检查文件类型
+  if (!file.type.startsWith('image/')) {
+    alert('请选择图片文件')
+    return
+  }
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    editData.value.avatar = e.target.result // base64数据
+  }
+  reader.readAsDataURL(file)
 }
 
 // 退出登录
