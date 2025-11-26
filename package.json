@@ -1,28 +1,26 @@
 {
   "name": "OpenBioCard",
   "version": "1.0.0",
-  "type": "module",
-  "description": "✨A free and open source decentralized electronic business card software✨",
-  "main": "src/main.ts",
+  "description": "",
+  "main": "index.js",
   "scripts": {
-    "dev": "turbo run dev",
-    "build": "turbo run build",
-    "lint": "turbo run lint",
-    "test": "turbo run test"
+    "build": "nx build",
+    "dev": "nx serve worker",
+    "test": "nx test",
+    "nx": "nx"
   },
-  "keywords": [
-    "bio",
-    "card",
-    "open"
-  ],
-  "author": "Cherry Fu",
-  "license": "MIT",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "packageManager": "pnpm@10.10.0",
-  "dependencies": {
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
-  },
   "devDependencies": {
-    "turbo": "^2.3.3"
-  }
+    "@nx/vite": "^22.1.1",
+    "@types/jest": "^29.0.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.0.0",
+    "nx": "22.1.1",
+    "typescript": "^5.0.0",
+    "vue-i18n": "^9.14.5"
+  },
+  "nx": {}
 }

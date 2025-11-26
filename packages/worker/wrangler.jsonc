@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "openbiocard",
+  "compatibility_date": "2025-08-03",
+  "main": "./src/server/index.tsx",
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "USER_DO",
+        "class_name": "UserDO"
+      },
+      {
+        "name": "ADMIN_DO",
+        "class_name": "AdminDO"
+      }
+    ]
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_classes": [
+        "UserDO"
+      ]
+    },
+    {
+      "tag": "v2",
+      "new_classes": [
+        "AdminDO"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,117 @@
+import { CreateAccount } from '../types/siginup'
+import { DurableObject } from 'cloudflare:workers'
+
+export class UserDO extends DurableObject {
+  constructor(state: DurableObjectState, env: CloudflareBindings) {
+    super(state, env)
+  }
+
+  async fetch(request: Request) {
+    const url = new URL(request.url)
+
+    if (request.method === 'POST' && url.pathname === '/store') {
+      const data: CreateAccount = await request.json()
+      await this.ctx.storage.put('user', data)
+
+      // 注册到AdminDO（如果不是root用户）
+      if (data.type !== 'root') {
+        try {
+          // 这里需要AdminDO的引用，暂时简化
+          // 实际应该通过环境变量传递AdminDO
+        } catch (e) {
+          // 忽略错误
+        }
+      }
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (request.method === 'GET' && url.pathname === '/get') {
+      const data = await this.ctx.storage.get('user')
+      return new Response(JSON.stringify(data || null), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (request.method === 'POST' && url.pathname === '/verify-token') {
+      const { token }: { token: string } = await request.json()
+      const data = await this.ctx.storage.get('user') as CreateAccount | undefined
+      if (data && data.token === token) {
+        return new Response(JSON.stringify({ valid: true, type: data.type, username: data.username }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      } else {
+        return new Response(JSON.stringify({ valid: false }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+    }
+
+    if (request.method === 'POST' && url.pathname === '/delate') {
+      // 删除账号时同时删除所有相关资料
+      await this.ctx.storage.delete('user')
+      await this.ctx.storage.delete('profile')
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (request.method === 'GET' && url.pathname === '/get-profile') {
+      const data = await this.ctx.storage.get('user') as CreateAccount | undefined
+      if (data) {
+        const profile = await this.ctx.storage.get('profile') || {}
+        return new Response(JSON.stringify({
+          username: data.username,
+          name: '',
+          avatar: '',
+          bio: '',
+          location: '',
+          website: '',
+          contacts: [],
+          socialLinks: [],
+          projects: [],
+          gallery: [],
+          ...profile
+        }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      } else {
+        return new Response(JSON.stringify({ error: 'User not found' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+    }
+
+    if (request.method === 'POST' && url.pathname === '/update-profile') {
+      const profileData = await request.json()
+      await this.ctx.storage.put('profile', profileData)
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (request.method === 'GET' && url.pathname === '/get-users') {
+      // 特殊端点：如果这是admin-manager实例，返回所有用户
+      const url = new URL(request.url)
+      if (url.hostname.includes('admin-manager')) {
+        // 这里简化实现，实际应该从AdminDO获取
+        // 暂时返回示例数据
+        const users = [
+          { username: 'admin', type: 'admin' },
+          { username: 'user1', type: 'user' }
+        ]
+        return new Response(JSON.stringify({ users }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+      return new Response(JSON.stringify({ users: [] }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    return new Response('Not found', { status: 404 })
+  }
+}

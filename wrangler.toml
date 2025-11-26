@@ -1,0 +1,38 @@
+# Cloudflare Workers Deployment Template
+#
+# This template helps you deploy OpenBioCard to Cloudflare Workers.
+# The actual configuration is in packages/worker/wrangler.jsonc
+
+name = "openbiocard"
+main = "packages/worker/dist/openbiocard/index.js"
+compatibility_date = "2025-08-03"
+
+# Account settings (will be configured during deployment)
+# account_id = ""
+
+# Durable Objects configuration
+[[durable_objects.bindings]]
+name = "USER_DO"
+class_name = "UserDO"
+
+[[durable_objects.bindings]]
+name = "ADMIN_DO"
+class_name = "AdminDO"
+
+# Durable Objects migrations
+[[migrations]]
+tag = "v1"
+new_classes = ["UserDO"]
+
+[[migrations]]
+tag = "v2"
+new_classes = ["AdminDO"]
+
+# Build configuration
+[build]
+command = "cd packages/worker && pnpm install && pnpm run build"
+
+[build.upload]
+format = "modules"
+dir = "packages/worker/dist/openbiocard"
+main = "./index.js"
