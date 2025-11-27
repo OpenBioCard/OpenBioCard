@@ -82,9 +82,27 @@ Create environment files in the project root directory:
 # Cloudflare Workers local development variables
 # This file is ignored by git
 # Add your local secrets here
+
+# Required secrets for the application
+ROOT_USERNAME=root
+ROOT_PASSWORD=your_secure_root_password_here
 ```
 
 **⚠️ Important**: Never commit `.env`, `.dev.vars`, or `.env.production` files to git. They are already included in `.gitignore`.
+
+#### Production Secrets Setup
+
+For production deployment, set the following secrets using Wrangler CLI:
+
+```bash
+# Set root username (default: root)
+pnpm wrangler secret put ROOT_USERNAME
+
+# Set root password (choose a secure password)
+pnpm wrangler secret put ROOT_PASSWORD
+```
+
+These secrets will be securely stored in Cloudflare's environment and won't be visible in your code repository.
 
 ### 2. Wrangler Configuration
 
