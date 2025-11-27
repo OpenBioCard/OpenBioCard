@@ -30,6 +30,8 @@
 
 OpenBioCard 是一个基于 Cloudflare Workers 构建的去中心化电子名片平台。它允许用户创建和分享包含自定义链接和个人信息的专业档案。
 
+**📖 [API 文档](./docs/API.md)** | **📖 [API Documentation (EN)](./docs/API_EN.md)**
+
 ## 功能特性
 
 - 🌐 基于 Cloudflare Workers 的无服务器架构
@@ -300,6 +302,10 @@ OpenBioCard/
 ### 开发工具
 - **vite-ssr-components**: Vite 的 SSR 支持
 - **@cloudflare/vite-plugin**: Cloudflare Workers 集成
+
+### 文档
+- **[API 文档](./docs/API.md)** - 中文 API 参考文档
+- **[API Documentation (EN)](./docs/API_EN.md)** - English API reference documentation
 
 ## 贡献
 

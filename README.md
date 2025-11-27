@@ -1,119 +1,107 @@
 # OpenBioCard
 
-✨ A free and open source decentralized electronic business card software ✨
-
-[中文文档](./README.zh-CN.md)
-
-## Quick Deploy
+✨ 免费开源的去中心化电子名片软件 ✨
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/OpenBioCard/OpenBioCard)
 
-Click the button above to deploy OpenBioCard to Cloudflare Workers in one click. You'll need a Cloudflare account (free tier works).
+[📚 详细部署指南](./DEPLOY.md) | [📚 中文部署指南](./DEPLOY.zh-CN.md)
 
-**📚 [Detailed Deployment Guide](./DEPLOY.md)** | **📚 [中文部署指南](./DEPLOY.zh-CN.md)**
+## 📋 目录
 
-## Table of Contents
+- [概述](#-概述)
+- [特性](#-特性)
+- [快速开始](#-快速开始)
+- [环境配置](#-环境配置)
+- [本地开发](#-本地开发)
+- [构建部署](#-构建部署)
+- [项目结构](#-项目结构)
+- [技术栈](#-技术栈)
+- [贡献](#-贡献)
+- [许可证](#-许可证)
 
-- [Overview](#overview)
-- [Features](#features)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Development](#development)
-- [Building](#building)
-- [Deployment](#deployment)
-- [Project Structure](#project-structure)
-- [Technology Stack](#technology-stack)
-- [License](#license)
+## 🌟 概述
 
-## Overview
+OpenBioCard 是一个基于 Cloudflare Workers 构建的去中心化电子名片平台。用户可以创建和分享个性化的专业资料，包含可自定义的链接和信息。
 
-OpenBioCard is a decentralized electronic business card platform built on Cloudflare Workers. It allows users to create and share their professional profiles with customizable links and information.
+**📖 [API 文档](./docs/API.md)** | **📖 [API Documentation (EN)](./docs/API_EN.md)**
 
-## Features
+## ✨ 特性
 
-- 🌐 Serverless architecture powered by Cloudflare Workers
-- 💾 Data persistence with Durable Objects
-- 🎨 Modern UI built with Vue 3 and Tailwind CSS
-- 🔒 Secure authentication system
-- 🌍 Internationalization support (i18n)
-- 📱 Responsive design for all devices
-- ⚡ Fast global edge network delivery
+- 🌐 **无服务器架构** - 基于 Cloudflare Workers
+- 💾 **数据持久化** - 使用 Durable Objects
+- 🎨 **现代化 UI** - Vue 3 + Tailwind CSS
+- 🔒 **安全认证** - 完整的用户认证系统
+- 🌍 **国际化支持** - 多语言界面
+- 📱 **响应式设计** - 适配所有设备
+- ⚡ **全球边缘网络** - 快速的内容分发
 
-## Prerequisites
+## 🚀 快速开始
 
-Before you begin, ensure you have the following installed:
+### 环境要求
 
-- **Node.js**: v20.x or later
-- **pnpm**: v10.x or later (Package Manager)
-- **Cloudflare Account**: Free tier is sufficient
-- **Wrangler CLI**: Installed automatically with dependencies
+- **Node.js**: v20.x 或更高版本
+- **pnpm**: v10.x 或更高版本
+- **Cloudflare 账户**: 免费套餐即可
 
-## Installation
+### 安装步骤
 
-1. **Clone the repository**
-
+1. **克隆项目**
    ```bash
-   git clone https://github.com/yourusername/OpenBioCard.git
+   git clone https://github.com/OpenBioCard/OpenBioCard.git
    cd OpenBioCard
    ```
 
-2. **Install dependencies**
-
+2. **安装依赖**
    ```bash
    pnpm install
    ```
 
-## Configuration
+3. **配置环境变量**
+   ```bash
+   cp .env.example .env  # 如果存在示例文件
+   ```
 
-### 1. Environment Variables
+4. **启动开发服务器**
+   ```bash
+   pnpm run dev
+   ```
 
-Create environment files in the project root directory:
+应用将在 `http://localhost:8787` 上运行。
 
-#### `.env` (For build-time configuration)
+## ⚙️ 环境配置
+
+### 本地开发环境变量
+
+创建 `.dev.vars` 文件（已包含在 `.gitignore` 中）：
 
 ```env
-# Add your build-time environment variables here
-```
-
-#### `.dev.vars` (For local development secrets)
-
-```env
-# Cloudflare Workers local development variables
-# This file is ignored by git
-# Add your local secrets here
-
-# Required secrets for the application
+# 必需的密钥
 ROOT_USERNAME=root
-ROOT_PASSWORD=your_secure_root_password_here
+ROOT_PASSWORD=your_secure_password_here
+
+# 可选的环境变量
+CORS_ALLOWED_ORIGINS=*
+CORS_ALLOWED_METHODS=GET,POST,PUT,DELETE,OPTIONS
+CORS_ALLOWED_HEADERS=Content-Type,Authorization
 ```
 
-**⚠️ Important**: Never commit `.env`, `.dev.vars`, or `.env.production` files to git. They are already included in `.gitignore`.
+### 生产环境配置
 
-#### Production Secrets Setup
+#### 1. Wrangler 配置
 
-For production deployment, set the following secrets using Wrangler CLI:
-
-```bash
-# Set root username (default: root)
-pnpm wrangler secret put ROOT_USERNAME
-
-# Set root password (choose a secure password)
-pnpm wrangler secret put ROOT_PASSWORD
-```
-
-These secrets will be securely stored in Cloudflare's environment and won't be visible in your code repository.
-
-### 2. Wrangler Configuration
-
-The Wrangler configuration is located at `wrangler.jsonc`:
+`wrangler.jsonc` 配置文件：
 
 ```jsonc
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "openbiocard",
   "compatibility_date": "2025-08-03",
-  "main": "./src/server/index.tsx",
+  "main": "./index.tsx",
+  "vars": {
+    "CORS_ALLOWED_ORIGINS": "*",
+    "CORS_ALLOWED_METHODS": "GET,POST,PUT,DELETE,OPTIONS",
+    "CORS_ALLOWED_HEADERS": "Content-Type,Authorization"
+  },
   "durable_objects": {
     "bindings": [
       {
@@ -125,212 +113,221 @@ The Wrangler configuration is located at `wrangler.jsonc`:
         "class_name": "AdminDO"
       }
     ]
-  }
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["UserDO"]
+    },
+    {
+      "tag": "v2",
+      "new_sqlite_classes": ["AdminDO"]
+    }
+  ]
 }
 ```
 
-### 3. Cloudflare Account Setup
+#### 2. 设置生产密钥
 
-1. **Login to Wrangler**
+使用 Wrangler CLI 设置敏感信息：
 
-   ```bash
-   pnpm wrangler login
-   ```
+```bash
+# 设置 root 用户名
+pnpm wrangler secret put ROOT_USERNAME
 
-2. **Configure your account ID** (if needed)
+# 设置 root 密码
+pnpm wrangler secret put ROOT_PASSWORD
+```
 
-   Update `wrangler.jsonc` with your account ID:
+#### 3. Cloudflare 账户配置
 
-   ```jsonc
-   {
-     "account_id": "your-account-id-here"
-   }
-   ```
+```bash
+# 登录 Wrangler
+pnpm wrangler login
 
-## Development
+# 可选：配置账户 ID
+pnpm wrangler config
+```
 
-### Start Development Server
+## 💻 本地开发
+
+### 开发服务器
 
 ```bash
 pnpm run dev
 ```
 
-This will start:
-- Vite development server with HMR (Hot Module Replacement)
-- Cloudflare Workers local runtime
-- Durable Objects local storage
+此命令将启动：
+- Vite 开发服务器（支持热重载）
+- Cloudflare Workers 本地运行时
+- Durable Objects 本地存储
 
-The application will be available at `http://localhost:8787` (or the port shown in terminal).
+### 本地数据存储
 
-### Local Durable Objects Data
-
-Local Durable Objects data is stored in:
+本地 Durable Objects 数据存储在：
 ```
 .wrangler/state/v3/do/
 ├── openbiocard-AdminDO/
 └── openbiocard-UserDO/
 ```
 
-**This directory is automatically ignored by git** to prevent local test data from being committed.
+此目录已被 `.gitignore` 忽略。
 
-### Generate TypeScript Types
+### 类型生成
 
-To generate TypeScript types based on your Worker configuration:
+生成基于 Worker 配置的 TypeScript 类型：
 
 ```bash
 pnpm run cf-typegen
 ```
 
-## Building
+## 🏗️ 构建部署
 
-### Build for Production
+### 生产构建
 
 ```bash
 pnpm run build
 ```
 
-This will:
-1. Build the Vue 3 client application
-2. Build the SSR (Server-Side Rendering) bundle
-3. Build the Cloudflare Worker bundle
-4. Output to `dist/`
-
-Build outputs:
+构建产物位于 `dist/` 目录：
 ```
 dist/
-├── client/          # Client-side assets
-│   ├── assets/      # JS and CSS bundles
-│   └── .vite/       # Vite manifest
-├── openbiocard/     # Worker bundle
-│   ├── index.js     # Main worker script
-│   ├── wrangler.json
-│   └── .vite/
-└── index.js         # SSR entry
+├── client/          # 客户端资源
+│   ├── assets/      # JS 和 CSS 包
+│   └── .vite/       # Vite 清单
+├── openbiocard/     # Worker 包
+│   ├── index.js     # 主 Worker 脚本
+│   └── wrangler.json
+└── index.js         # SSR 入口
 ```
 
-## Deployment
+### 部署到 Cloudflare Workers
 
-### Deploy to Cloudflare Workers
-
-1. **Ensure you're logged in**
-
+1. **确保已登录**
    ```bash
    pnpm wrangler login
    ```
 
-2. **Build and Deploy**
-
+2. **构建并部署**
    ```bash
    pnpm run deploy
    ```
 
-3. **First-time Durable Objects Setup**
+3. **首次部署设置**
 
-   On first deployment, Cloudflare will automatically:
-   - Create the Durable Objects namespaces
-   - Run migrations defined in `wrangler.jsonc`
-   - Bind the Durable Objects to your Worker
+   Cloudflare 将自动：
+   - 创建 Durable Objects 命名空间
+   - 运行 `wrangler.jsonc` 中定义的迁移
+   - 绑定 Durable Objects 到 Worker
 
-### Post-Deployment
+### 部署后配置
 
-After deployment, your application will be available at:
+应用部署后可在以下地址访问：
 ```
 https://openbiocard.<your-subdomain>.workers.dev
 ```
 
-Or at your custom domain if configured in Cloudflare Dashboard.
+或配置自定义域名后的地址。
 
-### Environment Variables in Production
+### 初始化管理员用户
 
-To set production environment variables:
-
-```bash
-# Set a secret
-pnpm wrangler secret put SECRET_NAME
-
-# Or use the Cloudflare Dashboard:
-# Workers & Pages > Your Worker > Settings > Variables
+部署后，访问以下端点初始化管理员用户：
+```
+https://your-domain.workers.dev/init-admin
 ```
 
-### Durable Objects in Production
-
-- Production Durable Objects data is stored in Cloudflare's global network
-- Data persists across deployments
-- Each Durable Object instance is automatically distributed globally
-- To view Durable Objects in dashboard: Workers & Pages > Your Worker > Durable Objects
-
-## Project Structure
+## 📁 项目结构
 
 ```
 OpenBioCard/
-├── src/
-│   ├── frontend/             # Vue 3 frontend application
-│   │   ├── components/       # Vue components
-│   │   ├── pages/            # Page components
-│   │   ├── i18n/             # Internationalization
-│   │   ├── App.vue           # Root component
-│   │   ├── main.js           # Client entry
-│   │   ├── index.html        # HTML template
-│   │   └── style.css         # Global styles
-│   └── server/               # Cloudflare Worker backend
-│       ├── durable-objects/  # Durable Objects classes
-│       │   ├── admin.ts      # AdminDO
-│       │   └── user.ts       # UserDO
-│       ├── router/           # API routes
-│       ├── middleware/       # Hono middleware
-│       ├── types/            # TypeScript types
-│       ├── utils/            # Utility functions
-│       ├── index.tsx         # Worker entry
-│       └── renderer.tsx      # SSR renderer
-├── public/                   # Static assets
-├── dist/                     # Build output (gitignored)
-├── .wrangler/                # Local dev data (gitignored)
-├── node_modules/             # Dependencies (gitignored)
-├── vite.config.ts            # Vite configuration
-├── wrangler.jsonc            # Wrangler configuration
-├── tsconfig.json             # TypeScript configuration
-├── tailwind.config.js        # Tailwind CSS configuration
-├── postcss.config.js         # PostCSS configuration
-├── package.json              # Project dependencies
-├── .gitignore                # Git ignore rules
-└── README.md                 # This file
+├── index.tsx                    # Worker 主入口
+├── renderer.tsx                 # SSR 渲染器
+├── durable-objects/             # Durable Objects 类
+│   ├── admin.ts                 # 管理员 DO
+│   └── user.ts                  # 用户 DO
+├── router/                      # API 路由
+│   ├── admin.tsx                # 管理员路由
+│   ├── siginin.tsx              # 登录路由
+│   ├── siginup.tsx              # 注册路由
+│   └── delate.tsx               # 删除路由
+├── middleware/                  # 中间件
+│   └── auth.ts                  # 认证中间件
+├── types/                       # TypeScript 类型
+├── utils/                       # 工具函数
+│   └── password.ts              # 密码工具
+├── frontend/                    # Vue 3 前端应用
+│   ├── App.vue                  # 根组件
+│   ├── main.js                  # 客户端入口
+│   ├── index.html               # HTML 模板
+│   ├── components/              # Vue 组件
+│   ├── pages/                   # 页面组件
+│   ├── composables/             # 组合式函数
+│   ├── i18n/                    # 国际化
+│   ├── config/                  # 配置
+│   ├── assets/                  # 静态资源
+│   ├── scripts/                 # 脚本
+│   └── public/                  # 公共资源
+├── docs/                        # 文档
+├── scripts/                     # 构建脚本
+├── .env                         # 环境变量
+├── .dev.vars                    # 本地开发密钥
+├── wrangler.toml                # Wrangler 配置 (备用)
+├── wrangler.jsonc               # Wrangler 配置
+├── package.json                 # 项目依赖
+├── tsconfig.json                # TypeScript 配置
+├── vite.config.ts               # Vite 配置
+├── tailwind.config.js           # Tailwind 配置
+├── postcss.config.js            # PostCSS 配置
+└── README.md                    # 项目文档
 ```
 
-## Technology Stack
+## 🛠️ 技术栈
 
-### Frontend
-- **Vue 3**: Progressive JavaScript framework
-- **Vue Router**: Official router for Vue.js
-- **Tailwind CSS 4**: Utility-first CSS framework
-- **Vue I18n**: Internationalization plugin
+### 前端
+- **Vue 3** - 渐进式 JavaScript 框架
+- **Vue Router** - 官方路由管理器
+- **Tailwind CSS** - 实用优先的 CSS 框架
+- **Vue I18n** - 国际化插件
 
-### Backend
-- **Cloudflare Workers**: Serverless execution environment
-- **Hono**: Fast, lightweight web framework
-- **Durable Objects**: Strongly consistent, stateful objects
-- **TypeScript**: Type-safe JavaScript
+### 后端
+- **Cloudflare Workers** - 无服务器执行环境
+- **Hono** - 轻量级 Web 框架
+- **Durable Objects** - 强一致性状态对象
+- **TypeScript** - 类型安全的 JavaScript
 
-### Build Tools
-- **Vite 6**: Next-generation frontend tooling
-- **Wrangler**: Cloudflare Workers CLI
-- **PNPM**: Fast, disk space efficient package manager
+### 构建工具
+- **Vite** - 下一代前端工具链
+- **Wrangler** - Cloudflare Workers CLI
+- **PNPM** - 快速的包管理器
 
-### Development Tools
-- **vite-ssr-components**: SSR support for Vite
-- **@cloudflare/vite-plugin**: Cloudflare Workers integration
+### 开发工具
+- **ESLint** - 代码检查
+- **Prettier** - 代码格式化
 
-## Contributing
+### 文档
+- **[API 文档](./docs/API.md)** - 中文 API 参考文档
+- **[API Documentation (EN)](./docs/API_EN.md)** - English API reference documentation
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+## 🤝 贡献
 
-## License
+欢迎贡献！请随时提交 Pull Request。
 
-MIT
+### 开发流程
 
-## Support
+1. Fork 本项目
+2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 创建 Pull Request
 
-If you encounter any issues or have questions, please open an issue on GitHub.
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+## 🆘 支持
+
+如果遇到问题或有疑问，请在 GitHub 上打开 issue。
 
 ---
 
-Made with ❤️ by the OpenBioCard team
+由 OpenBioCard 团队用 ❤️ 制作
