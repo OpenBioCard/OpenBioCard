@@ -11,6 +11,9 @@ out
 .wrangler
 **/.wrangler
 
+# Generated type definitions
+worker-configuration.d.ts
+
 # Environment variables
 .env
 .env.local
