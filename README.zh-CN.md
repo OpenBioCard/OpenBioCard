@@ -56,7 +56,7 @@ OpenBioCard 是一个基于 Cloudflare Workers 构建的去中心化电子名片
 1. **克隆仓库**
 
    ```bash
-   git clone https://github.com/yourusername/OpenBioCard.git
+   git clone https://github.com/OpenBioCard/OpenBioCard.git
    cd OpenBioCard
    ```
 
