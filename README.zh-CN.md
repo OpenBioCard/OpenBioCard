@@ -179,19 +179,6 @@ pnpm run build
 3. 构建 Cloudflare Worker 包
 4. 输出到 `dist/`
 
-构建输出：
-```
-dist/
-├── client/          # 客户端资源
-│   ├── assets/      # JS 和 CSS 包
-│   └── .vite/       # Vite 清单文件
-├── openbiocard/     # Worker 包
-│   ├── index.js     # Worker 主脚本
-│   ├── wrangler.json
-│   └── .vite/
-└── index.js         # SSR 入口
-```
-
 ## 部署
 
 ### 部署到 Cloudflare Workers
@@ -247,37 +234,33 @@ pnpm wrangler secret put 密钥名称
 
 ```
 OpenBioCard/
-├── src/
-│   ├── frontend/             # Vue 3 前端应用
-│   │   ├── components/       # Vue 组件
-│   │   ├── pages/            # 页面组件
-│   │   ├── i18n/             # 国际化
-│   │   ├── App.vue           # 根组件
-│   │   ├── main.js           # 客户端入口
-│   │   ├── index.html        # HTML 模板
-│   │   └── style.css         # 全局样式
-│   └── server/               # Cloudflare Worker 后端
-│       ├── durable-objects/  # Durable Objects 类
-│       │   ├── admin.ts      # AdminDO
-│       │   └── user.ts       # UserDO
-│       ├── router/           # API 路由
-│       ├── middleware/       # Hono 中间件
-│       ├── types/            # TypeScript 类型
-│       ├── utils/            # 工具函数
-│       ├── index.tsx         # Worker 入口
-│       └── renderer.tsx      # SSR 渲染器
-├── public/                   # 静态资源
-├── dist/                     # 构建输出（已忽略）
-├── .wrangler/                # 本地开发数据（已忽略）
-├── node_modules/             # 依赖（已忽略）
-├── vite.config.ts            # Vite 配置
-├── wrangler.jsonc            # Wrangler 配置
-├── tsconfig.json             # TypeScript 配置
-├── tailwind.config.js        # Tailwind CSS 配置
-├── postcss.config.js         # PostCSS 配置
-├── package.json              # 项目依赖
-├── .gitignore                # Git 忽略规则
-└── README.md                 # 说明文件
+├── index.tsx                    # Worker main entry
+├── renderer.tsx                 # SSR renderer
+├── durable-objects/             # Durable Objects classes
+│   ├── admin.ts                 # Admin DO
+│   └── user.ts                  # User DO
+├── router/                      # API routes
+│   ├── admin.tsx                # Admin routes
+│   ├── siginin.tsx              # Sign-in routes
+│   ├── siginup.tsx              # Sign-up routes
+│   └── delate.tsx               # Delete routes
+├── middleware/                  # Middleware
+│   └── auth.ts                  # Authentication middleware
+├── types/                       # TypeScript types
+├── utils/                       # Utility functions
+│   └── password.ts              # Password utilities
+├── docs/                        # Documentation
+├── scripts/                     # Build scripts
+├── .env                         # Environment variables
+├── .dev.vars                    # Local development secrets
+├── wrangler.toml                # Wrangler config (backup)
+├── wrangler.jsonc               # Wrangler configuration
+├── package.json                 # Project dependencies
+├── tsconfig.json                # TypeScript configuration
+├── vite.config.ts               # Vite configuration
+├── tailwind.config.js           # Tailwind configuration
+├── postcss.config.js            # PostCSS configuration
+└── README.md                    # Project documentation
 ```
 
 ## 技术栈
