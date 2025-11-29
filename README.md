@@ -190,16 +190,6 @@ pnpm run build
 ```
 
 Build artifacts are located in the `dist/` directory:
-```
-dist/
-├── client/          # Client-side assets
-│   ├── assets/      # JS and CSS bundles
-│   └── .vite/       # Vite manifest
-├── openbiocard/     # Worker bundle
-│   ├── index.js     # Main worker script
-│   └── wrangler.json
-└── index.js         # SSR entry
-```
 
 ### Deploy to Cloudflare Workers
 
