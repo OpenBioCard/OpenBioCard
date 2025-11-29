@@ -255,18 +255,6 @@ OpenBioCard/
 ├── types/                       # TypeScript types
 ├── utils/                       # Utility functions
 │   └── password.ts              # Password utilities
-├── frontend/                    # Vue 3 frontend application
-│   ├── App.vue                  # Root component
-│   ├── main.js                  # Client entry
-│   ├── index.html               # HTML template
-│   ├── components/              # Vue components
-│   ├── pages/                   # Page components
-│   ├── composables/             # Composables
-│   ├── i18n/                    # Internationalization
-│   ├── config/                  # Configuration
-│   ├── assets/                  # Static assets
-│   ├── scripts/                 # Scripts
-│   └── public/                  # Public resources
 ├── docs/                        # Documentation
 ├── scripts/                     # Build scripts
 ├── .env                         # Environment variables
