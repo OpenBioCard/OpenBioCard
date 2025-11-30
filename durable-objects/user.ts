@@ -73,6 +73,8 @@ export class UserDO extends DurableObject {
           socialLinks: [],
           projects: [],
           gallery: [],
+          currentCompany: '',
+          workExperiences: [],
           ...profile
         }), {
           headers: { 'Content-Type': 'application/json' }
