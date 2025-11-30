@@ -5,7 +5,7 @@
   "main": "index.tsx",
   "scripts": {
     "dev": "wrangler dev",
-    "build": "tsc && wrangler deploy --dry-run",
+    "build": "pnpm cf-typegen && tsc && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
