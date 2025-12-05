@@ -1,6 +1,25 @@
 import { CreateAccount } from '../types/siginup'
 import { DurableObject } from 'cloudflare:workers'
 
+interface Profile {
+  name?: string
+  avatar?: string
+  bio?: string
+  location?: string
+  website?: string
+  contacts?: any[]
+  socialLinks?: any[]
+  projects?: any[]
+  gallery?: any[]
+  currentCompany?: string
+  currentCompanyLink?: string
+  currentSchool?: string
+  currentSchoolLink?: string
+  workExperiences?: any[]
+  schoolExperiences?: any[]
+  [key: string]: any
+}
+
 export class UserDO extends DurableObject {
   constructor(state: DurableObjectState, env: CloudflareBindings) {
     super(state, env)
@@ -61,7 +80,7 @@ export class UserDO extends DurableObject {
     if (request.method === 'GET' && url.pathname === '/get-profile') {
       const data = await this.ctx.storage.get('user') as CreateAccount | undefined
       if (data) {
-        const profile = await this.ctx.storage.get('profile') || {}
+        const profile = (await this.ctx.storage.get('profile') || {}) as Profile
         return new Response(JSON.stringify({
           username: data.username,
           name: '',
@@ -73,10 +92,12 @@ export class UserDO extends DurableObject {
           socialLinks: [],
           projects: [],
           gallery: [],
-          currentCompany: '',
-          currentSchool: '',
-          workExperiences: [],
-          schoolExperiences: [],
+          currentCompany: profile.currentCompany || '',
+          currentCompanyLink: profile.currentCompanyLink || '',
+          currentSchool: profile.currentSchool || '',
+          currentSchoolLink: profile.currentSchoolLink || '',
+          workExperiences: profile.workExperiences || [],
+          schoolExperiences: profile.schoolExperiences || [],
           ...profile
         }), {
           headers: { 'Content-Type': 'application/json' }
