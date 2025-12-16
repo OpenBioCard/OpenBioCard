@@ -121,7 +121,9 @@ api.post('/user/:username', async (c) => {
       body: JSON.stringify({ token })
     })
 
-    if (!verifyResponse.ok) {
+    const verifyResult: any = await verifyResponse.json()
+
+    if (!verifyResponse.ok || !verifyResult.valid) {
       console.log('[API] Token verification failed')
       return c.json({ error: 'Invalid token' }, 401)
     }
