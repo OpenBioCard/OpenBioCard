@@ -155,45 +155,6 @@ app.route('/api', api)
 
 // SPA Fallback
 app.get('*', async (c) => {
-  // In development, we don't want to handle SPA fallback in the Worker
-  // because Vite handles it. If we return 404 here, it overrides Vite.
-  // So we simply return a 404 with a specific message, OR ideally we shouldn't match.
-  // But since we matched, we check the environment.
-  if (c.env.ENVIRONMENT === 'development') {
-    console.log('Worker handling * route in DEV:', c.req.path)
-    
-    // Loop prevention: If this header is present, we return 404 to let Vite handle it (hopefully)
-    if (c.req.header('X-Skip-Worker')) {
-      console.log('Worker skipping request due to X-Skip-Worker header')
-      return c.text('Skipped by Worker', 404)
-    }
-
-    try {
-      // In development, we fetch the index.html from the Vite dev server
-      const url = new URL(c.req.url)
-      const indexUrl = new URL('/index.html', url.origin)
-      console.log('Worker fetching SPA fallback from:', indexUrl.toString())
-      
-      const response = await fetch(indexUrl, {
-        headers: {
-          'X-Skip-Worker': 'true'
-        }
-      })
-      console.log('Worker fetch response status:', response.status)
-      
-      if (response.ok) {
-        return new Response(response.body, {
-          headers: response.headers,
-          status: 200
-        })
-      }
-    } catch (e) {
-      console.error('SPA Fallback Dev Error:', e)
-    }
-    
-    return c.text('Worker: Not Found (Dev Mode) - Failed to fetch index.html', 404)
-  }
-
   if (c.env.ASSETS) {
     const url = new URL(c.req.url)
     return c.env.ASSETS.fetch(new URL('/index.html', url.origin))
