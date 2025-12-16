@@ -1,0 +1,29 @@
+{
+  "name": "openbiocard-frontend",
+  "version": "1.0.0",
+  "description": "OpenBioCard Frontend",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && rm -f dist/openbiocard/.dev.vars",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vueuse/head": "^2.0.0",
+    "pinia": "^2.0.0",
+    "vue": "^3.5.25",
+    "vue-i18n": "^9.14.5",
+    "vue-router": "^4.6.3"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.18.0",
+    "@tailwindcss/postcss": "^4.1.17",
+    "@vitejs/plugin-vue": "^5.0.0",
+    "autoprefixer": "^10.4.22",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3",
+    "vite": "^6.4.1",
+    "vite-plugin-vue-devtools": "^8.0.5"
+  }
+}
