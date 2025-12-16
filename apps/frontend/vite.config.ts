@@ -16,7 +16,7 @@ export default defineConfig(() => {
       })
     ],
     server: {
-      port: 8787,
+      port: 8787
     },
     build: {
       assetsDir: 'assets',
