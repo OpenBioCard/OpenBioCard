@@ -15,6 +15,9 @@ console.log('main.js loaded')
 const routes = [
   { path: '/', component: Index },
   { path: '/frontend', component: Index },
+  { path: '/admin', component: Index },
+  { path: '/signin', component: Index },
+  { path: '/signup', component: Index },
   { path: '/:username', component: UserProfile, beforeEnter: (to, from) => {
     // 排除保留路由
     if (['signup', 'signin', 'delete', 'admin', 'init-admin', 'frontend'].includes(to.params.username)) {
