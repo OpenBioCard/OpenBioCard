@@ -155,10 +155,22 @@ app.route('/api', api)
 
 // SPA Fallback
 app.get('*', async (c) => {
+  const url = new URL(c.req.url)
+  const path = url.pathname
+
+  // 1. 如果请求的是 assets 或其他静态资源，直接通过 ASSETS fetch
+  if (path.startsWith('/assets/') || path.startsWith('/icon/') || path.startsWith('/link/') || path.startsWith('/ss/') || path === '/favicon.ico') {
+    if (c.env.ASSETS) {
+      return c.env.ASSETS.fetch(c.req.raw)
+    }
+  }
+
+  // 2. 对于所有其他 GET 请求（非 API），返回 index.html 以支持 SPA 路由
+  // 这包括 /signin, /signup, /admin, /:username 等
   if (c.env.ASSETS) {
-    const url = new URL(c.req.url)
     return c.env.ASSETS.fetch(new URL('/index.html', url.origin))
   }
+  
   return c.text('Not Found', 404)
 })
 
