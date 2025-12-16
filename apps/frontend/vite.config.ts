@@ -9,7 +9,7 @@ export default defineConfig(() => {
       vue(),
       vueDevTools(),
       cloudflare({
-        configPath: '../backend/wrangler.jsonc',
+        configPath: '../../wrangler.jsonc',
         persistState: {
           path: '../backend/.wrangler/state/v3'
         }

@@ -8,12 +8,12 @@
   "compatibility_date": "2025-08-03",
 
   // Worker 入口文件
-  "main": "./index.tsx",
+  "main": "./apps/backend/index.tsx",
 
   // 静态资源（前端构建产物）
   // ⚠️ 关键点：不是 dist，而是 dist/client
   "assets": {
-    "directory": "./dist/client"
+    "directory": "./apps/backend/dist/client"
   },
 
   // 观测 / 日志（你原来的配置，保留）

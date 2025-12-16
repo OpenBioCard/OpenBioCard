@@ -4,10 +4,10 @@
   "description": "OpenBioCard Backend",
   "main": "index.tsx",
   "scripts": {
-    "dev": "wrangler dev",
-    "build": "pnpm --filter openbiocard-frontend build && cp -r ../frontend/dist ./dist && wrangler deploy --dry-run",
-    "deploy": "wrangler deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+    "dev": "wrangler dev -c ../../wrangler.jsonc",
+    "build": "pnpm --filter openbiocard-frontend build && cp -r ../frontend/dist ./dist && wrangler deploy --dry-run -c ../../wrangler.jsonc",
+    "deploy": "wrangler deploy -c ../../wrangler.jsonc",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings -c ../../wrangler.jsonc"
   },
   "dependencies": {
     "hono": "^4.10.6"
