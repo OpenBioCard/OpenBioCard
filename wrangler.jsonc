@@ -12,7 +12,8 @@
 
   // 静态资源（前端构建产物）
   "assets": {
-    "directory": "./apps/backend/dist/client"
+    "directory": "./apps/backend/dist/client",
+    "binding": "ASSETS"
   },
 
   // 观测 / 日志（你原来的配置，保留）

@@ -158,9 +158,12 @@ app.get('*', async (c) => {
   const url = new URL(c.req.url)
   const path = url.pathname
 
+  console.log(`[Worker] Handling catch-all route for: ${path}`)
+
   // 1. 如果请求的是 assets 或其他静态资源，直接通过 ASSETS fetch
   if (path.startsWith('/assets/') || path.startsWith('/icon/') || path.startsWith('/link/') || path.startsWith('/ss/') || path === '/favicon.ico') {
     if (c.env.ASSETS) {
+      console.log(`[Worker] Serving static asset: ${path}`)
       return c.env.ASSETS.fetch(c.req.raw)
     }
   }
@@ -168,9 +171,20 @@ app.get('*', async (c) => {
   // 2. 对于所有其他 GET 请求（非 API），返回 index.html 以支持 SPA 路由
   // 这包括 /signin, /signup, /admin, /:username 等
   if (c.env.ASSETS) {
-    return c.env.ASSETS.fetch(new URL('/index.html', url.origin))
+    console.log(`[Worker] Serving index.html for SPA route: ${path}`)
+    try {
+      const indexUrl = new URL('/index.html', url.origin)
+      const response = await c.env.ASSETS.fetch(indexUrl)
+      if (response.ok) {
+        return response
+      }
+      console.log(`[Worker] Failed to fetch index.html: ${response.status}`)
+    } catch (e) {
+      console.error('[Worker] Error fetching index.html:', e)
+    }
   }
   
+  console.log(`[Worker] ASSETS binding not found or resource not found: ${path}`)
   return c.text('Not Found', 404)
 })
 
