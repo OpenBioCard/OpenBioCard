@@ -1,10 +1,10 @@
 // API服务层 - 管理员相关
-const API_BASE = '/'
+const API_BASE = '/api/'
 
 export const adminAPI = {
   // 获取用户列表
   async getUsers(token, username) {
-    const response = await fetch(`${API_BASE}api/admin/users/list`, {
+    const response = await fetch(`${API_BASE}admin/users/list`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ export const adminAPI = {
 
   // 删除用户
   async deleteUser(targetUsername, token, username) {
-    const response = await fetch(`${API_BASE}api/admin/users/${targetUsername}`, {
+    const response = await fetch(`${API_BASE}admin/users/${targetUsername}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
