@@ -8,6 +8,7 @@ export const adminAPI = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ username, token })
     })
@@ -30,6 +31,7 @@ export const adminAPI = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({
         username,
@@ -58,6 +60,7 @@ export const adminAPI = {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
       },
       body: JSON.stringify({ username, token })
     })
