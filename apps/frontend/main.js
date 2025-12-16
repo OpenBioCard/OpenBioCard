@@ -20,7 +20,7 @@ const routes = [
   { path: '/signup', component: Index },
   { path: '/:username', component: UserProfile, beforeEnter: (to, from) => {
     // 排除保留路由
-    if (['signup', 'signin', 'delete', 'admin', 'init-admin', 'frontend'].includes(to.params.username)) {
+    if (['signup', 'signin', 'delete', 'admin', 'init-admin', 'frontend', 'api', 'assets'].includes(to.params.username)) {
       return false
     }
   }}
