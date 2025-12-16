@@ -5,7 +5,7 @@
   "main": "index.tsx",
   "scripts": {
     "dev": "wrangler dev",
-    "build": "wrangler deploy --dry-run",
+    "build": "pnpm --filter openbiocard-frontend build && wrangler deploy --dry-run",
     "deploy": "wrangler deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
