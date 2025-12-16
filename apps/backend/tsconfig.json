@@ -19,10 +19,10 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+    "types": ["@cloudflare/workers-types"]
   },
   "include": [
-    "frontend/**/*",
     "durable-objects/**/*",
     "middleware/**/*",
     "router/**/*",
@@ -30,8 +30,7 @@
     "utils/**/*",
     "**/*.ts",
     "**/*.d.ts",
-    "**/*.tsx",
-    "**/*.vue"
+    "**/*.tsx"
   ],
   "exclude": [
     "node_modules",

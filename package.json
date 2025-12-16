@@ -1,20 +1,10 @@
 {
-  "name": "openbiocard-backend",
-  "version": "1.0.0",
-  "description": "OpenBioCard Backend",
-  "main": "index.tsx",
+  "name": "openbiocard-monorepo",
+  "private": true,
+  "packageManager": "pnpm@9.0.0",
   "scripts": {
-    "dev": "wrangler dev",
-    "build": "wrangler deploy --dry-run",
-    "deploy": "wrangler deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
-  },
-  "dependencies": {
-    "hono": "^4.10.6"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20241112.0",
-    "typescript": "^5.0.0",
-    "wrangler": "^4.17.0"
+    "dev": "pnpm --filter openbiocard-frontend dev",
+    "build": "pnpm -r build",
+    "deploy": "pnpm --filter openbiocard-backend deploy"
   }
 }

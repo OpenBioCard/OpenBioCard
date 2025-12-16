@@ -12,6 +12,7 @@
     }
   },
   "vars": {
+    "ENVIRONMENT": "production",
     "CORS_ALLOWED_ORIGINS": "*",
     "CORS_ALLOWED_METHODS": "GET,POST,PUT,DELETE,OPTIONS",
     "CORS_ALLOWED_HEADERS": "Content-Type,Authorization"
@@ -41,5 +42,8 @@
         "AdminDO"
       ]
     }
-  ]
+  ],
+  "assets": {
+    "directory": "../frontend/dist"
+  }
 }
