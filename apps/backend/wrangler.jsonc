@@ -1,8 +1,22 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
+
+  // Worker 名称
   "name": "openbiocard",
+
+  // 必须存在，且不要用未来日期
   "compatibility_date": "2025-08-03",
+
+  // Worker 入口文件
   "main": "./index.tsx",
+
+  // 静态资源（前端构建产物）
+  // ⚠️ 关键点：不是 dist，而是 dist/client
+  "assets": {
+    "directory": "./dist/client"
+  },
+
+  // 观测 / 日志（你原来的配置，保留）
   "observability": {
     "logs": {
       "enabled": false,
@@ -11,12 +25,16 @@
       "persist": true
     }
   },
+
+  // Worker 环境变量
   "vars": {
     "ENVIRONMENT": "production",
     "CORS_ALLOWED_ORIGINS": "*",
     "CORS_ALLOWED_METHODS": "GET,POST,PUT,DELETE,OPTIONS",
     "CORS_ALLOWED_HEADERS": "Content-Type,Authorization"
   },
+
+  // Durable Objects 绑定
   "durable_objects": {
     "bindings": [
       {
@@ -29,21 +47,16 @@
       }
     ]
   },
+
+  // DO 迁移记录（保持你现有的）
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": [
-        "UserDO"
-      ]
+      "new_sqlite_classes": ["UserDO"]
     },
     {
       "tag": "v2",
-      "new_sqlite_classes": [
-        "AdminDO"
-      ]
+      "new_sqlite_classes": ["AdminDO"]
     }
-  ],
-  "assets": {
-    "directory": "./dist"
-  }
+  ]
 }
