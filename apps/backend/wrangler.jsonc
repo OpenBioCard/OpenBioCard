@@ -44,6 +44,6 @@
     }
   ],
   "assets": {
-    "directory": "../frontend/dist"
+    "directory": "./dist"
   }
 }
