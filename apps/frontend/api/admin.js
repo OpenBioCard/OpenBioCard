@@ -4,7 +4,7 @@ const API_BASE = '/'
 export const adminAPI = {
   // 获取用户列表
   async getUsers(token, username) {
-    const response = await fetch(`${API_BASE}admin/users/list`, {
+    const response = await fetch(`${API_BASE}api/admin/users/list`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
