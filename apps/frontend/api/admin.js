@@ -1,5 +1,5 @@
 // API服务层 - 管理员相关
-const API_BASE = '/api/'
+import { API_BASE } from './api.js'
 
 export const adminAPI = {
   // 获取用户列表

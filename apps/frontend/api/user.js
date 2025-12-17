@@ -1,5 +1,5 @@
 // API服务层 - 用户资料相关
-const API_BASE = '/api/'
+import { API_BASE } from './api.js'
 
 export const userAPI = {
   // 获取用户资料
