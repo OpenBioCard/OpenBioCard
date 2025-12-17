@@ -4,7 +4,7 @@
 
 [![Deploy to Cloudflare Workers](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/OpenBioCard/OpenBioCard)
 
-[📚 Detailed Deployment Guide](./DEPLOY.md) | [📚 中文部署指南](./DEPLOY.zh-CN.md)
+[📚 Detailed Deployment Guide](./docs/DEPLOY.md) | [📚 中文部署指南](./docs/DEPLOY.zh-CN.md) | [简体中文](./README.zh-CN.md)
 
 ## 📋 Table of Contents
 
@@ -29,18 +29,19 @@ OpenBioCard is a decentralized electronic business card platform built on Cloudf
 
 - 🌐 **Serverless Architecture** - Powered by Cloudflare Workers
 - 💾 **Data Persistence** - Using Durable Objects
-- 🎨 **Modern UI** - Vue 3 + Tailwind CSS
+- 🎨 **Modern UI** - Vue 3 + Tailwind CSS 4
 - 🔒 **Secure Authentication** - Complete user authentication system
 - 🌍 **Internationalization** - Multi-language interface support
 - 📱 **Responsive Design** - Adapts to all devices
 - ⚡ **Global Edge Network** - Fast content delivery worldwide
+- 📦 **Monorepo Structure** - Managed efficiently with PNPM
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - **Node.js**: v20.x or later
-- **pnpm**: v10.x or later
+- **pnpm**: v9.x or later
 - **Cloudflare Account**: Free tier is sufficient
 
 ### Installation Steps
@@ -57,22 +58,19 @@ OpenBioCard is a decentralized electronic business card platform built on Cloudf
    ```
 
 3. **Configure environment variables**
-   ```bash
-   cp .env.example .env  # If example file exists
-   ```
+   See [Environment Configuration](#-environment-configuration) section.
 
 4. **Start development server**
    ```bash
-   pnpm run dev
+   pnpm dev
    ```
-
-The application will run on `http://localhost:8787`.
+   The application will run on `http://localhost:8787`.
 
 ## ⚙️ Environment Configuration
 
 ### Local Development Environment Variables
 
-Create a `.dev.vars` file (included in `.gitignore`):
+Create a `.dev.vars` file in the **project root**:
 
 ```env
 # Required secrets
@@ -89,43 +87,7 @@ CORS_ALLOWED_HEADERS=Content-Type,Authorization
 
 #### 1. Wrangler Configuration
 
-`wrangler.jsonc` configuration file:
-
-```jsonc
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "openbiocard",
-  "compatibility_date": "2025-08-03",
-  "main": "./index.tsx",
-  "vars": {
-    "CORS_ALLOWED_ORIGINS": "*",
-    "CORS_ALLOWED_METHODS": "GET,POST,PUT,DELETE,OPTIONS",
-    "CORS_ALLOWED_HEADERS": "Content-Type,Authorization"
-  },
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "USER_DO",
-        "class_name": "UserDO"
-      },
-      {
-        "name": "ADMIN_DO",
-        "class_name": "AdminDO"
-      }
-    ]
-  },
-  "migrations": [
-    {
-      "tag": "v1",
-      "new_sqlite_classes": ["UserDO"]
-    },
-    {
-      "tag": "v2",
-      "new_sqlite_classes": ["AdminDO"]
-    }
-  ]
-}
-```
+`wrangler.jsonc` is located in the project root. It handles the Cloudflare Workers configuration, including Durable Objects bindings and migrations.
 
 #### 2. Set Production Secrets
 
@@ -144,9 +106,6 @@ pnpm wrangler secret put ROOT_PASSWORD
 ```bash
 # Login to Wrangler
 pnpm wrangler login
-
-# Optional: Configure account ID
-pnpm wrangler config
 ```
 
 ## 💻 Local Development
@@ -154,31 +113,26 @@ pnpm wrangler config
 ### Development Server
 
 ```bash
-pnpm run dev
+pnpm dev
 ```
 
-This command will start:
-- Vite development server (with hot reload)
-- Cloudflare Workers local runtime
-- Durable Objects local storage
+This command will start the Vite development server for the frontend, which integrates with the Cloudflare Workers environment via `@cloudflare/vite-plugin`. It provides a seamless full-stack development experience.
 
 ### Local Data Storage
 
 Local Durable Objects data is stored in:
 ```
-.wrangler/state/v3/do/
+apps/backend/.wrangler/state/v3/do/
 ├── openbiocard-AdminDO/
 └── openbiocard-UserDO/
 ```
-
-This directory is automatically ignored by `.gitignore`.
 
 ### Type Generation
 
 Generate TypeScript types based on Worker configuration:
 
 ```bash
-pnpm run cf-typegen
+pnpm --filter openbiocard-backend cf-typegen
 ```
 
 ## 🏗️ Build & Deploy
@@ -186,10 +140,12 @@ pnpm run cf-typegen
 ### Production Build
 
 ```bash
-pnpm run build
+pnpm build
 ```
 
-Build artifacts are located in the `dist/` directory:
+This will build both the frontend and backend applications. The artifacts will be located in:
+- Frontend: `apps/frontend/dist/`
+- Backend: `apps/backend/dist/` (includes frontend assets)
 
 ### Deploy to Cloudflare Workers
 
@@ -198,10 +154,11 @@ Build artifacts are located in the `dist/` directory:
    pnpm wrangler login
    ```
 
-2. **Build and deploy**
+2. **Deploy**
    ```bash
-   pnpm run deploy
+   pnpm deploy
    ```
+   This command deploys the backend worker (which serves the frontend assets) to Cloudflare.
 
 3. **First-time Durable Objects Setup**
 
@@ -217,8 +174,6 @@ After deployment, your application will be available at:
 https://openbiocard.<your-subdomain>.workers.dev
 ```
 
-Or at your custom domain if configured in Cloudflare Dashboard.
-
 ### Initialize Admin User
 
 After deployment, access the following endpoint to initialize the admin user:
@@ -230,33 +185,26 @@ https://your-domain.workers.dev/init-admin
 
 ```
 OpenBioCard/
-├── index.tsx                    # Worker main entry
-├── renderer.tsx                 # SSR renderer
-├── durable-objects/             # Durable Objects classes
-│   ├── admin.ts                 # Admin DO
-│   └── user.ts                  # User DO
-├── router/                      # API routes
-│   ├── admin.tsx                # Admin routes
-│   ├── siginin.tsx              # Sign-in routes
-│   ├── siginup.tsx              # Sign-up routes
-│   └── delate.tsx               # Delete routes
-├── middleware/                  # Middleware
-│   └── auth.ts                  # Authentication middleware
-├── types/                       # TypeScript types
-├── utils/                       # Utility functions
-│   └── password.ts              # Password utilities
-├── docs/                        # Documentation
-├── scripts/                     # Build scripts
-├── .env                         # Environment variables
-├── .dev.vars                    # Local development secrets
-├── wrangler.toml                # Wrangler config (backup)
-├── wrangler.jsonc               # Wrangler configuration
-├── package.json                 # Project dependencies
-├── tsconfig.json                # TypeScript configuration
-├── vite.config.ts               # Vite configuration
-├── tailwind.config.js           # Tailwind configuration
-├── postcss.config.js            # PostCSS configuration
-└── README.md                    # Project documentation
+├── apps/
+│   ├── backend/               # Cloudflare Worker Backend
+│   │   ├── durable-objects/   # Durable Objects classes
+│   │   ├── router/            # Hono API routes
+│   │   ├── middleware/        # Middleware
+│   │   ├── types/             # Backend types
+│   │   ├── utils/             # Utility functions
+│   │   └── index.tsx          # Worker entry point
+│   └── frontend/              # Vue 3 Frontend
+│       ├── src/               # Source code (if applicable)
+│       ├── components/        # Vue components
+│       ├── pages/             # Pages (File-based routing)
+│       ├── composables/       # Composition API hooks
+│       ├── api/               # API clients
+│       └── i18n/              # Internationalization
+├── docs/                      # Documentation
+├── wrangler.jsonc             # Wrangler configuration
+├── package.json               # Root package.json (Workspaces)
+├── pnpm-workspace.yaml        # PNPM workspace config
+└── .dev.vars                  # Local secrets (not committed)
 ```
 
 ## 🛠️ Technology Stack
@@ -264,8 +212,9 @@ OpenBioCard/
 ### Frontend
 - **Vue 3** - Progressive JavaScript framework
 - **Vue Router** - Official routing manager
-- **Tailwind CSS** - Utility-first CSS framework
+- **Tailwind CSS 4** - Utility-first CSS framework
 - **Vue I18n** - Internationalization plugin
+- **Vite 6** - Next-generation frontend toolchain
 
 ### Backend
 - **Cloudflare Workers** - Serverless execution environment
@@ -274,23 +223,12 @@ OpenBioCard/
 - **TypeScript** - Type-safe JavaScript
 
 ### Build Tools
-- **Vite** - Next-generation frontend toolchain
+- **PNPM** - Fast, disk space efficient package manager
 - **Wrangler** - Cloudflare Workers CLI
-- **PNPM** - Fast package manager
-
-### Development Tools
-- **ESLint** - Code linting
-- **Prettier** - Code formatting
-
-### Documentation
-- **[API 文档](./docs/API.md)** - Chinese API reference documentation
-- **[API Documentation (EN)](./docs/API_EN.md)** - English API reference documentation
 
 ## 🤝 Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
-
-### Development Workflow
 
 1. Fork this project
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
