@@ -67,10 +67,15 @@ const checkLogin = async () => {
 
     // 验证token是否仍然有效
     try {
-      const hasPermission = await authAPI.checkPermission(savedToken, savedUsername)
-      if (hasPermission) {
-        user.value.type = 'admin'
-        currentView.value = 'admin'
+      const { authorized, isAdmin } = await authAPI.checkPermission(savedToken, savedUsername)
+      if (authorized) {
+        if (isAdmin) {
+          user.value.type = 'admin'
+          currentView.value = 'admin'
+        } else {
+          // 普通用户，跳转到个人页面
+          window.location.href = `/${savedUsername}`
+        }
       } else {
         // token无效，清除cookies
         deleteCookie('auth_token')
@@ -96,12 +101,17 @@ const login = async (username, password) => {
       setCookie('auth_username', username)
 
       // 尝试访问管理接口来检查权限
-      const hasPermission = await authAPI.checkPermission(data.token, username)
-      if (hasPermission) {
-        user.value.type = 'admin'
-        currentView.value = 'admin'
+      const { authorized, isAdmin } = await authAPI.checkPermission(data.token, username)
+      if (authorized) {
+        if (isAdmin) {
+          user.value.type = 'admin'
+          currentView.value = 'admin'
+        } else {
+          // 普通用户，跳转到个人页面
+          window.location.href = `/${username}`
+        }
       } else {
-        // 普通用户，跳转到个人页面
+        // 理论上登录成功后不应该未授权，但为了保险起见
         window.location.href = `/${username}`
       }
     } else {

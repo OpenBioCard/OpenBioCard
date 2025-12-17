@@ -34,16 +34,22 @@ export const authAPI = {
       body: JSON.stringify({ username, token })
     })
 
+    // Token有效但无管理员权限
+    if (response.status === 403) {
+      return { authorized: true, isAdmin: false }
+    }
+
+    // Token无效或未认证
     if (!response.ok) {
-      return false
+      return { authorized: false, isAdmin: false }
     }
 
     try {
       const data = await response.json()
-      return data.success
+      return { authorized: true, isAdmin: data.success }
     } catch (parseError) {
       console.error('Failed to parse permission response:', parseError)
-      return false
+      return { authorized: false, isAdmin: false }
     }
   }
 }
