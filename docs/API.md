@@ -205,7 +205,7 @@ Authorization: Bearer your-token-here
 
 **端点:** `GET /user/:username`
 
-**需要认��:** 否（公开接口）
+**需要认证:** 否（公开接口）
 
 **URL 参数:**
 
@@ -224,6 +224,10 @@ Authorization: Bearer your-token-here
   "location": "San Francisco, CA",
   "website": "https://johndoe.com",
   "background": "",
+  "currentCompany": "Tech Corp",
+  "currentCompanyLink": "https://techcorp.com",
+  "currentSchool": "University of Tech",
+  "currentSchoolLink": "https://uni.edu",
   "contacts": [
     {
       "type": "email",
@@ -256,6 +260,29 @@ Authorization: Bearer your-token-here
       "logo": "data:image/png;base64,..."
     }
   ],
+  "workExperiences": [
+    {
+      "position": "Senior Developer",
+      "company": "Tech Corp",
+      "companyLink": "https://techcorp.com",
+      "startDate": "2020-01-01",
+      "endDate": "",
+      "description": "Leading the frontend team.",
+      "logo": "data:image/png;base64,..."
+    }
+  ],
+  "schoolExperiences": [
+    {
+      "degree": "Bachelor of Science",
+      "school": "University of Tech",
+      "schoolLink": "https://uni.edu",
+      "major": "Computer Science",
+      "startDate": "2016-09-01",
+      "endDate": "2020-06-30",
+      "description": "Graduated with honors.",
+      "logo": "data:image/png;base64,..."
+    }
+  ],
   "gallery": [
     {
       "image": "data:image/jpeg;base64,...",
@@ -277,9 +304,15 @@ Authorization: Bearer your-token-here
 | `location` | string | 所在地 |
 | `website` | string | 个人网站 |
 | `background` | string | 背景图片（base64） |
+| `currentCompany` | string | 当前就职公司 |
+| `currentCompanyLink` | string | 当前就职公司链接 |
+| `currentSchool` | string | 当前就读学校 |
+| `currentSchoolLink` | string | 当前就读学校链接 |
 | `contacts` | array | 联系方式列表 |
 | `socialLinks` | array | 社交媒体链接列表 |
 | `projects` | array | 项目列表 |
+| `workExperiences` | array | 工作经历列表 |
+| `schoolExperiences` | array | 教育经历列表 |
 | `gallery` | array | 相册照片列表 |
 
 **contacts 对象结构:**
@@ -305,6 +338,31 @@ Authorization: Bearer your-token-here
 | `url` | string | 项目链接 |
 | `description` | string | 项目描述 |
 | `logo` | string | 项目 Logo（base64 图片） |
+
+**workExperiences 对象结构:**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `position` | string | 职位 |
+| `company` | string | 公司名称 |
+| `companyLink` | string | 公司链接 |
+| `startDate` | string | 开始日期 (YYYY-MM-DD) |
+| `endDate` | string | 结束日期 (YYYY-MM-DD)，为空表示至今 |
+| `description` | string | 工作描述 |
+| `logo` | string | 公司 Logo（base64 图片） |
+
+**schoolExperiences 对象结构:**
+
+| 字段 | 类型 | 说明 |
+|------|------|------|
+| `degree` | string | 学位 |
+| `school` | string | 学校名称 |
+| `schoolLink` | string | 学校链接 |
+| `major` | string | 专业 |
+| `startDate` | string | 开始日期 (YYYY-MM-DD) |
+| `endDate` | string | 结束日期 (YYYY-MM-DD)，为空表示至今 |
+| `description` | string | 经历描述 |
+| `logo` | string | 学校 Logo（base64 图片） |
 
 **gallery 对象结构:**
 
@@ -349,9 +407,15 @@ Authorization: Bearer your-token-here
   "location": "New York",
   "website": "https://newwebsite.com",
   "background": "data:image/png;base64,...",
+  "currentCompany": "New Tech Corp",
+  "currentCompanyLink": "https://newtech.com",
+  "currentSchool": "",
+  "currentSchoolLink": "",
   "contacts": [...],
   "socialLinks": [...],
   "projects": [...],
+  "workExperiences": [...],
+  "schoolExperiences": [...],
   "gallery": [...]
 }
 ```
@@ -631,17 +695,17 @@ Admin initialized
 
 系统使用两个 Durable Objects：
 
-1. **UserDO** - 存储单个用户的账号和资料数���
-   - 每个用户对应一个独立的 DO 实例
-   - 实例 ID 基于用户名生成（`idFromName(username)`）
-   - 存储内容：
-     - `user`: 账号信息（用户名、密码哈希、Token、类型）
-     - `profile`: 资料信息（个人信息、联系方式、社交链接、项目、相册）
+1. **UserDO** - 存储单个用户的账号和资料数据
+    - 每个用户对应一个独立的 DO 实例
+    - 实例 ID 基于用户名生成（`idFromName(username)`）
+    - 存储内容：
+        - `user`: 账号信息（用户名、密码哈希、Token、类型）
+        - `profile`: 资料信息（个人信息、联系方式、社交链接、项目、相册、工作经历、教育经历）
 
 2. **AdminDO** - 存储系统级用户列表
-   - 全局单例，实例名为 `admin-manager`
-   - 存储内容：
-     - `users`: 所有用户的用户名和类型列表
+    - 全局单例，实例名为 `admin-manager`
+    - 存储内容：
+        - `users`: 所有用户的用户名和类型列表
 
 ### 数据一致性
 
@@ -689,23 +753,23 @@ Admin initialized
 ## 安全说明
 
 1. **密码安全**
-   - 所有密码使用 bcrypt 哈希存储
-   - 不会以明文形式存储或传输密码
+    - 所有密码使用 bcrypt 哈希存储
+    - 不会以明文形式存储或传输密码
 
 2. **Token 安全**
-   - Token 使用 UUID v4 生成
-   - 每次请求都需验证 Token 有效性
-   - Token 不会过期，但可通过删除账号使其失效
+    - Token 使用 UUID v4 生成
+    - 每次请求都需验证 Token 有效性
+    - Token 不会过期，但可通过删除账号使其失效
 
 3. **权限控制**
-   - 严格的权限检查中间件
-   - 用户只能修改自己的资料
-   - 管理员操作需要相应权限验证
+    - 严格的权限检查中间件
+    - 用户只能修改自己的资料
+    - 管理员操作需要相应权限验证
 
 4. **输入验证**
-   - 所有 API 端点都进行输入验证
-   - 防止创建 root 用户
-   - 防止用户删除自己或 root
+    - 所有 API 端点都进行输入验证
+    - 防止创建 root 用户
+    - 防止用户删除自己或 root
 
 ---
 
@@ -714,9 +778,9 @@ Admin initialized
 - **API 版本:** 1.0
 - **最后更新:** 2025-11-26
 - **框架版本:**
-  - Hono: ^4.10.6
-  - Cloudflare Workers
-  - Durable Objects
+    - Hono: ^4.10.6
+    - Cloudflare Workers
+    - Durable Objects
 
 ---
 
