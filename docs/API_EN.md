@@ -7,10 +7,10 @@
 - [User Types](#user-types)
 - [Error Responses](#error-responses)
 - [API Endpoints](#api-endpoints)
-  - [Authentication](#authentication-endpoints)
-  - [User Profile](#user-profile)
-  - [Admin Functions](#admin-functions)
-  - [System Initialization](#system-initialization)
+    - [Authentication](#authentication-endpoints)
+    - [User Profile](#user-profile)
+    - [Admin Functions](#admin-functions)
+    - [System Initialization](#system-initialization)
 
 ---
 
@@ -238,6 +238,10 @@ Retrieve public profile information for a specific user.
   "location": "San Francisco, CA",
   "website": "https://johndoe.com",
   "background": "",
+  "currentCompany": "Tech Corp",
+  "currentCompanyLink": "https://techcorp.com",
+  "currentSchool": "University of Tech",
+  "currentSchoolLink": "https://uni.edu",
   "contacts": [
     {
       "type": "email",
@@ -270,6 +274,29 @@ Retrieve public profile information for a specific user.
       "logo": "data:image/png;base64,..."
     }
   ],
+  "workExperiences": [
+    {
+      "position": "Senior Developer",
+      "company": "Tech Corp",
+      "companyLink": "https://techcorp.com",
+      "startDate": "2020-01-01",
+      "endDate": "",
+      "description": "Leading the frontend team.",
+      "logo": "data:image/png;base64,..."
+    }
+  ],
+  "schoolExperiences": [
+    {
+      "degree": "Bachelor of Science",
+      "school": "University of Tech",
+      "schoolLink": "https://uni.edu",
+      "major": "Computer Science",
+      "startDate": "2016-09-01",
+      "endDate": "2020-06-30",
+      "description": "Graduated with honors.",
+      "logo": "data:image/png;base64,..."
+    }
+  ],
   "gallery": [
     {
       "image": "data:image/jpeg;base64,...",
@@ -291,9 +318,15 @@ Retrieve public profile information for a specific user.
 | `location` | string | Location |
 | `website` | string | Personal website |
 | `background` | string | Background image (base64) |
+| `currentCompany` | string | Current company |
+| `currentCompanyLink` | string | Link to current company |
+| `currentSchool` | string | Current school |
+| `currentSchoolLink` | string | Link to current school |
 | `contacts` | array | Contact methods list |
 | `socialLinks` | array | Social media links list |
 | `projects` | array | Projects list |
+| `workExperiences` | array | Work experiences list |
+| `schoolExperiences` | array | Education experiences list |
 | `gallery` | array | Photo gallery list |
 
 **Contact Object Structure:**
@@ -319,6 +352,31 @@ Retrieve public profile information for a specific user.
 | `url` | string | Project URL |
 | `description` | string | Project description |
 | `logo` | string | Project logo (base64 image) |
+
+**Work Experiences Object Structure:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `position` | string | Job position/title |
+| `company` | string | Company name |
+| `companyLink` | string | Company website link |
+| `startDate` | string | Start date (YYYY-MM-DD) |
+| `endDate` | string | End date (YYYY-MM-DD), empty string indicates "Present" |
+| `description` | string | Job description |
+| `logo` | string | Company logo (base64 image) |
+
+**School Experiences Object Structure:**
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `degree` | string | Degree obtained |
+| `school` | string | School name |
+| `schoolLink` | string | School website link |
+| `major` | string | Major/Field of study |
+| `startDate` | string | Start date (YYYY-MM-DD) |
+| `endDate` | string | End date (YYYY-MM-DD), empty string indicates "Present" |
+| `description` | string | Description of experience |
+| `logo` | string | School logo (base64 image) |
 
 **Gallery Object Structure:**
 
@@ -366,9 +424,15 @@ Authorization: Bearer your-token-here
   "location": "New York",
   "website": "https://newwebsite.com",
   "background": "data:image/png;base64,...",
+  "currentCompany": "New Tech Corp",
+  "currentCompanyLink": "https://newtech.com",
+  "currentSchool": "",
+  "currentSchoolLink": "",
   "contacts": [...],
   "socialLinks": [...],
   "projects": [...],
+  "workExperiences": [...],
+  "schoolExperiences": [...],
   "gallery": [...]
 }
 ```
@@ -674,16 +738,16 @@ Admin initialized
 The system uses two Durable Objects:
 
 1. **UserDO** - Stores individual user account and profile data
-   - Each user has a separate DO instance
-   - Instance ID is generated from username (`idFromName(username)`)
-   - Storage contents:
-     - `user`: Account information (username, password hash, token, type)
-     - `profile`: Profile information (personal info, contacts, social links, projects, gallery)
+    - Each user has a separate DO instance
+    - Instance ID is generated from username (`idFromName(username)`)
+    - Storage contents:
+        - `user`: Account information (username, password hash, token, type)
+        - `profile`: Profile information (personal info, contacts, social links, projects, gallery, work experiences, education experiences)
 
 2. **AdminDO** - Stores system-level user list
-   - Global singleton, instance name is `admin-manager`
-   - Storage contents:
-     - `users`: List of all usernames and types
+    - Global singleton, instance name is `admin-manager`
+    - Storage contents:
+        - `users`: List of all usernames and types
 
 ### Data Consistency
 
@@ -732,23 +796,23 @@ These names cannot be used as usernames.
 ## Security
 
 1. **Password Security**
-   - All passwords are hashed using bcrypt before storage
-   - Passwords are never stored or transmitted in plain text
+    - All passwords are hashed using bcrypt before storage
+    - Passwords are never stored or transmitted in plain text
 
 2. **Token Security**
-   - Tokens are generated using UUID v4
-   - Token validity is verified with each request
-   - Tokens do not expire but can be invalidated by deleting the account
+    - Tokens are generated using UUID v4
+    - Token validity is verified with each request
+    - Tokens do not expire but can be invalidated by deleting the account
 
 3. **Permission Control**
-   - Strict permission checking middleware
-   - Users can only modify their own profiles
-   - Admin operations require appropriate permission verification
+    - Strict permission checking middleware
+    - Users can only modify their own profiles
+    - Admin operations require appropriate permission verification
 
 4. **Input Validation**
-   - All API endpoints perform input validation
-   - Prevents creation of root users
-   - Prevents users from deleting themselves or root
+    - All API endpoints perform input validation
+    - Prevents creation of root users
+    - Prevents users from deleting themselves or root
 
 ---
 
@@ -757,9 +821,9 @@ These names cannot be used as usernames.
 - **API Version:** 1.0
 - **Last Updated:** 2025-11-26
 - **Framework Versions:**
-  - Hono: ^4.10.6
-  - Cloudflare Workers
-  - Durable Objects
+    - Hono: ^4.10.6
+    - Cloudflare Workers
+    - Durable Objects
 
 ---
 
