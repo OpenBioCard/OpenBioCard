@@ -13,6 +13,7 @@
         <ProfileHeader
           :profile-data="profileData"
           :can-edit="canEdit"
+          :site-settings="settings"
           @toggle-edit="editMode = !editMode"
         />
 

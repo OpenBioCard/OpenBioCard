@@ -102,6 +102,7 @@
     <ShareCardModal 
       :show="showShareModal" 
       :profileData="profileData" 
+      :siteSettings="siteSettings"
       @close="showShareModal = false" 
     />
   </div>
@@ -119,6 +120,10 @@ defineProps({
   canEdit: {
     type: Boolean,
     default: false
+  },
+  siteSettings: {
+    type: Object,
+    default: () => ({})
   }
 })
 

@@ -123,7 +123,7 @@
                   <span v-else>{{ (profileData.name || profileData.username).charAt(0).toUpperCase() }}</span>
                 </div>
                 <div style="display: flex; flex-direction: column;">
-                  <span style="font-weight: bold; font-size: 14px; color: var(--color-text-primary);">OpenBioCard</span>
+                  <span style="font-weight: bold; font-size: 14px; color: var(--color-text-primary);">{{ siteSettings?.title || t('app.name') }}</span>
                   <span style="font-size: 10px; color: var(--color-text-tertiary);">@{{ profileData.username }}</span>
                 </div>
               </div>
@@ -338,7 +338,8 @@ import { snapdom } from '@zumer/snapdom'
 
 const props = defineProps({
   show: Boolean,
-  profileData: Object
+  profileData: Object,
+  siteSettings: Object
 })
 
 const emit = defineEmits(['close'])
