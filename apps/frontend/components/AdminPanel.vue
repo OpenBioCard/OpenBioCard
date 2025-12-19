@@ -6,7 +6,8 @@
         <div class="admin-nav-content">
           <div class="admin-nav-brand">
             <div class="admin-nav-logo">
-              <svg width="24" height="24" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <img v-if="settings.logo" :src="settings.logo" alt="Logo" class="brand-logo-img" />
+              <svg v-else width="24" height="24" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
                 <rect x="25" y="50" width="150" height="100" rx="15" ry="15" fill="var(--color-bg-primary)" stroke="var(--color-primary)" stroke-width="4"/>
                 <circle cx="50" cy="90" r="15" fill="none" stroke="var(--color-primary)" stroke-width="3"/>
                 <line x1="50" y1="105" x2="50" y2="120" stroke="var(--color-primary)" stroke-width="2"/>
@@ -17,7 +18,7 @@
               </svg>
             </div>
             <h1 class="admin-nav-title">
-              OpenBioCard <span class="admin-nav-subtitle">{{ $t('admin.panel') }}</span>
+              {{ settings.title }} <span class="admin-nav-subtitle">{{ $t('admin.panel') }}</span>
             </h1>
           </div>
 
@@ -581,6 +582,13 @@ onBeforeUnmount(() => {
   justify-content: center;
   border: 1px solid var(--color-border-primary);
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.brand-logo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
 .admin-nav-title {
