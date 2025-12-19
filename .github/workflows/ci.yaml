@@ -1,7 +1,7 @@
 name: Build (PR)
 
 on:
-  pull_request:
+  pull_request_target:
     branches:
       - main
       - master
@@ -18,6 +18,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          persist-credentials: false
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
