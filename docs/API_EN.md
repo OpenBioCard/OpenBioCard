@@ -10,7 +10,8 @@
     - [Authentication](#authentication-endpoints)
     - [User Profile](#user-profile)
     - [Admin Functions](#admin-functions)
-    - [System Initialization](#system-initialization)
+    - [System Settings](#system-settings)
+    - [System Initialization & Info](#system-initialization--info)
 
 ---
 
@@ -20,7 +21,7 @@ OpenBioCard backend is built on **Cloudflare Workers** and **Hono** framework, u
 
 **Basic Information:**
 
-- Base URL: `https://your-worker.your-subdomain.workers.dev`
+- Base URL: `https://your-worker.your-subdomain.workers.dev/api`
 - Content Type: `application/json`
 - Encoding: `UTF-8`
 
@@ -100,7 +101,7 @@ All error responses follow a uniform format:
 
 Create a new user account.
 
-**Endpoint:** `POST /signup/create`
+**Endpoint:** `POST /api/signup/create`
 
 **Request Body:**
 
@@ -137,11 +138,11 @@ Create a new user account.
 
 #### 2. User Login
 
-Validate user credentials and return a token.
+Validate user credentials and return a token. Supports both POST and GET methods.
 
-**Endpoint:** `POST /signin`
+**Endpoint:** `POST /api/signin` or `GET /api/signin`
 
-**Request Body:**
+**POST Request Body / GET Query Parameters:**
 
 ```json
 {
@@ -167,6 +168,7 @@ Validate user credentials and return a token.
 
 **Special Notes:**
 
+- For GET method, parameters are passed via URL query string: `/api/signin?username=...&password=...`
 - Root user authenticates using `ROOT_USERNAME` and `ROOT_PASSWORD` environment variables
 - Root user tokens are returned in `root-{UUID}` format
 
@@ -181,7 +183,7 @@ Validate user credentials and return a token.
 
 Delete the current logged-in user's account and all related profile data.
 
-**Endpoint:** `POST /delete`
+**Endpoint:** `POST /api/delete`
 
 **Authentication Required:** Yes
 
@@ -216,7 +218,7 @@ Delete the current logged-in user's account and all related profile data.
 
 Retrieve public profile information for a specific user.
 
-**Endpoint:** `GET /user/:username`
+**Endpoint:** `GET /api/user/:username`
 
 **Authentication Required:** No (Public endpoint)
 
@@ -396,7 +398,7 @@ Retrieve public profile information for a specific user.
 
 Update the current logged-in user's profile information.
 
-**Endpoint:** `POST /user/:username`
+**Endpoint:** `POST /api/user/:username`
 
 **Authentication Required:** Yes (must be the profile owner)
 
@@ -467,7 +469,7 @@ All admin functions require `admin` or `root` permissions.
 
 Verify the current user's admin permissions.
 
-**Endpoint:** `POST /admin/check-permission`
+**Endpoint:** `POST /api/admin/check-permission`
 
 **Authentication Required:** Yes
 
@@ -502,7 +504,7 @@ Verify the current user's admin permissions.
 
 Retrieve all users list (POST method, for frontend use).
 
-**Endpoint:** `POST /admin/users/list`
+**Endpoint:** `POST /api/admin/users/list`
 
 **Authentication Required:** Yes
 
@@ -551,7 +553,7 @@ Retrieve all users list (POST method, for frontend use).
 
 Retrieve all users list (GET method).
 
-**Endpoint:** `GET /admin/users`
+**Endpoint:** `GET /api/admin/users`
 
 **Authentication Required:** Yes
 
@@ -601,7 +603,7 @@ Authorization: Bearer your-token-here
 
 Create a new user (admin only).
 
-**Endpoint:** `POST /admin/users`
+**Endpoint:** `POST /api/admin/users`
 
 **Authentication Required:** Yes
 
@@ -701,17 +703,95 @@ Delete a specific user and all their profile data.
 
 ---
 
-### System Initialization
+---
 
-#### 11. Initialize Admin
+### System Settings
 
-Initialize the system and create the default admin user.
+#### 11. Get Public System Settings
 
-**Endpoint:** `GET /init-admin`
+Retrieve public system configuration (e.g., site title, logo).
+
+**Endpoint:** `GET /api/settings`
 
 **Authentication Required:** No
 
-**Request Method:** `GET`
+**Success Response:** `200 OK`
+
+```json
+{
+  "title": "OpenBioCard",
+  "logo": "data:image/png;base64,...",
+  "favicon": "...",
+  "footer": "..."
+}
+```
+
+---
+
+#### 12. Get Full System Settings (Admin)
+
+Retrieve complete system configuration.
+
+**Endpoint:** `POST /api/admin/settings`
+
+**Authentication Required:** Yes
+
+**Required Permissions:** `admin` or `root`
+
+**Success Response:** `200 OK`
+
+```json
+{
+  "title": "OpenBioCard",
+  "logo": "...",
+  "favicon": "...",
+  "footer": "...",
+  "allowSignup": true,
+  ...
+}
+```
+
+---
+
+#### 13. Update System Settings
+
+Update system configuration.
+
+**Endpoint:** `POST /api/admin/settings/update`
+
+**Authentication Required:** Yes
+
+**Required Permissions:** `admin" or `root`
+
+**Request Body:**
+
+```json
+{
+  "title": "New Title",
+  "logo": "...",
+  ...
+}
+```
+
+**Success Response:** `200 OK`
+
+```json
+{
+  "success": true
+}
+```
+
+---
+
+### System Initialization & Info
+
+#### 14. Initialize Admin
+
+Initialize the system and create the default admin user.
+
+**Endpoint:** `GET /api/init-admin`
+
+**Authentication Required:** No
 
 **Success Response:** `200 OK`
 
@@ -722,12 +802,31 @@ Admin initialized
 **Notes:**
 
 - Only used during initial system deployment
-- Will not create duplicate admin if users already exist
 - This endpoint should be disabled or protected in production
 
-**Error Responses:**
+---
 
-- `500` - Initialization failed
+#### 15. Get API Information
+
+Retrieve basic API information and available endpoints.
+
+**Endpoint:** `GET /api/`
+
+**Authentication Required:** No
+
+**Success Response:** `200 OK`
+
+```json
+{
+  "message": "OpenBioCard API",
+  "version": "1.0.0",
+  "endpoints": {
+    "auth": ["/signup", "/signin"],
+    "user": ["/user/:username"],
+    "admin": ["/admin", "/init-admin"]
+  }
+}
+```
 
 ---
 
@@ -744,10 +843,12 @@ The system uses two Durable Objects:
         - `user`: Account information (username, password hash, token, type)
         - `profile`: Profile information (personal info, contacts, social links, projects, gallery, work experiences, education experiences)
 
-2. **AdminDO** - Stores system-level user list
+2. **AdminDO** - Stores system-level data
     - Global singleton, instance name is `admin-manager`
     - Storage contents:
         - `users`: List of all usernames and types
+        - `settings`: Global system settings (title, logo, SEO, etc.)
+        - `rootToken`: Currently valid root user token
 
 ### Data Consistency
 

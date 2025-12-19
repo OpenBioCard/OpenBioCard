@@ -10,7 +10,8 @@
   - [认证相关](#认证相关)
   - [用户资料](#用户资料)
   - [管理员功能](#管理员功能)
-  - [系统初始化](#系统初始化)
+  - [系统设置](#系统设置)
+  - [系统初始化与信息](#系统初始化与信息)
 
 ---
 
@@ -19,7 +20,7 @@
 OpenBioCard 后端基于 **Cloudflare Workers** 和 **Hono** 框架构建，使用 **Durable Objects** 进行数据持久化存储。
 
 **基础信息：**
-- 基础 URL: `https://your-worker.your-subdomain.workers.dev`
+- 基础 URL: `https://your-worker.your-subdomain.workers.dev/api`
 - 内容类型: `application/json`
 - 编码: `UTF-8`
 
@@ -97,7 +98,7 @@ Authorization: Bearer your-token-here
 
 创建新用户账号。
 
-**端点:** `POST /signup/create`
+**端点:** `POST /api/signup/create`
 
 **请求体:**
 ```json
@@ -131,11 +132,11 @@ Authorization: Bearer your-token-here
 
 #### 2. 用户登录
 
-验证用户凭据并返回 Token。
+验证用户凭据并返回 Token。支持 POST 和 GET 两种方式。
 
-**端点:** `POST /signin`
+**端点:** `POST /api/signin` 或 `GET /api/signin`
 
-**请求体:**
+**POST 请求体 / GET 查询参数:**
 ```json
 {
   "username": "existinguser",
@@ -158,6 +159,7 @@ Authorization: Bearer your-token-here
 ```
 
 **特殊说明:**
+- 使用 GET 方式时，参数通过 URL 查询字符串传递：`/api/signin?username=...&password=...`
 - Root 用户使用环境变量 `ROOT_USERNAME` 和 `ROOT_PASSWORD` 进行认证
 - Root 用户返回的 Token 格式为 `root-{UUID}`
 
@@ -171,7 +173,7 @@ Authorization: Bearer your-token-here
 
 删除当前登录用户的账号及所有相关资料。
 
-**端点:** `POST /delete`
+**端点:** `POST /api/delete`
 
 **需要认证:** 是
 
@@ -203,7 +205,7 @@ Authorization: Bearer your-token-here
 
 获取指定用户的公开资料信息。
 
-**端点:** `GET /user/:username`
+**端点:** `GET /api/user/:username`
 
 **需要认证:** 否（公开接口）
 
@@ -381,7 +383,7 @@ Authorization: Bearer your-token-here
 
 更新当前登录用户的资料信息。
 
-**端点:** `POST /user/:username`
+**端点:** `POST /api/user/:username`
 
 **需要认证:** 是（必须是资料所有者）
 
@@ -447,7 +449,7 @@ Authorization: Bearer your-token-here
 
 验证当前用户的管理员权限。
 
-**端点:** `POST /admin/check-permission`
+**端点:** `POST /api/admin/check-permission`
 
 **需要认证:** 是
 
@@ -479,7 +481,7 @@ Authorization: Bearer your-token-here
 
 获取所有用户列表（POST 方式，供前端使用）。
 
-**端点:** `POST /admin/users/list`
+**端点:** `POST /api/admin/users/list`
 
 **需要认证:** 是
 
@@ -524,7 +526,7 @@ Authorization: Bearer your-token-here
 
 获取所有用户列表（GET 方式）。
 
-**端点:** `GET /admin/users`
+**端点:** `GET /api/admin/users`
 
 **需要认证:** 是
 
@@ -570,7 +572,7 @@ Authorization: Bearer your-token-here
 
 创建新用户（仅管理员可用）。
 
-**端点:** `POST /admin/users`
+**端点:** `POST /api/admin/users`
 
 **需要认证:** 是
 
@@ -662,17 +664,89 @@ Authorization: Bearer your-token-here
 
 ---
 
-### 系统初始化
+### 系统设置
 
-#### 11. 初始化管理员
+#### 11. 获取公开系统设置
 
-初始化系统，创建默认的 admin 用户。
+获取系统的公开配置（如站点标题、Logo 等）。
 
-**端点:** `GET /init-admin`
+**端点:** `GET /api/settings`
 
 **需要认证:** 否
 
-**请求方式:** `GET`
+**成功响应:** `200 OK`
+```json
+{
+  "title": "OpenBioCard",
+  "logo": "data:image/png;base64,...",
+  "favicon": "...",
+  "footer": "..."
+}
+```
+
+---
+
+#### 12. 获取完整系统设置（管理员）
+
+获取系统的完整配置。
+
+**端点:** `POST /api/admin/settings`
+
+**需要认证:** 是
+
+**需要权限:** `admin` 或 `root`
+
+**成功响应:** `200 OK`
+```json
+{
+  "title": "OpenBioCard",
+  "logo": "...",
+  "favicon": "...",
+  "footer": "...",
+  "allowSignup": true,
+  ...
+}
+```
+
+---
+
+#### 13. 更新系统设置
+
+更新系统配置。
+
+**端点:** `POST /api/admin/settings/update`
+
+**需要认证:** 是
+
+**需要权限:** `admin` 或 `root`
+
+**请求体:**
+```json
+{
+  "title": "New Title",
+  "logo": "...",
+  ...
+}
+```
+
+**成功响应:** `200 OK`
+```json
+{
+  "success": true
+}
+```
+
+---
+
+### 系统初始化与信息
+
+#### 14. 初始化管理员
+
+初始化系统，创建默认的 admin 用户。
+
+**端点:** `GET /api/init-admin`
+
+**需要认证:** 否
 
 **成功响应:** `200 OK`
 ```
@@ -681,11 +755,30 @@ Admin initialized
 
 **说明:**
 - 仅在系统首次部署时使用
-- 如果已存在用户，不会创建重复的 admin
 - 该端点应在生产环境中禁用或保护
 
-**错误响应:**
-- `500` - 初始化失败
+---
+
+#### 15. 获取 API 信息
+
+获取 API 的基本信息和可用端点。
+
+**端点:** `GET /api/`
+
+**需要认证:** 否
+
+**成功响应:** `200 OK`
+```json
+{
+  "message": "OpenBioCard API",
+  "version": "1.0.0",
+  "endpoints": {
+    "auth": ["/signup", "/signin"],
+    "user": ["/user/:username"],
+    "admin": ["/admin", "/init-admin"]
+  }
+}
+```
 
 ---
 
@@ -702,10 +795,12 @@ Admin initialized
         - `user`: 账号信息（用户名、密码哈希、Token、类型）
         - `profile`: 资料信息（个人信息、联系方式、社交链接、项目、相册、工作经历、教育经历）
 
-2. **AdminDO** - 存储系统级用户列表
+2. **AdminDO** - 存储系统级数据
     - 全局单例，实例名为 `admin-manager`
     - 存储内容：
         - `users`: 所有用户的用户名和类型列表
+        - `settings`: 系统全局设置（标题、Logo、SEO 等）
+        - `rootToken`: 当前有效的 root 用户 Token
 
 ### 数据一致性
 

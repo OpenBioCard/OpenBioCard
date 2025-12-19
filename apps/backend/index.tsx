@@ -91,9 +91,10 @@ api.get('/', (c) => {
     message: 'OpenBioCard API',
     version: '1.0.0',
     endpoints: {
-      auth: ['/signup', '/signin'],
+      auth: ['/signup/create', '/signin', '/delete'],
       user: ['/user/:username'],
-      admin: ['/admin', '/init-admin']
+      admin: ['/admin/users', '/admin/settings', '/init-admin'],
+      system: ['/settings']
     }
   })
 })
