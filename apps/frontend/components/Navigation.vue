@@ -211,8 +211,8 @@ onBeforeUnmount(() => {
 <style scoped>
 .nav-container {
   background: var(--color-bg-overlay);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   box-shadow: var(--shadow-sm);
   border-bottom: 1px solid var(--color-border-tertiary);
   position: sticky;

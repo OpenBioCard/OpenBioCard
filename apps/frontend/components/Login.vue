@@ -20,7 +20,7 @@
       </div>
 
       <!-- 登录表单 -->
-      <div style="background: var(--color-bg-overlay); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border-tertiary); padding: 2rem;">
+      <div style="background: var(--color-bg-overlay); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border-radius: 1rem; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border-tertiary); padding: 2rem;">
         <form @submit.prevent="handleLogin" style="display: flex; flex-direction: column; gap: 1.5rem;">
           <div>
             <label for="username" style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 0.5rem;">

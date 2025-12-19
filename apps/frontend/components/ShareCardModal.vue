@@ -5,7 +5,7 @@
       <!-- Backdrop with blur -->
       <div 
         @click="$emit('close')"
-        style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.3); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);"
+        style="position: absolute; inset: 0; background: rgba(0, 0, 0, 0.2); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);"
       ></div>
 
       <!-- Modal Content -->
