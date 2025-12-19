@@ -1,5 +1,5 @@
 // API服务层 - 认证相关
-const API_BASE = '/api/'
+import { API_BASE } from './api.js'
 
 export const authAPI = {
   // 用户登录
