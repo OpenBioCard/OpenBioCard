@@ -1,0 +1,126 @@
+name: Build (PR)
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # Run build and capture logs (do NOT fail job)
+      - name: Build
+        id: build
+        run: |
+          pnpm build 2>&1 | tee build.log
+        continue-on-error: true
+
+      # Comment or update existing PR comment with denoised & grouped errors
+      - name: Comment on PR (update if exists)
+        if: steps.build.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const raw = fs.readFileSync('build.log', 'utf8');
+            const lines = raw.split('\n');
+
+            const noise = [
+              /^Progress:/i, /^Packages:/i, /^Lockfile/i, /^Already up to date/i,
+              /^\s*pnpm/i, /^\s*cache/i, /^\s*added\s+\d+/i, /^\s*resolved\s+\d+/i,
+              /^\s*downloaded\s+\d+/i, /^\s*INFO/i, /^\s*WARN/i, /^\s*Note:/i,
+              /^\s*Done in/i, /^\s*@openbiocard/i
+            ];
+
+            const isNoise = line => noise.some(r => r.test(line));
+
+            const groups = {
+              TypeScript: [],
+              Vite: [],
+              ESLint: [],
+              Turbo: [],
+              Other: [],
+            };
+
+            for (const line of lines) {
+              const trimmed = line.trim();
+              if (!trimmed || isNoise(line)) continue;
+
+              if (/TS\d+|Type error|TypeScript/i.test(line)) {
+                groups.TypeScript.push(line);
+              } else if (/vite/i.test(line)) {
+                groups.Vite.push(line);
+              } else if (/eslint/i.test(line)) {
+                groups.ESLint.push(line);
+              } else if (/turbo|turborepo/i.test(line)) {
+                groups.Turbo.push(line);
+              } else if (/error|exception|stack/i.test(line)) {
+                groups.Other.push(line);
+              }
+            }
+
+            let content = '';
+            for (const [name, logs] of Object.entries(groups)) {
+              if (!logs.length) continue;
+              let block = logs.join('\n');
+              const MAX = 12000;
+              if (block.length > MAX) block = '...log truncated...\n' + block.slice(-MAX);
+              content += `\n### ${name}\n\n\`\`\`\n${block}\n\`\`\`\n`;
+            }
+
+            if (!content.trim()) {
+              content = '\n```\nNo relevant error output after noise filtering.\nSee workflow logs for full context.\n```\n';
+            }
+
+            const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
+            const body = `⚠️ **pnpm build reported errors (non-blocking)**\n\n🔗 **Workflow run:**\n${runUrl}\n\n<details>\n<summary>Error details (filtered & grouped)</summary>\n${content}\n</details>`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c =>
+              (c.user.type === 'Bot' || c.user.login.includes('github-actions')) &&
+              c.body.includes('pnpm build reported errors')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }
