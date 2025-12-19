@@ -128,15 +128,52 @@
                 </div>
               </div>
 
-              <!-- QR Code (Floating effect) -->
+              <!-- QR Code (Modern Styled) -->
               <div style="
                 background: #fff;
-                padding: 8px;
-                border-radius: 16px;
-                box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                padding: 14px;
+                border-radius: 28px;
+                box-shadow: 
+                  0 15px 35px rgba(0,0,0,0.15),
+                  inset 0 0 0 1px rgba(0,0,0,0.05);
                 transform: rotate(-3deg) translateY(10px);
+                position: relative;
+                z-index: 2;
+                display: flex;
+                align-items: center;
+                justify-content: center;
               ">
-                <qrcode-vue :value="profileUrl" :size="80" level="H" :background="'#ffffff'" :foreground="'#000000'" />
+                <div style="position: relative; width: 84px; height: 84px;">
+                  <qrcode-vue 
+                    :value="profileUrl" 
+                    :size="84" 
+                    level="H" 
+                    :background="'#ffffff'" 
+                    :foreground="'#111827'"
+                    :render-as="'svg'"
+                    :margin="0"
+                  />
+                  
+                  <!-- Custom Eye Overlays to match the requested style -->
+                  <!-- Top Left Eye -->
+                  <div style="position: absolute; top: -1px; left: -1px; width: 23px; height: 23px; background: #fff; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 19px; height: 19px; border: 3.5px solid #111827; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                      <div style="width: 7px; height: 7px; background: #111827; border-radius: 50%;"></div>
+                    </div>
+                  </div>
+                  <!-- Top Right Eye -->
+                  <div style="position: absolute; top: -1px; right: -1px; width: 23px; height: 23px; background: #fff; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 19px; height: 19px; border: 3.5px solid #111827; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                      <div style="width: 7px; height: 7px; background: #111827; border-radius: 50%;"></div>
+                    </div>
+                  </div>
+                  <!-- Bottom Left Eye -->
+                  <div style="position: absolute; bottom: -1px; left: -1px; width: 23px; height: 23px; background: #fff; display: flex; align-items: center; justify-content: center;">
+                    <div style="width: 19px; height: 19px; border: 3.5px solid #111827; border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                      <div style="width: 7px; height: 7px; background: #111827; border-radius: 50%;"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
