@@ -1,5 +1,4 @@
-// API服务层 - 管理员相关
-import { API_BASE } from './api.js'
+
 
 export const adminAPI = {
   // 获取用户列表
