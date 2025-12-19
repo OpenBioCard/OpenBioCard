@@ -3,9 +3,10 @@
     <div class="nav-wrapper">
       <div class="nav-content">
         <!-- Logo 和标题 -->
-        <div class="nav-brand">
-          <div class="nav-logo">
-            <svg width="24" height="24" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+        <div class="nav-brand" @click="goToHome" style="cursor: pointer;">
+          <div class="nav-logo" style="overflow: hidden;">
+            <img v-if="siteSettings?.logo" :src="siteSettings.logo" :alt="siteSettings.title || 'OpenBioCard'" style="width: 100%; height: 100%; object-fit: cover;" />
+            <svg v-else width="24" height="24" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
               <rect x="25" y="50" width="150" height="100" rx="15" ry="15" fill="var(--color-bg-primary)" stroke="var(--color-text-primary)" stroke-width="4"/>
               <circle cx="50" cy="90" r="15" fill="none" stroke="var(--color-text-primary)" stroke-width="3"/>
               <line x1="50" y1="105" x2="50" y2="120" stroke="var(--color-text-primary)" stroke-width="2"/>
@@ -15,7 +16,7 @@
               <line x1="35" y1="145" x2="165" y2="145" stroke="var(--color-text-primary)" stroke-width="1" stroke-dasharray="4,4"/>
             </svg>
           </div>
-          <h1 class="nav-title">OpenBioCard</h1>
+          <h1 class="nav-title">{{ siteSettings?.title || 'OpenBioCard' }}</h1>
         </div>
 
         <!-- 桌面端右侧菜单 -->
@@ -108,6 +109,7 @@
             </button>
           </div>
           <div class="mobile-menu-item mobile-menu-language">
+            <span class="mobile-menu-label">{{ $t('navigation.language') }}</span>
             <LanguageSwitcher />
           </div>
           <div class="mobile-menu-divider"></div>
@@ -140,6 +142,10 @@ defineProps({
   currentUser: {
     type: Object,
     default: null
+  },
+  siteSettings: {
+    type: Object,
+    default: () => ({ title: 'OpenBioCard', logo: '' })
   }
 })
 
@@ -147,6 +153,10 @@ const emit = defineEmits(['logout'])
 
 const { isDark, toggleTheme } = useTheme()
 const mobileMenuOpen = ref(false)
+
+const goToHome = () => {
+  window.location.href = '/'
+}
 
 const toggleMobileMenu = () => {
   mobileMenuOpen.value = !mobileMenuOpen.value

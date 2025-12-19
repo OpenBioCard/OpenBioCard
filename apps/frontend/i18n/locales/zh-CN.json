@@ -62,11 +62,22 @@
     "userDeleteFailed": "删除用户失败",
     "userDeleteError": "删除用户错误",
     "enterUsername": "输入用户名",
-    "enterPassword": "输入密码"
+    "enterPassword": "输入密码",
+    "systemSettings": "系统设置",
+    "manageSystem": "管理系统外观和全局设置",
+    "siteAppearance": "网站外观",
+    "siteTitle": "网站标题",
+    "enterSiteTitle": "请输入网站标题",
+    "siteLogo": "网站 Logo",
+    "uploadLogo": "上传 Logo",
+    "logoHelp": "支持 JPG, PNG, SVG，建议尺寸 128x128，大小不超过 1MB",
+    "logoTooLarge": "Logo 文件大小不能超过 1MB",
+    "settingsUpdated": "系统设置已更新"
   },
   "navigation": {
     "welcome": "欢迎，{username}",
     "toggleTheme": "切换主题",
+    "language": "界面语言",
     "signIn": "登录",
     "signOut": "退出登录"
   },

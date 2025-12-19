@@ -159,6 +159,46 @@ admin.post('/users', authMiddleware, requirePermission(['admin', 'root']), async
   }
 })
 
+// 获取系统设置
+admin.post('/settings', authMiddleware, requirePermission(['admin', 'root']), async (c) => {
+  try {
+    const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
+    const adminStub = c.env.ADMIN_DO.get(adminId)
+    const doResponse = await adminStub.fetch('http://internal/settings')
+    const settings = await doResponse.json()
+    return c.json(settings)
+  } catch (error: any) {
+    console.error('Get settings error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// 更新系统设置
+admin.post('/settings/update', authMiddleware, requirePermission(['admin', 'root']), async (c) => {
+  try {
+    const body = c.var.requestBody
+    // 移除 body 中的验证字段，只保留设置字段
+    const { username, token, ...settings } = body
+    
+    const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
+    const adminStub = c.env.ADMIN_DO.get(adminId)
+    const doResponse = await adminStub.fetch('http://internal/update-settings', {
+      method: 'POST',
+      body: JSON.stringify(settings),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    
+    if (!doResponse.ok) {
+      return c.json({ error: 'Failed to update settings' }, 500)
+    }
+    
+    return c.json({ success: true })
+  } catch (error: any) {
+    console.error('Update settings error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
 // 删除用户（admin权限）
 admin.delete('/users/:username', authMiddleware, requirePermission(['admin', 'root']), async (c) => {
   try {

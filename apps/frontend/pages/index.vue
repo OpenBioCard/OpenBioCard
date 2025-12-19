@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen">
-    <Login v-if="currentView === 'login'" @login="login" />
+    <Login v-if="currentView === 'login'" :title="settings.title" :logo="settings.logo" @login="login" />
     <AdminPanel v-else-if="currentView === 'admin'" :user="user" :token="token" @logout="logout" />
 
     <!-- 通知弹窗 -->
@@ -20,13 +20,14 @@ import { useI18n } from 'vue-i18n'
 import Login from '../components/Login.vue'
 import AdminPanel from '../components/AdminPanel.vue'
 import NotificationModal from '../components/NotificationModal.vue'
-import { authAPI } from '../api/index.js'
+import { authAPI, userAPI } from '../api/index.js'
 
 const { t } = useI18n()
 
 const currentView = ref('login')
 const user = ref(null)
 const token = ref('')
+const settings = ref({ title: 'OpenBioCard', logo: '' })
 
 // 通知弹窗状态
 const notificationModal = ref({
@@ -35,6 +36,17 @@ const notificationModal = ref({
   title: '',
   message: ''
 })
+
+// 获取系统设置
+const fetchSettings = async () => {
+  try {
+    const data = await userAPI.getSettings()
+    settings.value = data
+    document.title = data.title
+  } catch (error) {
+    console.error('获取系统设置失败:', error)
+  }
+}
 
 // 从cookies获取token
 const getCookie = (name) => {
@@ -152,7 +164,8 @@ const showNotification = (type, title, message) => {
   }
 }
 
-onMounted(() => {
-  checkLogin()
+onMounted(async () => {
+  await fetchSettings()
+  await checkLogin()
 })
 </script>

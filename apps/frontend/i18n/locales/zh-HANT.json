@@ -62,11 +62,22 @@
     "userDeleteFailed": "刪除使用者失敗",
     "userDeleteError": "刪除使用者錯誤",
     "enterUsername": "輸入使用者名稱",
-    "enterPassword": "輸入密碼"
+    "enterPassword": "輸入密碼",
+    "systemSettings": "系統設置",
+    "manageSystem": "管理系統外觀和全局設置",
+    "siteAppearance": "網站外觀",
+    "siteTitle": "網站標題",
+    "enterSiteTitle": "請輸入網站標題",
+    "siteLogo": "網站 Logo",
+    "uploadLogo": "上傳 Logo",
+    "logoHelp": "支持 JPG, PNG, SVG，建議尺寸 128x128，大小不超過 1MB",
+    "logoTooLarge": "Logo 文件大小不能超過 1MB",
+    "settingsUpdated": "系統設置已更新"
   },
   "navigation": {
     "welcome": "歡迎，{username}",
     "toggleTheme": "切換主題",
+    "language": "界面語言",
     "signIn": "登入",
     "signOut": "登出"
   },

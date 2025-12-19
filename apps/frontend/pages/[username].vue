@@ -1,7 +1,7 @@
 <template>
   <div style="min-height: 100vh; background: var(--gradient-bg);">
     <!-- 导航栏 -->
-    <Navigation :current-user="currentUser" @logout="logout" />
+    <Navigation :current-user="currentUser" :site-settings="settings" @logout="logout" />
 
     <!-- 404 页面 -->
     <UserNotFound v-if="userNotFound" :username="username" />
@@ -178,7 +178,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useHead } from '@vueuse/head'
@@ -201,16 +201,29 @@ import WorkExperienceEdit from '../components/WorkExperienceEdit.vue'
 import SchoolExperience from '../components/SchoolExperience.vue'
 import SchoolExperienceEdit from '../components/SchoolExperienceEdit.vue'
 import { useSocialLinksData } from '../composables/useGitHubData'
-import { userAPI } from '../api/index.js'
+import { userAPI, authAPI } from '../api/index.js'
 
 const route = useRoute()
 const { t } = useI18n()
 const username = route.params.username
 
+// 系统设置
+const settings = ref({ title: 'OpenBioCard', logo: '' })
+
 // 用户状态
 const currentUser = ref(null)
 const token = ref('')
 const userNotFound = ref(false)
+
+// 获取系统设置
+const fetchSettings = async () => {
+  try {
+    const data = await userAPI.getSettings()
+    settings.value = data
+  } catch (error) {
+    console.error('获取系统设置失败:', error)
+  }
+}
 
 // 资料数据
 const profileData = ref({
@@ -336,13 +349,14 @@ const loadProfile = async () => {
     const description = profileData.value.bio || `${title} 的个人资料页面`
     const image = profileData.value.avatar || '/icon/logo.svg'
     const url = window.location.href
+    const siteTitle = settings.value.title || 'OpenBioCard'
 
     useHead({
-      title: `${title} - OpenBioCard`,
+      title: `${title} - ${siteTitle}`,
       meta: [
         { name: 'description', content: description },
         // Open Graph
-        { property: 'og:title', content: `${title} - OpenBioCard` },
+        { property: 'og:title', content: `${title} - ${siteTitle}` },
         { property: 'og:description', content: description },
         { property: 'og:image', content: image },
         { property: 'og:url', content: url },
@@ -801,7 +815,8 @@ const logout = () => {
   window.location.href = '/'
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await fetchSettings()
   checkLogin()
   loadProfile()
 })

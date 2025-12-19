@@ -57,6 +57,21 @@ export class AdminDO extends DurableObject {
       })
     }
 
+    if (request.method === 'GET' && url.pathname === '/settings') {
+      const settings = (await this.ctx.storage.get('settings')) as { title: string, logo: string } || { title: 'OpenBioCard', logo: '' }
+      return new Response(JSON.stringify(settings), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (request.method === 'POST' && url.pathname === '/update-settings') {
+      const newSettings = await request.json()
+      await this.ctx.storage.put('settings', newSettings)
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
     return new Response('Not found', { status: 404 })
   }
 }

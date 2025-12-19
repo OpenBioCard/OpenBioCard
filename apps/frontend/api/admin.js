@@ -75,5 +75,45 @@ export const adminAPI = {
     }
 
     return await response.json()
+  },
+
+  // 获取系统设置（管理员专用，包含私有或完整数据）
+  async getSettings(token, username) {
+    const response = await fetch(`${API_BASE}admin/settings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ username, token })
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch settings')
+    }
+
+    return await response.json()
+  },
+
+  // 更新系统设置
+  async updateSettings(settings, token, username) {
+    const response = await fetch(`${API_BASE}admin/settings/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        ...settings,
+        username,
+        token
+      })
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to update settings')
+    }
+
+    return await response.json()
   }
 }

@@ -38,5 +38,14 @@ export const userAPI = {
     }
 
     return await response.json()
+  },
+
+  // 获取系统公开设置
+  async getSettings() {
+    const response = await fetch(`${API_BASE}settings`)
+    if (!response.ok) {
+      return { title: 'OpenBioCard', logo: '' }
+    }
+    return await response.json()
   }
 }

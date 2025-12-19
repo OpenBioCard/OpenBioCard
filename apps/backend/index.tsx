@@ -65,6 +65,25 @@ api.get('/init-admin', async (c) => {
   }
 })
 
+// 获取公开系统设置
+api.get('/settings', async (c) => {
+  try {
+    const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
+    const adminStub = c.env.ADMIN_DO.get(adminId)
+    const response = await adminStub.fetch('http://internal/settings')
+    
+    if (!response.ok) {
+      return c.json({ title: 'OpenBioCard', logo: '' })
+    }
+    
+    const settings = await response.json()
+    return c.json(settings)
+  } catch (error) {
+    console.error('Get public settings error:', error)
+    return c.json({ title: 'OpenBioCard', logo: '' })
+  }
+})
+
 api.get('/', (c) => {
   return c.json({
     message: 'OpenBioCard API',

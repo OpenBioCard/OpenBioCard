@@ -62,13 +62,24 @@
     "userDeleteFailed": "Failed to delete user",
     "userDeleteError": "Error deleting user",
     "enterUsername": "Enter username",
-    "enterPassword": "Enter password"
+    "enterPassword": "Enter password",
+    "systemSettings": "System Settings",
+    "manageSystem": "Manage system appearance and global settings",
+    "siteAppearance": "Site Appearance",
+    "siteTitle": "Site Title",
+    "enterSiteTitle": "Enter site title",
+    "siteLogo": "Site Logo",
+    "uploadLogo": "Upload Logo",
+    "logoHelp": "Supports JPG, PNG, SVG. Recommended 128x128, max 1MB",
+    "logoTooLarge": "Logo file size cannot exceed 1MB",
+    "settingsUpdated": "System settings updated"
   },
   "navigation": {
     "welcome": "Welcome, {username}",
-    "toggleTheme": "Toggle theme",
-    "signIn": "Sign in",
-    "signOut": "Sign out"
+    "toggleTheme": "Toggle Theme",
+    "language": "Language",
+    "signIn": "Sign In",
+    "signOut": "Sign Out"
   },
   "profile": {
     "edit": "Edit Profile",

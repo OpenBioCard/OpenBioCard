@@ -26,6 +26,7 @@
             <span class="admin-nav-user">
               {{ user.username }} <span class="admin-nav-user-type">({{ user.type === 'root' ? 'ROOT' : $t('admin.systemAdmin') }})</span>
             </span>
+            <LanguageSwitcher />
             <button @click="toggleTheme" class="icon-button" :title="$t('navigation.toggleTheme')">
               <svg v-if="isDark" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="5"></circle>
@@ -89,6 +90,11 @@
               </button>
             </div>
             <div class="mobile-menu-divider"></div>
+            <div class="mobile-menu-item">
+              <span class="mobile-menu-label">{{ $t('navigation.language') }}</span>
+              <LanguageSwitcher />
+            </div>
+            <div class="mobile-menu-divider"></div>
             <button @click="handleLogout" class="mobile-menu-button">
               {{ $t('auth.signOut') }}
             </button>
@@ -99,6 +105,78 @@
 
     <!-- 主内容 -->
     <main class="admin-main">
+      <!-- 系统统计与设置 -->
+      <div class="admin-header">
+        <div class="admin-header-text">
+          <h2 class="admin-header-title">{{ $t('admin.systemSettings') }}</h2>
+          <p class="admin-header-desc">{{ $t('admin.manageSystem') }}</p>
+        </div>
+      </div>
+
+      <!-- 系统设置表单 -->
+      <div class="admin-card">
+        <h3 class="admin-card-title">
+          <svg class="admin-card-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          {{ $t('admin.siteAppearance') }}
+        </h3>
+
+        <form @submit.prevent="saveSettings" class="admin-form">
+          <div class="admin-form-grid">
+            <div class="admin-form-field">
+              <label for="siteTitle" class="admin-form-label">{{ $t('admin.siteTitle') }}</label>
+              <input
+                id="siteTitle"
+                v-model="settings.title"
+                type="text"
+                :placeholder="$t('admin.enterSiteTitle')"
+                required
+                class="admin-form-input"
+              />
+            </div>
+
+            <div class="admin-form-field">
+              <label class="admin-form-label">{{ $t('admin.siteLogo') }}</label>
+              <div class="logo-upload-container">
+                <div v-if="settings.logo" class="logo-preview-wrapper">
+                  <img :src="settings.logo" class="logo-preview" alt="Site Logo Preview" />
+                  <button @click="removeLogo" type="button" class="logo-remove-btn" title="Remove logo">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <line x1="18" y1="6" x2="6" y2="18"></line>
+                      <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                  </button>
+                </div>
+                <div v-else class="logo-upload-placeholder" @click="$refs.logoInput.click()">
+                  <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                  </svg>
+                  <span>{{ $t('admin.uploadLogo') }}</span>
+                </div>
+                <input
+                  ref="logoInput"
+                  type="file"
+                  accept="image/*"
+                  class="hidden"
+                  @change="handleLogoUpload"
+                />
+                <p class="admin-form-help">{{ $t('admin.logoHelp') }}</p>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" :disabled="savingSettings" class="admin-form-submit">
+            <svg v-if="!savingSettings" class="admin-form-submit-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"></path>
+            </svg>
+            <span v-if="!savingSettings">{{ $t('common.save') }}</span>
+            <div v-else class="spinner"></div>
+          </button>
+        </form>
+      </div>
+
       <!-- 用户统计 -->
       <div class="admin-header">
         <div class="admin-header-text">
@@ -238,8 +316,10 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useTheme } from '../composables/useTheme'
+import LanguageSwitcher from './LanguageSwitcher.vue'
 import NotificationModal from './NotificationModal.vue'
 import { adminAPI } from '../api/index.js'
+import { compressImage } from '../utils/image.js'
 
 const props = defineProps({
   user: Object,
@@ -259,6 +339,40 @@ const newUser = ref({
 })
 const creating = ref(false)
 const mobileMenuOpen = ref(false)
+const settings = ref({
+  title: 'OpenBioCard',
+  logo: ''
+})
+const savingSettings = ref(false)
+const logoInput = ref(null)
+
+const handleLogoUpload = async (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  // 原始文件如果太大（超过 5MB），直接拒绝，避免浏览器崩溃
+  if (file.size > 5 * 1024 * 1024) {
+    showNotification('error', t('common.tips'), t('admin.logoTooLarge'))
+    return
+  }
+
+  try {
+    // 压缩 Logo，最大尺寸 400x400，质量 0.8
+    const compressedBase64 = await compressImage(file, {
+      maxWidth: 400,
+      maxHeight: 400,
+      quality: 0.8
+    })
+    settings.value.logo = compressedBase64
+  } catch (error) {
+    console.error('Logo compression failed:', error)
+    showNotification('error', t('common.tips'), t('admin.uploadError') || 'Logo upload failed')
+  }
+}
+
+const removeLogo = () => {
+  settings.value.logo = ''
+}
 
 // 通知弹窗状态
 const notificationModal = ref({
@@ -279,6 +393,32 @@ const closeMobileMenu = () => {
 const handleLogout = () => {
   closeMobileMenu()
   emit('logout')
+}
+
+const fetchSettings = async () => {
+  if (!props.user || !props.token) return
+  try {
+    const data = await adminAPI.getSettings(props.token, props.user.username)
+    settings.value = data
+  } catch (error) {
+    console.error('获取系统设置失败:', error)
+  }
+}
+
+const saveSettings = async () => {
+  if (!props.user || !props.token) return
+  savingSettings.value = true
+  try {
+    await adminAPI.updateSettings(settings.value, props.token, props.user.username)
+    showNotification('success', t('common.tips'), t('admin.settingsUpdated'))
+    // 更新页面标题
+    document.title = settings.value.title
+  } catch (error) {
+    console.error('更新系统设置失败:', error)
+    showNotification('error', t('common.tips'), error.message)
+  } finally {
+    savingSettings.value = false
+  }
 }
 
 const fetchUsers = async () => {
@@ -381,6 +521,7 @@ const handleResize = () => {
 }
 
 onMounted(() => {
+  fetchSettings()
   fetchUsers()
   document.addEventListener('click', handleClickOutside)
   window.addEventListener('resize', handleResize)
@@ -663,6 +804,89 @@ onBeforeUnmount(() => {
   border: 1px solid var(--color-border-tertiary);
   padding: 2rem;
   margin-bottom: 2rem;
+}
+
+/* Logo 上传样式 */
+.logo-upload-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.logo-preview-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  border: 1px solid var(--color-border-secondary);
+}
+
+.logo-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.logo-remove-btn {
+  position: absolute;
+  top: 0.25rem;
+  right: 0.25rem;
+  padding: 0.25rem;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.logo-remove-btn:hover {
+  background: rgba(220, 38, 38, 0.8);
+}
+
+.logo-upload-placeholder {
+  width: 80px;
+  height: 80px;
+  border: 2px dashed var(--color-border-secondary);
+  border-radius: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--color-text-tertiary);
+}
+
+.logo-upload-placeholder:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-bg-hover);
+}
+
+.upload-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.logo-upload-placeholder span {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.admin-form-help {
+  font-size: 0.75rem;
+  color: var(--color-text-tertiary);
+  margin: 0;
+}
+
+.hidden {
+  display: none;
 }
 
 .admin-card-title {
