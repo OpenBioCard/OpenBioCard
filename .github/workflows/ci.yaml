@@ -29,28 +29,31 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      # Run build and capture logs (do NOT fail job)
+      # Run build and capture logs
       - name: Build
         id: build
+        shell: bash
         run: |
-          pnpm build 2>&1 | tee build.log
-        continue-on-error: true
+          set -eo pipefail
+          pnpm build --bail 2>&1 | tee build.log
 
       # Comment or update existing PR comment with denoised & grouped errors
       - name: Comment on PR (update if exists)
-        if: steps.build.outcome == 'failure'
+        if: failure() && steps.build.outcome == 'failure'
         uses: actions/github-script@v7
         with:
           script: |
             const fs = require('fs');
+            if (!fs.existsSync('build.log')) return;
+            
             const raw = fs.readFileSync('build.log', 'utf8');
             const lines = raw.split('\n');
 
             const noise = [
               /^Progress:/i, /^Packages:/i, /^Lockfile/i, /^Already up to date/i,
-              /^\s*pnpm/i, /^\s*cache/i, /^\s*added\s+\d+/i, /^\s*resolved\s+\d+/i,
+              /^\s*cache/i, /^\s*added\s+\d+/i, /^\s*resolved\s+\d+/i,
               /^\s*downloaded\s+\d+/i, /^\s*INFO/i, /^\s*WARN/i, /^\s*Note:/i,
-              /^\s*Done in/i, /^\s*@openbiocard/i
+              /^\s*Done in/i
             ];
 
             const isNoise = line => noise.some(r => r.test(line));
@@ -75,7 +78,8 @@ jobs:
                 groups.ESLint.push(line);
               } else if (/turbo|turborepo/i.test(line)) {
                 groups.Turbo.push(line);
-              } else if (/error|exception|stack/i.test(line)) {
+              } else {
+                // All other non-noise lines go here to ensure nothing is lost
                 groups.Other.push(line);
               }
             }
@@ -90,7 +94,9 @@ jobs:
             }
 
             if (!content.trim()) {
-              content = '\n```\nNo relevant error output after noise filtering.\nSee workflow logs for full context.\n```\n';
+              // Fallback: if no categories matched but we know it failed, show last 20 lines
+              const lastLines = lines.filter(l => l.trim()).slice(-20).join('\n');
+              content = `\n### Build Log (Last 20 lines)\n\n\`\`\`\n${lastLines}\n\`\`\`\n`;
             }
 
             const runUrl = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
