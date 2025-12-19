@@ -47,76 +47,78 @@
     </div>
 
     <!-- 图片灯箱/查看器 -->
-    <div
-      v-if="lightboxOpen"
-      @click="closeLightbox"
-      style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 2rem; overflow-y: auto;"
-    >
-      <!-- 关闭按钮 -->
-      <button
-        @click.stop="closeLightbox"
-        style="position: absolute; top: 1.5rem; right: 1.5rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; z-index: 10001;"
-        onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'"
-        onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'"
-      >
-        <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-        </svg>
-      </button>
-
-      <!-- 上一张按钮 -->
-      <button
-        v-if="currentImageIndex > 0"
-        @click.stop="previousImage"
-        style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); padding: 1rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; z-index: 10001;"
-        onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'"
-        onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'"
-      >
-        <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
-        </svg>
-      </button>
-
-      <!-- 下一张按钮 -->
-      <button
-        v-if="currentImageIndex < gallery.length - 1"
-        @click.stop="nextImage"
-        style="position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); padding: 1rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; z-index: 10001;"
-        onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'"
-        onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'"
-      >
-        <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-        </svg>
-      </button>
-
-      <!-- 图片容器 -->
+    <Teleport to="body">
       <div
-        @click.stop
-        style="max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; gap: 1rem; user-select: none;"
+        v-if="lightboxOpen"
+        @click="closeLightbox"
+        style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.95); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 2rem; overflow-y: auto;"
       >
-        <img
-          v-if="gallery[currentImageIndex]?.image && isBase64Image(gallery[currentImageIndex].image)"
-          :src="gallery[currentImageIndex].image"
-          :alt="gallery[currentImageIndex].caption || $t('gallery.photoAlt')"
-          style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 0.5rem; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); pointer-events: none;"
-        />
-        <div v-else style="color: white; padding: 2rem;">
-          <p>{{ $t('gallery.loadFailed') }}</p>
-        </div>
-        <p
-          v-if="gallery[currentImageIndex]?.caption"
-          style="color: white; font-size: 1rem; text-align: center; margin: 0; max-width: 600px; line-height: 1.5;"
+        <!-- 关闭按钮 -->
+        <button
+          @click.stop="closeLightbox"
+          style="position: absolute; top: 1.5rem; right: 1.5rem; padding: 0.75rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; z-index: 10001;"
+          onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'"
+          onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'"
         >
-          {{ gallery[currentImageIndex].caption }}
-        </p>
-        <div style="display: flex; align-items: center; gap: 1rem;">
-          <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin: 0;">
-            {{ currentImageIndex + 1 }} / {{ gallery.length }}
+          <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+
+        <!-- 上一张按钮 -->
+        <button
+          v-if="currentImageIndex > 0"
+          @click.stop="previousImage"
+          style="position: absolute; left: 1.5rem; top: 50%; transform: translateY(-50%); padding: 1rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; z-index: 10001;"
+          onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'"
+          onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'"
+        >
+          <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+
+        <!-- 下一张按钮 -->
+        <button
+          v-if="currentImageIndex < gallery.length - 1"
+          @click.stop="nextImage"
+          style="position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); padding: 1rem; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); color: white; border: none; border-radius: 0.5rem; cursor: pointer; transition: all 0.2s; z-index: 10001;"
+          onmouseover="this.style.backgroundColor='rgba(255, 255, 255, 0.2)'"
+          onmouseout="this.style.backgroundColor='rgba(255, 255, 255, 0.1)'"
+        >
+          <svg style="width: 1.5rem; height: 1.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
+        </button>
+
+        <!-- 图片容器 -->
+        <div
+          @click.stop
+          style="max-width: 90%; max-height: 90%; display: flex; flex-direction: column; align-items: center; gap: 1rem; user-select: none;"
+        >
+          <img
+            v-if="gallery[currentImageIndex]?.image && isBase64Image(gallery[currentImageIndex].image)"
+            :src="gallery[currentImageIndex].image"
+            :alt="gallery[currentImageIndex].caption || $t('gallery.photoAlt')"
+            style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 0.5rem; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5); pointer-events: none;"
+          />
+          <div v-else style="color: white; padding: 2rem;">
+            <p>{{ $t('gallery.loadFailed') }}</p>
+          </div>
+          <p
+            v-if="gallery[currentImageIndex]?.caption"
+            style="color: white; font-size: 1rem; text-align: center; margin: 0; max-width: 600px; line-height: 1.5;"
+          >
+            {{ gallery[currentImageIndex].caption }}
           </p>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <p style="color: rgba(255, 255, 255, 0.6); font-size: 0.875rem; margin: 0;">
+              {{ currentImageIndex + 1 }} / {{ gallery.length }}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
+    </Teleport>
   </div>
 </template>
 
