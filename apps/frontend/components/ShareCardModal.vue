@@ -1,6 +1,7 @@
 <template>
   <Teleport to="body">
-    <div v-if="show" style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;">
+    <Transition name="modal">
+      <div v-if="show" style="position: fixed; inset: 0; z-index: 9999; display: flex; align-items: center; justify-content: center;">
       <!-- Backdrop with blur -->
       <div 
         @click="$emit('close')"
@@ -8,24 +9,26 @@
       ></div>
 
       <!-- Modal Content -->
-      <div style="position: relative; z-index: 10000; display: flex; flex-direction: column; align-items: center; gap: 1.5rem;">
-        <!-- The Card to Capture -->
-        <div 
-          ref="cardRef"
-          class="share-card"
-          style="
-            width: 340px; 
-            background: var(--color-bg-secondary); 
-            border-radius: 24px; 
-            padding: 24px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
-            position: relative;
-            font-family: system-ui, -apple-system, sans-serif;
-            color: var(--color-text-primary);
-            overflow: hidden;
-            border: 1px solid var(--color-border-tertiary);
-          "
-        >
+        <div style="position: relative; z-index: 10000; display: flex; flex-direction: column; align-items: center; gap: 1.5rem; perspective: 1000px;">
+          <!-- The Card to Capture -->
+          <div 
+            ref="cardRef"
+            class="share-card"
+            :class="{ 'is-dropping': isDropping }"
+            style="
+              width: 340px; 
+              background: var(--color-bg-secondary); 
+              border-radius: 24px; 
+              padding: 24px; 
+              box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+              position: relative;
+              font-family: system-ui, -apple-system, sans-serif;
+              color: var(--color-text-primary);
+              overflow: hidden;
+              border: 1px solid var(--color-border-tertiary);
+              z-index: 10000;
+            "
+          >
           <!-- Decorative side strip (like the image) -->
           <div style="
             position: absolute; 
@@ -146,10 +149,118 @@
               position: absolute;
               inset: 0;
               background: #fff;
-              z-index: 999;
+              z-index: 10001;
               animation: flash 0.5s ease-out forwards;
+              pointer-events: none;
             "
           ></div>
+        </div>
+
+        <!-- ATM Style Card Slot (Theme Aware) -->
+        <div 
+          class="atm-slot-system"
+          style="
+            width: 380px;
+            position: relative;
+            margin-top: -10px; /* Reduced negative margin to create a visible gap */
+            z-index: 10005;
+            perspective: 1000px;
+          "
+        >
+          <!-- Front Panel -->
+          <div 
+            style="
+              width: 100%;
+              height: 60px; /* Slightly taller for better label spacing */
+              background: var(--color-bg-tertiary);
+              border-radius: 14px;
+              position: relative;
+              z-index: 10010;
+              border: 1px solid var(--color-border-secondary);
+              box-shadow: 
+                0 15px 35px rgba(0,0,0,0.2),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+              display: flex;
+              flex-direction: column; /* Use column to stack labels and slit */
+              align-items: center;
+              justify-content: center;
+              overflow: hidden;
+              gap: 4px;
+            "
+          >
+            <!-- ATM-style Accent Gradient -->
+            <div style="
+              position: absolute;
+              inset: 0;
+              background: linear-gradient(135deg, var(--color-accent-light) 0%, transparent 100%);
+              pointer-events: none;
+              opacity: 0.5;
+            "></div>
+
+            <!-- Labels Row (Top) -->
+            <div style="width: 100%; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1;">
+              <div style="font-size: 8px; font-weight: bold; color: var(--color-text-tertiary); opacity: 0.8; letter-spacing: 1px; text-transform: uppercase;">
+                Fast-Eject System
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <div 
+                  :style="{ 
+                    background: isSaving ? 'var(--color-success)' : 'var(--color-text-tertiary)',
+                    boxShadow: isSaving ? '0 0 10px var(--color-success)' : 'none'
+                  }"
+                  style="width: 6px; height: 6px; border-radius: 50%; transition: all 0.3s;"
+                ></div>
+                <div style="display: flex; align-items: baseline; gap: 4px; line-height: 1;">
+                  <span style="font-size: 7px; color: var(--color-text-secondary); font-weight: 800; text-transform: uppercase;">ATM</span>
+                  <span style="font-size: 6px; color: var(--color-text-tertiary);">{{ isSaving ? 'Active' : 'Ready' }}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- The Recessed Slit -->
+            <div style="
+              width: 320px;
+              height: 14px;
+              background: #000;
+              border-radius: 4px;
+              box-shadow: 
+                inset 0 3px 6px rgba(0,0,0,1),
+                0 0 0 1px var(--color-accent-light);
+              position: relative;
+              overflow: hidden;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              z-index: 1;
+            ">
+              <!-- ATM Slot Inner Glow -->
+              <div 
+                class="atm-inner-glow"
+                :style="{ opacity: isSaving ? 0.8 : 0.2 }"
+                style="
+                  position: absolute;
+                  inset: 0;
+                  background: radial-gradient(circle, var(--color-accent) 0%, transparent 80%);
+                  transition: opacity 0.5s ease;
+                "
+              ></div>
+              
+              <div style="width: 100%; height: 1px; background: rgba(255,255,255,0.1);"></div>
+            </div>
+          </div>
+
+          <!-- Bottom Shadow for depth -->
+          <div style="
+            position: absolute;
+            bottom: -5px;
+            left: 20px;
+            right: 20px;
+            height: 10px;
+            background: #000;
+            filter: blur(15px);
+            opacity: 0.4;
+            z-index: 10000;
+          "></div>
         </div>
 
         <!-- Action Button -->
@@ -178,7 +289,8 @@
         </button>
       </div>
     </div>
-  </Teleport>
+  </Transition>
+</Teleport>
 </template>
 
 <script setup>
@@ -192,12 +304,13 @@ const props = defineProps({
   profileData: Object
 })
 
-defineEmits(['close'])
+const emit = defineEmits(['close'])
 
 const { t } = useI18n()
 const cardRef = ref(null)
 const isSaving = ref(false)
 const isFlashing = ref(false)
+const isDropping = ref(false)
 
 // Disable body scroll when modal is open
 watch(() => props.show, (newVal) => {
@@ -233,39 +346,82 @@ const saveImage = async () => {
   
   isSaving.value = true
   
-  // Camera shutter animation
-  isFlashing.value = true
-  setTimeout(() => {
-    isFlashing.value = false
-  }, 500)
-
   try {
-    // Wait for a moment for the flash to start
-    await new Promise(resolve => setTimeout(resolve, 100))
+    // 1. Snapshot first (while card is static)
+    // Camera shutter flash effect
+    isFlashing.value = true
+    await new Promise(resolve => setTimeout(resolve, 50))
     
-    await snapdom.download(cardRef.value, {
+    // We only trigger download AFTER the animation starts to feel like it's being "ejected/swallowed"
+    // But we capture the DOM state NOW before any animation transforms apply
+    const downloadPromise = snapdom.download(cardRef.value, {
       filename: `biocard-${props.profileData.username}`,
       format: 'png',
-      scale: 2, // High resolution
+      scale: 2,
       filter: (node) => {
-        // Exclude the flash overlay from capture
         if (node.getAttribute && node.getAttribute('data-no-capture')) return false
         return true
       }
     })
     
+    // 2. Drop into slot animation
+    // Start animation immediately after snapshot
+    isDropping.value = true
+    
+    // Wait for animation to fully "swallow" the card
+    await new Promise(resolve => setTimeout(resolve, 800))
+    
+    // Ensure download is finished if it took longer than the animation
+    await downloadPromise
+    
+    // 3. Auto close modal after animation
+    emit('close')
+    
   } catch (error) {
     console.error('Failed to save image:', error)
     alert('保存失败，请重试')
   } finally {
+    isFlashing.value = false
+    isDropping.value = false
     isSaving.value = false
   }
 }
 </script>
 
 <style scoped>
+.modal-enter-active,
+.modal-leave-active {
+  transition: opacity 0.3s ease;
+}
+
+.modal-enter-from,
+.modal-leave-to {
+  opacity: 0;
+}
+
+.modal-enter-active .share-card {
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal-enter-from .share-card {
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+}
+
+.share-card {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.share-card.is-dropping {
+  transform: translateY(185px) scale(0.55) rotateX(-35deg);
+  opacity: 0;
+  transition: all 0.8s cubic-bezier(0.5, 0, 0.75, 0);
+  z-index: 10001; /* Stay behind the front panel (10010) but above background */
+}
+
 @keyframes flash {
-  0% { opacity: 0.8; }
+  0% { opacity: 1; }
+  10% { opacity: 1; }
   100% { opacity: 0; }
 }
 </style>
