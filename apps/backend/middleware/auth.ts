@@ -25,14 +25,26 @@ export const authMiddleware: MiddlewareHandler<{ Bindings: CloudflareBindings, V
   }
 
   // 特殊处理root用户
-  if (username === c.env.ROOT_USERNAME && token.startsWith('root-')) {
-    c.set('user', {
-      username: c.env.ROOT_USERNAME!,
-      type: 'root',
-      token
+  if (username === c.env.ROOT_USERNAME) {
+    const adminId = c.env.ADMIN_DO.idFromName('admin-manager')
+    const adminStub = c.env.ADMIN_DO.get(adminId)
+    const response = await adminStub.fetch('http://internal/verify-root-token', {
+      method: 'POST',
+      body: JSON.stringify({ token })
     })
-    await next()
-    return
+    const result = await response.json() as { valid: boolean }
+
+    if (result.valid) {
+      c.set('user', {
+        username: c.env.ROOT_USERNAME!,
+        type: 'root',
+        token
+      })
+      await next()
+      return
+    } else {
+      return c.json({ error: 'Invalid root token' }, 401)
+    }
   }
 
   const id = c.env.USER_DO.idFromName(username)

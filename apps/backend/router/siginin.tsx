@@ -15,8 +15,14 @@ async function authenticateUser(c: any, username: string, password: string) {
     // 特殊处理root账户
     if (username === ROOT_USERNAME) {
         if (password === ROOT_PASSWORD) {
-            // 为root生成一个固定的token或动态token
+            // 为root生成一个随机token并存储到AdminDO
             const token = `root-${crypto.randomUUID()}`
+            const adminId = env.ADMIN_DO.idFromName('admin-manager')
+            const adminStub = env.ADMIN_DO.get(adminId)
+            await adminStub.fetch('http://internal/set-root-token', {
+                method: 'POST',
+                body: JSON.stringify({ token })
+            })
             return c.json({ token })
         } else {
             return c.json({ error: 'Invalid credentials' }, 401)
