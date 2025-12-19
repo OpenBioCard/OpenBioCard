@@ -1,4 +1,13 @@
 {
+  "share": {
+    "title": "分享卡片",
+    "saveAsImage": "保存为图片",
+    "saving": "保存中...",
+    "atmMode": "ATM 模式",
+    "fastEject": "极速出卡系统",
+    "statusActive": "运行中",
+    "statusReady": "就绪"
+  },
   "app": {
     "name": "OpenBioCard"
   },

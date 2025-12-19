@@ -200,7 +200,7 @@
             <!-- Labels Row (Top) -->
             <div style="width: 100%; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; z-index: 1;">
               <div style="font-size: 8px; font-weight: bold; color: var(--color-text-tertiary); opacity: 0.8; letter-spacing: 1px; text-transform: uppercase;">
-                Fast-Eject System
+                {{ t('share.fastEject') }}
               </div>
               <div style="display: flex; align-items: center; gap: 6px;">
                 <div 
@@ -211,8 +211,8 @@
                   style="width: 6px; height: 6px; border-radius: 50%; transition: all 0.3s;"
                 ></div>
                 <div style="display: flex; align-items: baseline; gap: 4px; line-height: 1;">
-                  <span style="font-size: 7px; color: var(--color-text-secondary); font-weight: 800; text-transform: uppercase;">ATM</span>
-                  <span style="font-size: 6px; color: var(--color-text-tertiary);">{{ isSaving ? 'Active' : 'Ready' }}</span>
+                  <span style="font-size: 7px; color: var(--color-text-secondary); font-weight: 800; text-transform: uppercase;">{{ t('share.atmMode') }}</span>
+                  <span style="font-size: 6px; color: var(--color-text-tertiary);">{{ isSaving ? t('share.statusActive') : t('share.statusReady') }}</span>
                 </div>
               </div>
             </div>
@@ -284,8 +284,8 @@
           onmouseover="this.style.transform='scale(1.05)'"
           onmouseout="this.style.transform='scale(1)'"
         >
-          <span v-if="isSaving">Saving...</span>
-          <span v-else>保存为图片</span>
+          <span v-if="isSaving">{{ t('share.saving') }}</span>
+          <span v-else>{{ t('share.saveAsImage') }}</span>
         </button>
       </div>
     </div>

@@ -1,4 +1,13 @@
 {
+  "share": {
+    "title": "Share Card",
+    "saveAsImage": "Save as Image",
+    "saving": "Saving...",
+    "atmMode": "ATM Mode",
+    "fastEject": "Fast-Eject System",
+    "statusActive": "Active",
+    "statusReady": "Ready"
+  },
   "app": {
     "name": "OpenBioCard"
   },
