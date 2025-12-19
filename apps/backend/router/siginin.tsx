@@ -1,7 +1,5 @@
 
 
-export const siginup = new Hono<{ Bindings: CloudflareBindings }>()
-
 async function authenticateUser(c: any, username: string, password: string) {
     // 先读取环境变量
     const env = c.env
