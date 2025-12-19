@@ -314,8 +314,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useHead } from '@vueuse/head'
 import { useTheme } from '../composables/useTheme'
 import LanguageSwitcher from './LanguageSwitcher.vue'
 import NotificationModal from './NotificationModal.vue'
@@ -344,6 +345,24 @@ const settings = ref({
   title: 'OpenBioCard',
   logo: ''
 })
+
+// 同步网站标题和 Logo 到 head
+useHead({
+  title: computed(() => settings.value.title)
+})
+
+// 监听 logo 变化并更新 favicon
+watch(() => settings.value.logo, (newLogo) => {
+  if (typeof document !== 'undefined') {
+    const svgIcon = document.getElementById('favicon-svg')
+    const icoIcon = document.getElementById('favicon-ico')
+    if (newLogo) {
+      if (svgIcon) svgIcon.href = newLogo
+      if (icoIcon) icoIcon.href = newLogo
+    }
+  }
+}, { immediate: true })
+
 const savingSettings = ref(false)
 const logoInput = ref(null)
 
@@ -412,8 +431,6 @@ const saveSettings = async () => {
   try {
     await adminAPI.updateSettings(settings.value, props.token, props.user.username)
     showNotification('success', t('common.tips'), t('admin.settingsUpdated'))
-    // 更新页面标题
-    document.title = settings.value.title
   } catch (error) {
     console.error('更新系统设置失败:', error)
     showNotification('error', t('common.tips'), error.message)

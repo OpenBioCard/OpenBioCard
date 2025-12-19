@@ -345,30 +345,35 @@ const loadProfile = async () => {
     // 初始化社交媒体链接数据（获取 GitHub 信息并启动定时更新）
     await initializeSocialLinks()
 
-    // 设置页面meta tags
-    const title = profileData.value.username
-    const description = profileData.value.bio || `${title} 的个人资料页面`
-    const image = profileData.value.avatar || '/icon/logo.svg'
-    const url = window.location.href
-    const siteTitle = settings.value.title || 'OpenBioCard'
-
     useHead({
-      title: `${title} - ${siteTitle}`,
+      title: computed(() => `${profileData.value.username} - ${settings.value.title || 'OpenBioCard'}`),
       meta: [
-        { name: 'description', content: description },
+        { name: 'description', content: computed(() => profileData.value.bio || `${profileData.value.username} 的个人资料页面`) },
         // Open Graph
-        { property: 'og:title', content: `${title} - ${siteTitle}` },
-        { property: 'og:description', content: description },
-        { property: 'og:image', content: image },
-        { property: 'og:url', content: url },
+        { property: 'og:title', content: computed(() => `${profileData.value.username} - ${settings.value.title || 'OpenBioCard'}`) },
+        { property: 'og:description', content: computed(() => profileData.value.bio || `${profileData.value.username} 的个人资料页面`) },
+        { property: 'og:image', content: computed(() => profileData.value.avatar || '/icon/logo.svg') },
+        { property: 'og:url', content: window.location.href },
         { property: 'og:type', content: 'profile' },
         // Twitter Card
         { name: 'twitter:card', content: 'summary_large_image' },
-        { name: 'twitter:title', content: `${title} - OpenBioCard` },
-        { name: 'twitter:description', content: description },
-        { name: 'twitter:image', content: image }
+        { name: 'twitter:title', content: computed(() => `${profileData.value.username} - ${settings.value.title || 'OpenBioCard'}`) },
+        { name: 'twitter:description', content: computed(() => profileData.value.bio || `${profileData.value.username} 的个人资料页面`) },
+        { name: 'twitter:image', content: computed(() => profileData.value.avatar || '/icon/logo.svg') }
       ]
     })
+
+    // 监听 logo 变化并更新 favicon
+    watch(() => settings.value.logo, (newLogo) => {
+      if (typeof document !== 'undefined') {
+        const svgIcon = document.getElementById('favicon-svg')
+        const icoIcon = document.getElementById('favicon-ico')
+        if (newLogo) {
+          if (svgIcon) svgIcon.href = newLogo
+          if (icoIcon) icoIcon.href = newLogo
+        }
+      }
+    }, { immediate: true })
 
     userNotFound.value = false
   } catch (error) {
