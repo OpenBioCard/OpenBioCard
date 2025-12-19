@@ -15,14 +15,15 @@
           class="share-card"
           style="
             width: 340px; 
-            background: #f8f9fa; 
+            background: var(--color-bg-secondary); 
             border-radius: 24px; 
             padding: 24px; 
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
             position: relative;
             font-family: system-ui, -apple-system, sans-serif;
-            color: #1a1a1a;
+            color: var(--color-text-primary);
             overflow: hidden;
+            border: 1px solid var(--color-border-tertiary);
           "
         >
           <!-- Decorative side strip (like the image) -->
@@ -32,13 +33,14 @@
             top: 0; 
             bottom: 0; 
             width: 2px; 
-            background: rgba(0,0,0,0.05);
+            background: var(--color-border-primary);
+            opacity: 0.3;
           "></div>
           
           <!-- Decorative dots -->
-          <div style="position: absolute; left: 16px; top: 40px; width: 18px; height: 18px; background: linear-gradient(135deg, #e0e0e0, #ffffff); border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.1), inset -1px -1px 2px rgba(0,0,0,0.05);"></div>
-          <div style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; background: linear-gradient(135deg, #e0e0e0, #ffffff); border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.1), inset -1px -1px 2px rgba(0,0,0,0.05);"></div>
-          <div style="position: absolute; left: 16px; bottom: 40px; width: 18px; height: 18px; background: linear-gradient(135deg, #e0e0e0, #ffffff); border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.1), inset -1px -1px 2px rgba(0,0,0,0.05);"></div>
+          <div style="position: absolute; left: 16px; top: 40px; width: 18px; height: 18px; background: var(--color-bg-tertiary); border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.1), inset -1px -1px 2px rgba(0,0,0,0.05); border: 1px solid var(--color-border-primary);"></div>
+          <div style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; background: var(--color-bg-tertiary); border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.1), inset -1px -1px 2px rgba(0,0,0,0.05); border: 1px solid var(--color-border-primary);"></div>
+          <div style="position: absolute; left: 16px; bottom: 40px; width: 18px; height: 18px; background: var(--color-bg-tertiary); border-radius: 50%; box-shadow: 2px 2px 5px rgba(0,0,0,0.1), inset -1px -1px 2px rgba(0,0,0,0.05); border: 1px solid var(--color-border-primary);"></div>
 
           <!-- Main Content (Shifted right due to decorative strip) -->
           <div style="padding-left: 32px; display: flex; flex-direction: column; height: 100%;">
@@ -49,7 +51,7 @@
               font-weight: 800; 
               line-height: 1.3; 
               margin: 0;
-              color: #111;
+              color: var(--color-text-primary);
             ">
               {{ profileData.name || profileData.username }}
             </h2>
@@ -57,7 +59,7 @@
             <!-- Page URL -->
             <div style="
               font-size: 13px;
-              color: #666;
+              color: var(--color-text-tertiary);
               margin-bottom: 16px;
               word-break: break-all;
               font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
@@ -68,7 +70,7 @@
             <!-- Location / Website -->
             <div style="
               font-size: 14px; 
-              color: #888; 
+              color: var(--color-text-secondary); 
               margin-bottom: 24px;
               display: flex;
               flex-direction: column;
@@ -82,7 +84,7 @@
             <div style="
               font-size: 15px; 
               line-height: 1.6; 
-              color: #444; 
+              color: var(--color-text-secondary); 
               margin-bottom: auto;
               display: -webkit-box;
               -webkit-line-clamp: 4;
@@ -106,11 +108,11 @@
                   height: 40px; 
                   border-radius: 10px; 
                   overflow: hidden; 
-                  background: #000;
+                  background: var(--color-primary);
                   display: flex;
                   align-items: center;
                   justify-content: center;
-                  color: #fff;
+                  color: var(--color-text-inverse);
                   font-weight: bold;
                   font-size: 18px;
                 ">
@@ -118,8 +120,8 @@
                   <span v-else>{{ (profileData.name || profileData.username).charAt(0).toUpperCase() }}</span>
                 </div>
                 <div style="display: flex; flex-direction: column;">
-                  <span style="font-weight: bold; font-size: 14px; color: #000;">OpenBioCard</span>
-                  <span style="font-size: 10px; color: #999;">@{{ profileData.username }}</span>
+                  <span style="font-weight: bold; font-size: 14px; color: var(--color-text-primary);">OpenBioCard</span>
+                  <span style="font-size: 10px; color: var(--color-text-tertiary);">@{{ profileData.username }}</span>
                 </div>
               </div>
 
@@ -131,7 +133,7 @@
                 box-shadow: 0 10px 25px rgba(0,0,0,0.1);
                 transform: rotate(-3deg) translateY(10px);
               ">
-                <qrcode-vue :value="profileUrl" :size="80" level="H" />
+                <qrcode-vue :value="profileUrl" :size="80" level="H" :background="'#ffffff'" :foreground="'#000000'" />
               </div>
             </div>
           </div>
@@ -155,8 +157,8 @@
           @click="saveImage"
           :disabled="isSaving"
           style="
-            background: #1a1a1a; 
-            color: #fff; 
+            background: var(--color-primary); 
+            color: var(--color-text-inverse); 
             border: none; 
             padding: 12px 24px; 
             border-radius: 12px; 
@@ -180,7 +182,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import QrcodeVue from 'qrcode.vue'
 import { snapdom } from '@zumer/snapdom'
@@ -196,6 +198,17 @@ const { t } = useI18n()
 const cardRef = ref(null)
 const isSaving = ref(false)
 const isFlashing = ref(false)
+
+// Disable body scroll when modal is open
+watch(() => props.show, (newVal) => {
+  if (typeof document !== 'undefined') {
+    if (newVal) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  }
+}, { immediate: true })
 
 const windowLocation = computed(() => {
   if (typeof window !== 'undefined') {

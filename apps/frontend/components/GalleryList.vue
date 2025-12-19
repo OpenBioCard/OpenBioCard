@@ -123,7 +123,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { ref, onMounted, onUnmounted, watch } from 'vue'
 
 const props = defineProps({
   gallery: {
@@ -134,6 +134,17 @@ const props = defineProps({
 
 const lightboxOpen = ref(false)
 const currentImageIndex = ref(0)
+
+// Disable body scroll when lightbox is open
+watch(lightboxOpen, (newVal) => {
+  if (typeof document !== 'undefined') {
+    if (newVal) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+  }
+})
 
 const isBase64Image = (str) => {
   return str && str.startsWith('data:image/') && str.includes('base64,')
