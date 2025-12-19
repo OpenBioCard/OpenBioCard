@@ -1,11 +1,4 @@
-import { Hono } from 'hono'
-import { authMiddleware, AuthVariables } from '../middleware/auth'
 
-export const delate = new Hono<{ Bindings: { USERNAME: string; PASSWORD: string; USER_DO: any }, Variables: AuthVariables }>()
-
-delate.use('/', authMiddleware)
-
-delate.post('/', async (c) => {
     try {
         const user = c.var.user!
         const id = c.env.USER_DO.idFromName(user.username)
