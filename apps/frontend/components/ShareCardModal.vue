@@ -48,25 +48,34 @@
               font-size: 24px; 
               font-weight: 800; 
               line-height: 1.3; 
-              margin: 0 0 8px 0;
+              margin: 0;
               color: #111;
             ">
               {{ profileData.name || profileData.username }}
             </h2>
 
-            <!-- Address / URL -->
+            <!-- Page URL -->
+            <div style="
+              font-size: 13px;
+              color: #666;
+              margin-bottom: 16px;
+              word-break: break-all;
+              font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            ">
+              {{ profileUrl }}
+            </div>
+
+            <!-- Location / Website -->
             <div style="
               font-size: 14px; 
               color: #888; 
               margin-bottom: 24px;
-              word-break: break-all;
               display: flex;
               flex-direction: column;
               gap: 4px;
             ">
               <span v-if="profileData.location">📍 {{ profileData.location }}</span>
               <span v-if="profileData.website">🔗 {{ profileData.website }}</span>
-              <span v-if="!profileData.location && !profileData.website">{{ profileUrl }}</span>
             </div>
 
             <!-- Bio / Description -->
