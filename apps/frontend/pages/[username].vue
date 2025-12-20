@@ -173,6 +173,7 @@
       :type="notificationModal.type"
       :title="notificationModal.title"
       :message="notificationModal.message"
+      :details="notificationModal.details"
       @close="closeNotificationModal"
     />
   </div>
@@ -421,7 +422,7 @@ const performSave = async (loadingRef) => {
     // editMode.value = false 
     showNotification('success', t('common.tips'), t('profile.saveSuccess'))
   } catch (error) {
-    showNotification('error', t('common.tips'), t('profile.saveFailed'))
+    showNotification('error', t('common.tips'), t('profile.saveFailed'), error.message || String(error))
   } finally {
     loadingRef.value = false
   }
@@ -514,17 +515,19 @@ const closeNotificationModal = () => {
     show: false,
     type: 'info',
     title: '',
-    message: ''
+    message: '',
+    details: ''
   }
 }
 
 // 显示通知弹窗
-const showNotification = (type, title, message) => {
+const showNotification = (type, title, message, details = '') => {
   notificationModal.value = {
     show: true,
     type,
     title,
-    message
+    message,
+    details
   }
 }
 

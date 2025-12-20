@@ -308,6 +308,7 @@
       :type="notificationModal.type"
       :title="notificationModal.title"
       :message="notificationModal.message"
+      :details="notificationModal.details"
       @close="closeNotificationModal"
     />
   </div>
@@ -386,7 +387,7 @@ const handleLogoUpload = async (event) => {
     settings.value.logo = compressedBase64
   } catch (error) {
     console.error('Logo compression failed:', error)
-    showNotification('error', t('common.tips'), t('admin.uploadError') || 'Logo upload failed')
+    showNotification('error', t('common.tips'), t('admin.uploadError') || 'Logo upload failed', error.message || String(error))
   }
 }
 
@@ -399,7 +400,8 @@ const notificationModal = ref({
   show: false,
   type: 'info',
   title: '',
-  message: ''
+  message: '',
+  details: ''
 })
 
 const toggleMobileMenu = () => {
@@ -433,7 +435,7 @@ const saveSettings = async () => {
     showNotification('success', t('common.tips'), t('admin.settingsUpdated'))
   } catch (error) {
     console.error('更新系统设置失败:', error)
-    showNotification('error', t('common.tips'), error.message)
+    showNotification('error', t('common.tips'), t('admin.settingsUpdateFailed') || 'Settings update failed', error.message || String(error))
   } finally {
     savingSettings.value = false
   }
@@ -471,7 +473,7 @@ const createUser = async () => {
     await fetchUsers()
   } catch (error) {
     console.error('Create user error:', error)
-    showNotification('error', t('common.tips'), `${t('admin.userCreateFailed')}: ${error.message}`)
+    showNotification('error', t('common.tips'), t('admin.userCreateFailed'), error.message || String(error))
   } finally {
     creating.value = false
   }
@@ -493,7 +495,7 @@ const deleteUser = async (username) => {
     await fetchUsers()
   } catch (error) {
     console.error('Delete user error:', error)
-    showNotification('error', t('common.tips'), `${t('admin.userDeleteFailed')}: ${error.message}`)
+    showNotification('error', t('common.tips'), t('admin.userDeleteFailed'), error.message || String(error))
   }
 }
 
@@ -507,17 +509,19 @@ const closeNotificationModal = () => {
     show: false,
     type: 'info',
     title: '',
-    message: ''
+    message: '',
+    details: ''
   }
 }
 
 // 显示通知弹窗
-const showNotification = (type, title, message) => {
+const showNotification = (type, title, message, details = '') => {
   notificationModal.value = {
     show: true,
     type,
     title,
-    message
+    message,
+    details
   }
 }
 

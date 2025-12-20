@@ -103,6 +103,7 @@
       :type="notificationModal.type"
       :title="notificationModal.title"
       :message="notificationModal.message"
+      :details="notificationModal.details"
       @close="closeNotificationModal"
     />
   </div>
@@ -401,17 +402,19 @@ const closeNotificationModal = () => {
     show: false,
     type: 'info',
     title: '',
-    message: ''
+    message: '',
+    details: ''
   }
 }
 
 // 显示通知弹窗
-const showNotification = (type, title, message) => {
+const showNotification = (type, title, message, details = '') => {
   notificationModal.value = {
     show: true,
     type,
     title,
-    message
+    message,
+    details
   }
 }
 

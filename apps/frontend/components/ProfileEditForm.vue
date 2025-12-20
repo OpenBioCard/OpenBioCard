@@ -241,6 +241,7 @@
       :type="notificationModal.type"
       :title="notificationModal.title"
       :message="notificationModal.message"
+      :details="notificationModal.details"
       @close="closeNotificationModal"
     />
   </div>
@@ -278,7 +279,8 @@ const notificationModal = ref({
   show: false,
   type: 'info',
   title: '',
-  message: ''
+  message: '',
+  details: ''
 })
 
 const isBase64Image = (str) => {
@@ -291,17 +293,19 @@ const closeNotificationModal = () => {
     show: false,
     type: 'info',
     title: '',
-    message: ''
+    message: '',
+    details: ''
   }
 }
 
 // 显示通知弹窗
-const showNotification = (type, title, message) => {
+const showNotification = (type, title, message, details = '') => {
   notificationModal.value = {
     show: true,
     type,
     title,
-    message
+    message,
+    details
   }
 }
 
@@ -337,7 +341,7 @@ const handleAvatarUpload = (event) => {
   }
   reader.onerror = (e) => {
     console.error('File reading error:', e)
-    showNotification('error', t('common.tips'), t('profile.uploadError'))
+    showNotification('error', t('common.tips'), t('profile.uploadError'), e.message || String(e))
   }
   reader.readAsDataURL(file)
 }
@@ -362,7 +366,7 @@ const handleBackgroundUpload = (event) => {
   }
   reader.onerror = (e) => {
     console.error('File reading error:', e)
-    showNotification('error', t('common.tips'), t('profile.uploadError'))
+    showNotification('error', t('common.tips'), t('profile.uploadError'), e.message || String(e))
   }
   reader.readAsDataURL(file)
 }

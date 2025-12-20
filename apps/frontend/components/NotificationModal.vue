@@ -31,6 +31,30 @@
         {{ message }}
       </p>
 
+      <!-- 详细信息 (仅在有 details 时显示) -->
+      <div v-if="details" style="margin-top: 1rem;">
+        <button
+          @click="showDetails = !showDetails"
+          style="background: none; border: none; color: var(--color-accent-primary); font-size: 0.875rem; cursor: pointer; display: flex; align-items: center; padding: 0; outline: none;"
+        >
+          <span>{{ showDetails ? '隐藏详情' : '查看详情' }}</span>
+          <svg
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            :style="{ width: '1rem', height: '1rem', marginLeft: '0.25rem', transform: showDetails ? 'rotate(180deg)' : 'none', transition: 'transform 0.2s' }"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+        <div
+          v-if="showDetails"
+          style="margin-top: 0.5rem; padding: 0.75rem; background: var(--color-bg-secondary); border-radius: 0.5rem; border: 1px solid var(--color-border-primary); max-height: 150px; overflow-y: auto;"
+        >
+          <pre style="margin: 0; font-size: 0.75rem; white-space: pre-wrap; word-break: break-all; color: var(--color-text-secondary); font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;">{{ details }}</pre>
+        </div>
+      </div>
+
       <!-- 按钮 -->
       <div style="display: flex; justify-content: flex-end; margin-top: 1.5rem;">
         <button
@@ -45,7 +69,7 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 
 const props = defineProps({
   show: {
@@ -64,12 +88,19 @@ const props = defineProps({
   message: {
     type: String,
     default: ''
+  },
+  details: {
+    type: String,
+    default: ''
   }
 })
+
+const showDetails = ref(false)
 
 const emit = defineEmits(['close'])
 
 const close = () => {
+  showDetails.value = false
   emit('close')
 }
 
