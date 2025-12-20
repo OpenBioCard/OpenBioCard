@@ -5,6 +5,8 @@
   "scripts": {
     "dev": "pnpm --filter openbiocard-frontend dev",
     "build": "pnpm -r build",
+    "build:frontend": "pnpm --filter openbiocard-frontend build",
+    "build:backend": "pnpm --filter openbiocard-backend build",
     "deploy": "pnpm --filter openbiocard-backend deploy"
   }
 }
