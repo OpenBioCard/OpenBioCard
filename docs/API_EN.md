@@ -2,16 +2,47 @@
 
 ## Table of Contents
 
-- [Overview](#overview)
-- [Authentication](#authentication)
-- [User Types](#user-types)
-- [Error Responses](#error-responses)
-- [API Endpoints](#api-endpoints)
-    - [Authentication](#authentication-endpoints)
+- [OpenBioCard API Documentation](#openbiocard-api-documentation)
+  - [Table of Contents](#table-of-contents)
+  - [Overview](#overview)
+  - [Authentication](#authentication)
+    - [Token Authentication](#token-authentication)
+    - [Token Generation](#token-generation)
+  - [User Types](#user-types)
+  - [Error Responses](#error-responses)
+    - [HTTP Status Codes](#http-status-codes)
+  - [API Endpoints](#api-endpoints)
+    - [Authentication Endpoints](#authentication-endpoints)
+      - [1. User Registration](#1-user-registration)
+      - [2. User Login](#2-user-login)
+      - [3. Delete Account](#3-delete-account)
     - [User Profile](#user-profile)
+      - [4. Get User Profile](#4-get-user-profile)
+      - [5. Update User Profile](#5-update-user-profile)
+      - [6. Export User Data](#6-export-user-data)
+      - [7. Import User Data](#7-import-user-data)
     - [Admin Functions](#admin-functions)
+      - [8. Check Permissions](#8-check-permissions)
+      - [9. Get User List (POST)](#9-get-user-list-post)
+      - [10. Get User List (GET)](#10-get-user-list-get)
+      - [11. Create User](#11-create-user)
+      - [12. Delete User](#12-delete-user)
     - [System Settings](#system-settings)
-    - [System Initialization & Info](#system-initialization--info)
+      - [13. Get Public System Settings](#13-get-public-system-settings)
+      - [14. Get Full System Settings (Admin)](#14-get-full-system-settings-admin)
+      - [15. Update System Settings](#15-update-system-settings)
+    - [System Initialization \& Info](#system-initialization--info)
+      - [16. Initialize Admin](#16-initialize-admin)
+      - [17. Get API Information](#17-get-api-information)
+  - [Data Storage](#data-storage)
+    - [Durable Objects](#durable-objects)
+    - [Data Consistency](#data-consistency)
+  - [Environment Variables](#environment-variables)
+  - [Frontend Routes](#frontend-routes)
+    - [Page Routes](#page-routes)
+  - [Security](#security)
+  - [Version Information](#version-information)
+  - [Contact](#contact)
 
 ---
 
@@ -461,11 +492,108 @@ Authorization: Bearer your-token-here
 
 ---
 
+#### 6. Export User Data
+
+Export all data of the current logged-in user (including account info and profile info).
+
+**Endpoint:** `GET /api/user/:username/export`
+
+**Authentication Required:** Yes (must be the profile owner)
+
+**URL Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `username` | string | Username to export |
+
+**Authentication Method:**
+
+```http
+Authorization: Bearer your-token-here
+```
+
+**Success Response:** `200 OK`
+
+```json
+{
+  "user": {
+    "username": "johndoe",
+    "type": "user",
+    "token": "..."
+  },
+  "profile": {
+    "name": "John Doe",
+    "avatar": "👨",
+    "bio": "Full-stack developer",
+    ...
+  }
+}
+```
+
+**Error Responses:**
+
+- `401` - Invalid or missing token
+- `500` - Export failed
+
+---
+
+#### 7. Import User Data
+
+Import full user data, overwriting the existing profile. The system will automatically maintain the current logged-in Token.
+
+**Endpoint:** `POST /api/user/:username/import`
+
+**Authentication Required:** Yes (must be the profile owner)
+
+**URL Parameters:**
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `username` | string | Username to import |
+
+**Authentication Method:**
+
+```http
+Authorization: Bearer your-token-here
+```
+
+**Request Body:**
+
+```json
+{
+  "user": {
+    "username": "johndoe",
+    "type": "user",
+    "token": "..."
+  },
+  "profile": {
+    "name": "John Doe",
+    "avatar": "👨",
+    ...
+  }
+}
+```
+
+**Success Response:** `200 OK`
+
+```json
+{
+  "success": true
+}
+```
+
+**Error Responses:**
+
+- `401` - Invalid or missing token
+- `500` - Import failed
+
+---
+
 ### Admin Functions
 
 All admin functions require `admin` or `root` permissions.
 
-#### 6. Check Permissions
+#### 8. Check Permissions
 
 Verify the current user's admin permissions.
 
@@ -500,7 +628,7 @@ Verify the current user's admin permissions.
 
 ---
 
-#### 7. Get User List (POST)
+#### 9. Get User List (POST)
 
 Retrieve all users list (POST method, for frontend use).
 
@@ -549,7 +677,7 @@ Retrieve all users list (POST method, for frontend use).
 
 ---
 
-#### 8. Get User List (GET)
+#### 10. Get User List (GET)
 
 Retrieve all users list (GET method).
 
@@ -599,7 +727,7 @@ Authorization: Bearer your-token-here
 
 ---
 
-#### 9. Create User
+#### 11. Create User
 
 Create a new user (admin only).
 
@@ -655,7 +783,7 @@ Create a new user (admin only).
 
 ---
 
-#### 10. Delete User
+#### 12. Delete User
 
 Delete a specific user and all their profile data.
 
@@ -707,7 +835,7 @@ Delete a specific user and all their profile data.
 
 ### System Settings
 
-#### 11. Get Public System Settings
+#### 13. Get Public System Settings
 
 Retrieve public system configuration (e.g., site title, logo).
 
@@ -728,7 +856,7 @@ Retrieve public system configuration (e.g., site title, logo).
 
 ---
 
-#### 12. Get Full System Settings (Admin)
+#### 14. Get Full System Settings (Admin)
 
 Retrieve complete system configuration.
 
@@ -753,7 +881,7 @@ Retrieve complete system configuration.
 
 ---
 
-#### 13. Update System Settings
+#### 15. Update System Settings
 
 Update system configuration.
 
@@ -761,7 +889,7 @@ Update system configuration.
 
 **Authentication Required:** Yes
 
-**Required Permissions:** `admin" or `root`
+**Required Permissions:** `admin` or `root`
 
 **Request Body:**
 
@@ -785,7 +913,7 @@ Update system configuration.
 
 ### System Initialization & Info
 
-#### 14. Initialize Admin
+#### 16. Initialize Admin
 
 Initialize the system and create the default admin user.
 
@@ -806,7 +934,7 @@ Admin initialized
 
 ---
 
-#### 15. Get API Information
+#### 17. Get API Information
 
 Retrieve basic API information and available endpoints.
 
@@ -821,9 +949,10 @@ Retrieve basic API information and available endpoints.
   "message": "OpenBioCard API",
   "version": "1.0.0",
   "endpoints": {
-    "auth": ["/signup", "/signin"],
-    "user": ["/user/:username"],
-    "admin": ["/admin", "/init-admin"]
+    "auth": ["/signup", "/signin", "/delete"],
+    "user": ["/user/:username", "/user/:username/export", "/user/:username/import"],
+    "admin": ["/admin/users", "/admin/settings", "/init-admin"],
+    "system": ["/settings"]
   }
 }
 ```
