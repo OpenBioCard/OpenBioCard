@@ -37,6 +37,8 @@
           @update:currentSchool="editData.currentSchool = $event"
           @update:currentSchoolLink="editData.currentSchoolLink = $event"
           @update:workExperiences="editData.workExperiences = $event"
+          @export-data="handleExportData"
+          @import-data="handleImportData"
         />
 
         <!-- 联系方式列表 -->
@@ -445,6 +447,42 @@ const cancelEdit = () => {
   // 使用深拷贝避免引用问题
   editData.value = JSON.parse(JSON.stringify(profileData.value))
   editMode.value = false
+}
+
+// 导出账户数据
+const handleExportData = async () => {
+  try {
+    const data = await userAPI.exportData(username, token.value)
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement('a')
+    link.href = url
+    link.download = `openbiocard-${username}-${new Date().toISOString().split('T')[0]}.json`
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+    URL.revokeObjectURL(url)
+    showNotification('success', t('data.exportSuccess'), '')
+  } catch (error) {
+    console.error('导出数据失败:', error)
+    showNotification('error', t('data.exportFailed'), error.message)
+  }
+}
+
+// 导入账户数据
+const handleImportData = async (data) => {
+  try {
+    console.log('开始导入数据:', data)
+    await userAPI.importData(username, data, token.value)
+    showNotification('success', t('data.importSuccess'), '')
+    // 导入成功后刷新页面
+    setTimeout(() => {
+      window.location.reload()
+    }, 1500)
+  } catch (error) {
+    console.error('导入数据失败:', error)
+    showNotification('error', t('data.importFailed'), error.message)
+  }
 }
 
 // 添加联系方式

@@ -245,6 +245,15 @@
     "photoAlt": "相册图片",
     "loadFailed": "图片加载失败"
   },
+  "data": {
+    "export": "导出账户数据",
+    "import": "导入账户数据",
+    "importConfirm": "导入数据将覆盖当前所有资料，确定要继续吗？",
+    "importSuccess": "数据导入成功",
+    "importFailed": "数据导入失败",
+    "exportSuccess": "数据导出成功",
+    "exportFailed": "数据导出失败"
+  },
   "error": {
     "404": "404",
     "userNotFound": "用户不存在",

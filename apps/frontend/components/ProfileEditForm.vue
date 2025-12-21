@@ -212,6 +212,52 @@
             />
           </div>
         </div>
+        
+        <!-- 账户数据导出导入 -->
+        <div style="margin-top: 1rem; padding: 1.5rem; background: var(--color-bg-tertiary); border-radius: 0.75rem; border: 1px dashed var(--color-border-secondary);">
+          <h4 style="font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 1rem; display: flex; align-items: center;">
+            <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4"></path>
+            </svg>
+            {{ $t('data.export') }} / {{ $t('data.import') }}
+          </h4>
+          <div style="display: flex; gap: 1rem;">
+            <button
+              type="button"
+              @click="$emit('export-data')"
+              style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500;"
+              onmouseover="this.style.backgroundColor='var(--color-bg-secondary)'; this.style.borderColor='var(--color-primary)'"
+              onmouseout="this.style.backgroundColor='var(--color-bg-primary)'; this.style.borderColor='var(--color-border-secondary)'"
+            >
+              <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+              </svg>
+              {{ $t('data.export') }}
+            </button>
+            <div style="flex: 1; position: relative;">
+              <input
+                ref="importInput"
+                type="file"
+                accept=".json"
+                style="position: absolute; opacity: 0; width: 0; height: 0;"
+                @change="handleImportFile"
+              />
+              <button
+                type="button"
+                @click="triggerImportInput"
+                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500;"
+                onmouseover="this.style.backgroundColor='var(--color-bg-secondary)'; this.style.borderColor='var(--color-primary)'"
+                onmouseout="this.style.backgroundColor='var(--color-bg-primary)'; this.style.borderColor='var(--color-border-secondary)'"
+              >
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                </svg>
+                {{ $t('data.import') }}
+              </button>
+            </div>
+          </div>
+        </div>
+
         <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1rem;">
           <button
             type="button"
@@ -269,10 +315,35 @@ defineProps({
   }
 })
 
-const emit = defineEmits(['save', 'cancel', 'update:name', 'update:pronouns', 'update:avatar', 'update:bio', 'update:background', 'update:location', 'update:website', 'update:currentCompany', 'update:currentCompanyLink', 'update:currentSchool', 'update:currentSchoolLink', 'avatar-upload', 'background-upload'])
+const emit = defineEmits(['save', 'cancel', 'update:name', 'update:pronouns', 'update:avatar', 'update:bio', 'update:background', 'update:location', 'update:website', 'update:currentCompany', 'update:currentCompanyLink', 'update:currentSchool', 'update:currentSchoolLink', 'avatar-upload', 'background-upload', 'export-data', 'import-data'])
 
 const fileInput = ref(null)
 const backgroundInput = ref(null)
+const importInput = ref(null)
+
+const triggerImportInput = () => {
+  importInput.value.click()
+}
+
+const handleImportFile = (event) => {
+  const file = event.target.files[0]
+  if (!file) return
+
+  const reader = new FileReader()
+  reader.onload = (e) => {
+    try {
+      const data = JSON.parse(e.target.result)
+      if (confirm(t('data.importConfirm'))) {
+        emit('import-data', data)
+      }
+    } catch (err) {
+      showNotification('error', t('data.importFailed'), err.message)
+    }
+    // 重置 input 以允许再次导入相同文件
+    event.target.value = ''
+  }
+  reader.readAsText(file)
+}
 
 // 通知弹窗状态
 const notificationModal = ref({

@@ -245,6 +245,15 @@
     "photoAlt": "Gallery photo",
     "loadFailed": "Image failed to load"
   },
+  "data": {
+    "export": "Export Account Data",
+    "import": "Import Account Data",
+    "importConfirm": "Importing data will overwrite all current information. Are you sure you want to continue?",
+    "importSuccess": "Data imported successfully",
+    "importFailed": "Failed to import data",
+    "exportSuccess": "Data exported successfully",
+    "exportFailed": "Failed to export data"
+  },
   "error": {
     "404": "404",
     "userNotFound": "User Not Found",

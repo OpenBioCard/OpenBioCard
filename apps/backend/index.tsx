@@ -173,6 +173,97 @@ api.post('/user/:username', async (c) => {
   }
 })
 
+// 导出用户全量数据API
+api.get('/user/:username/export', async (c) => {
+  const username = c.req.param('username')
+  const authHeader = c.req.header('Authorization')
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const token = authHeader.substring(7)
+
+  try {
+    const id = c.env.USER_DO.idFromName(username)
+    const stub = c.env.USER_DO.get(id)
+    
+    // 验证token
+    const verifyResponse = await stub.fetch('http://internal/verify-token', {
+      method: 'POST',
+      body: JSON.stringify({ token })
+    })
+
+    const verifyResult: any = await verifyResponse.json()
+
+    if (!verifyResponse.ok || !verifyResult.valid) {
+      return c.json({ error: 'Invalid token' }, 401)
+    }
+
+    const exportResponse = await stub.fetch('http://internal/export')
+    if (exportResponse.ok) {
+      const data = await exportResponse.json()
+      return c.json(data)
+    } else {
+      return c.json({ error: 'Export failed' }, 500)
+    }
+  } catch (error) {
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// 导入用户全量数据API
+api.post('/user/:username/import', async (c) => {
+  const username = c.req.param('username')
+  const authHeader = c.req.header('Authorization')
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const token = authHeader.substring(7)
+
+  try {
+    const id = c.env.USER_DO.idFromName(username)
+    const stub = c.env.USER_DO.get(id)
+    
+    // 验证token
+    const verifyResponse = await stub.fetch('http://internal/verify-token', {
+      method: 'POST',
+      body: JSON.stringify({ token })
+    })
+
+    const verifyResult: any = await verifyResponse.json()
+    console.log(`[API] Token verification for ${username}:`, verifyResult)
+
+    if (!verifyResponse.ok || !verifyResult.valid) {
+      console.log(`[API] Token verification failed for ${username}:`, verifyResult)
+      return c.json({ error: 'Invalid token', details: verifyResult }, 401)
+    }
+
+    const importData = await c.req.json()
+    console.log(`[API] Importing data for ${username}. Current user token in import data:`, importData.user?.token)
+    
+    // 强制保持当前 token
+    if (importData.user) {
+      importData.user.token = token
+    }
+
+    const importResponse = await stub.fetch('http://internal/import', {
+      method: 'POST',
+      body: JSON.stringify(importData)
+    })
+
+    if (importResponse.ok) {
+      return c.json({ success: true })
+    } else {
+      return c.json({ error: 'Import failed' }, 500)
+    }
+  } catch (error) {
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
 app.route('/api', api)
 
 // SPA Fallback

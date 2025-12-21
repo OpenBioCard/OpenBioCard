@@ -40,6 +40,40 @@ export const userAPI = {
     return await response.json()
   },
 
+  // 导出账户数据
+  async exportData(username, token) {
+    const response = await fetch(`${API_BASE}user/${username}/export`, {
+      headers: {
+        'Authorization': `Bearer ${token}`
+      }
+    })
+
+    if (!response.ok) {
+      throw new Error('Export failed')
+    }
+
+    return await response.json()
+  },
+
+  // 导入账户数据
+  async importData(username, data, token) {
+    const response = await fetch(`${API_BASE}user/${username}/import`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(data)
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.error || 'Import failed')
+    }
+
+    return await response.json()
+  },
+
   // 获取系统公开设置
   async getSettings() {
     const response = await fetch(`${API_BASE}settings`)

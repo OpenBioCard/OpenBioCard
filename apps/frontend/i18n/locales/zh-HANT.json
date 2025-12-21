@@ -245,6 +245,15 @@
     "photoAlt": "相簿圖片",
     "loadFailed": "圖片載入失敗"
   },
+  "data": {
+    "export": "匯出帳戶數據",
+    "import": "匯入帳戶數據",
+    "importConfirm": "匯入數據將覆蓋目前所有資料，確定要繼續嗎？",
+    "importSuccess": "數據匯入成功",
+    "importFailed": "數據匯入失敗",
+    "exportSuccess": "數據匯出成功",
+    "exportFailed": "數據匯出失敗"
+  },
   "error": {
     "404": "404",
     "userNotFound": "使用者不存在",

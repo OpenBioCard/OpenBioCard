@@ -118,6 +118,23 @@ export class UserDO extends DurableObject {
       })
     }
 
+    if (request.method === 'GET' && url.pathname === '/export') {
+      const user = await this.ctx.storage.get('user')
+      const profile = await this.ctx.storage.get('profile')
+      return new Response(JSON.stringify({ user, profile }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
+    if (request.method === 'POST' && url.pathname === '/import') {
+      const { user, profile } = await request.json() as { user: any, profile: any }
+      if (user) await this.ctx.storage.put('user', user)
+      if (profile) await this.ctx.storage.put('profile', profile)
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+
     if (request.method === 'GET' && url.pathname === '/get-users') {
       // 特殊端点：如果这是admin-manager实例，返回所有用户
       const url = new URL(request.url)
