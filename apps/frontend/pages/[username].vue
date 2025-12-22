@@ -26,6 +26,7 @@
           @save="saveProfileHeader"
           @cancel="cancelEdit"
           @update:name="editData.name = $event"
+          @update:userType="editData.userType = $event"
           @update:pronouns="editData.pronouns = $event"
           @update:avatar="editData.avatar = $event"
           @update:bio="editData.bio = $event"
@@ -233,6 +234,7 @@ const fetchSettings = async () => {
 const profileData = ref({
   username: username,
   name: '',
+  userType: '',
   pronouns: '',
   avatar: '',
   bio: '',

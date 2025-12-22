@@ -3,6 +3,7 @@ import { DurableObject } from 'cloudflare:workers'
 
 interface Profile {
   name?: string
+  userType?: string
   avatar?: string
   bio?: string
   location?: string
@@ -84,6 +85,7 @@ export class UserDO extends DurableObject {
         return new Response(JSON.stringify({
           username: data.username,
           name: '',
+          userType: profile.userType || '',
           avatar: '',
           bio: '',
           location: '',

@@ -23,6 +23,7 @@
     "remove": "Remove",
     "default": "Default",
     "optional": "Optional",
+    "notSet": "Not Set",
     "username": "Username",
     "password": "Password",
     "name": "Name",
@@ -84,6 +85,10 @@
   "profile": {
     "edit": "Edit Profile",
     "name": "Name",
+    "userType": "Account Type",
+    "accountPersonal": "Personal",
+    "accountCompany": "Company",
+    "accountOrganization": "Organization",
     "enterName": "Enter name",
     "pronouns": "Pronouns",
     "enterPronouns": "e.g., he/him, she/her, they/them",

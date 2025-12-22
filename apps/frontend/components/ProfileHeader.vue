@@ -78,6 +78,13 @@
             <span v-if="profileData.pronouns" style="padding: 0.25rem 0.75rem; background: var(--color-bg-secondary); color: var(--color-text-secondary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-secondary);">
               {{ profileData.pronouns }}
             </span>
+            <span v-if="profileData.userType" style="padding: 0.25rem 0.75rem; background: var(--color-bg-tertiary); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-primary);">
+              {{ 
+                profileData.userType === 'organization' ? $t('profile.accountOrganization') : 
+                profileData.userType === 'company' ? $t('profile.accountCompany') : 
+                $t('profile.accountPersonal') 
+              }}
+            </span>
           </div>
           <p style="color: var(--color-text-tertiary); font-size: 1.125rem; margin-bottom: 1rem; line-height: 1.75;" v-html="formatBio(profileData.bio) || $t('profile.defaultBio')"></p>
           <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.875rem; color: var(--color-text-tertiary);">

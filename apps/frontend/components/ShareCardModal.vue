@@ -49,15 +49,33 @@
           <div style="padding-left: 32px; display: flex; flex-direction: column; height: 100%;">
             
             <!-- Header: Name -->
-            <h2 style="
-              font-size: 24px; 
-              font-weight: 800; 
-              line-height: 1.3; 
-              margin: 0;
-              color: var(--color-text-primary);
-            ">
-              {{ profileData.name || profileData.username }}
-            </h2>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px;">
+              <h2 style="
+                font-size: 24px; 
+                font-weight: 800; 
+                line-height: 1.3; 
+                margin: 0;
+                color: var(--color-text-primary);
+              ">
+                {{ profileData.name || profileData.username }}
+              </h2>
+              <span v-if="profileData.userType" style="
+                padding: 2px 8px; 
+                background: var(--color-bg-tertiary); 
+                color: var(--color-text-primary); 
+                font-size: 11px; 
+                font-weight: 600; 
+                border-radius: 9999px; 
+                border: 1px solid var(--color-border-primary);
+                white-space: nowrap;
+              ">
+                {{ 
+                  profileData.userType === 'organization' ? t('profile.accountOrganization') : 
+                  profileData.userType === 'company' ? t('profile.accountCompany') : 
+                  t('profile.accountPersonal') 
+                }}
+              </span>
+            </div>
 
             <!-- Page URL -->
             <div style="

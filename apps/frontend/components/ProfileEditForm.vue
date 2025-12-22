@@ -22,6 +22,21 @@
             />
           </div>
           <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.userType') }} <span style="font-weight: normal; color: var(--color-text-tertiary);">({{ $t('common.optional') }})</span></label>
+            <select
+              :value="editData.userType"
+              @change="$emit('update:userType', $event.target.value)"
+              style="width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; outline: none; transition: all 0.2s; background: var(--color-bg-primary); color: var(--color-text-primary); cursor: pointer;"
+              onfocus="this.style.borderColor='var(--color-primary)'; this.style.boxShadow='var(--shadow-focus)'"
+              onblur="this.style.borderColor='var(--color-border-secondary)'; this.style.boxShadow='none'"
+            >
+              <option value="">{{ $t('common.notSet') }}</option>
+              <option value="personal">{{ $t('profile.accountPersonal') }}</option>
+              <option value="company">{{ $t('profile.accountCompany') }}</option>
+              <option value="organization">{{ $t('profile.accountOrganization') }}</option>
+            </select>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 0.5rem;">
             <label style="display: block; font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);">{{ $t('profile.pronouns') }} <span style="font-weight: normal; color: var(--color-text-tertiary);">({{ $t('common.optional') }})</span></label>
             <input
               :value="editData.pronouns"

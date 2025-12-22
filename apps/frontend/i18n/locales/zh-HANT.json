@@ -23,6 +23,7 @@
     "remove": "移除",
     "default": "預設",
     "optional": "選填",
+    "notSet": "未設定",
     "username": "使用者名稱",
     "password": "密碼",
     "name": "姓名",
@@ -84,6 +85,10 @@
   "profile": {
     "edit": "編輯個人資料",
     "name": "姓名",
+    "userType": "帳戶類型",
+    "accountPersonal": "個人",
+    "accountCompany": "公司",
+    "accountOrganization": "組織",
     "enterName": "請輸入姓名",
     "pronouns": "人稱代詞",
     "enterPronouns": "如：他/him、她/her、TA/they",
