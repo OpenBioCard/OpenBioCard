@@ -41,50 +41,54 @@
           </button>
         </div>
         <div style="flex: 1; padding-top: 1rem;">
-          <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; flex-wrap: wrap;">
-            <h2 style="font-size: 1.875rem; font-weight: bold; color: var(--color-text-primary);">{{ profileData.name || profileData.username }}</h2>
-            
-            <!-- Share Button -->
-            <button 
-              @click="showShareModal = true"
-              style="
-                background: none; 
-                border: none; 
-                cursor: pointer; 
-                color: var(--color-text-tertiary); 
-                padding: 4px; 
-                border-radius: 50%; 
-                display: flex; 
-                align-items: center; 
-                justify-content: center; 
-                transition: all 0.2s;
-              "
-              onmouseover="this.style.color='var(--color-primary)'; this.style.background='var(--color-bg-tertiary)'"
-              onmouseout="this.style.color='var(--color-text-tertiary)'; this.style.background='none'"
-              title="分享名片"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="18" cy="5" r="3"></circle>
-                <circle cx="6" cy="12" r="3"></circle>
-                <circle cx="18" cy="19" r="3"></circle>
-                <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-              </svg>
-            </button>
+          <div class="profile-info-header">
+            <div class="name-container">
+              <h2 style="font-size: 1.875rem; font-weight: bold; color: var(--color-text-primary); margin: 0;">{{ profileData.name || profileData.username }}</h2>
+              
+              <!-- Share Button -->
+              <button 
+                @click="showShareModal = true"
+                style="
+                  background: none; 
+                  border: none; 
+                  cursor: pointer; 
+                  color: var(--color-text-tertiary); 
+                  padding: 4px; 
+                  border-radius: 50%; 
+                  display: flex; 
+                  align-items: center; 
+                  justify-content: center; 
+                  transition: all 0.2s;
+                "
+                onmouseover="this.style.color='var(--color-primary)'; this.style.background='var(--color-bg-tertiary)'"
+                onmouseout="this.style.color='var(--color-text-tertiary)'; this.style.background='none'"
+                title="分享名片"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="18" cy="5" r="3"></circle>
+                  <circle cx="6" cy="12" r="3"></circle>
+                  <circle cx="18" cy="19" r="3"></circle>
+                  <path d="M8.59 13.51l6.83 3.98"></path>
+                  <path d="M15.41 6.51l-6.82 3.98"></path>
+                </svg>
+              </button>
+            </div>
 
-            <span style="padding: 0.25rem 0.75rem; background: var(--color-bg-tertiary); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-primary);">
-              @{{ profileData.username }}
-            </span>
-            <span v-if="profileData.pronouns" style="padding: 0.25rem 0.75rem; background: var(--color-bg-secondary); color: var(--color-text-secondary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-secondary);">
-              {{ profileData.pronouns }}
-            </span>
-            <span v-if="profileData.userType" style="padding: 0.25rem 0.75rem; background: var(--color-bg-tertiary); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-primary);">
-              {{ 
-                profileData.userType === 'organization' ? $t('profile.accountOrganization') : 
-                profileData.userType === 'company' ? $t('profile.accountCompany') : 
-                $t('profile.accountPersonal') 
-              }}
-            </span>
+            <div class="tags-container">
+              <span style="padding: 0.25rem 0.75rem; background: var(--color-bg-tertiary); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-primary); white-space: nowrap;">
+                @{{ profileData.username }}
+              </span>
+              <span v-if="profileData.pronouns" style="padding: 0.25rem 0.75rem; background: var(--color-bg-secondary); color: var(--color-text-secondary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-secondary); white-space: nowrap;">
+                {{ profileData.pronouns }}
+              </span>
+              <span v-if="profileData.userType" style="padding: 0.25rem 0.75rem; background: var(--color-bg-tertiary); color: var(--color-text-primary); font-size: 0.875rem; font-weight: 500; border-radius: 9999px; border: 1px solid var(--color-border-primary); white-space: nowrap;">
+                {{ 
+                  profileData.userType === 'organization' ? $t('profile.accountOrganization') : 
+                  profileData.userType === 'company' ? $t('profile.accountCompany') : 
+                  $t('profile.accountPersonal') 
+                }}
+              </span>
+            </div>
           </div>
           <p style="color: var(--color-text-tertiary); font-size: 1.125rem; margin-bottom: 1rem; line-height: 1.75;" v-html="formatBio(profileData.bio) || $t('profile.defaultBio')"></p>
           <div style="display: flex; flex-wrap: wrap; gap: 1rem; font-size: 0.875rem; color: var(--color-text-tertiary);">
@@ -163,3 +167,38 @@ const formatDate = (dateStr) => {
   return date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'short' })
 }
 </script>
+
+<style scoped>
+.profile-info-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.name-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.tags-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 767px) {
+  .profile-info-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+  
+  .tags-container {
+    gap: 0.5rem;
+  }
+}
+</style>
