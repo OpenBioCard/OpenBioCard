@@ -403,6 +403,21 @@ const checkLogin = () => {
   }
 }
 
+// 检查数据是否有更改
+const getChangedFields = (oldData, newData) => {
+  const changes = {}
+  Object.keys(newData).forEach(key => {
+    // 特殊处理数组和对象，使用 JSON.stringify 进行简单深比较
+    const oldValue = oldData[key]
+    const newValue = newData[key]
+    
+    if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+      changes[key] = newValue
+    }
+  })
+  return changes
+}
+
 // 通用保存函数
 const performSave = async (loadingRef) => {
   if (!currentUser.value || !token.value) return
@@ -419,8 +434,18 @@ const performSave = async (loadingRef) => {
       filteredData.workExperiences = filteredData.workExperiences.filter(exp => exp.position && exp.position.trim() && exp.company && exp.company.trim())
     }
 
-    await userAPI.updateProfile(username, filteredData, token.value)
-    // 使用深拷贝避免引用问题
+    // 获取已更改的字段
+    const changedFields = getChangedFields(profileData.value, filteredData)
+    
+    // 如果没有更改，直接返回
+    if (Object.keys(changedFields).length === 0) {
+      showNotification('info', t('common.tips'), t('profile.noChanges'))
+      loadingRef.value = false
+      return
+    }
+
+    await userAPI.updateProfile(username, changedFields, token.value)
+    // 使用深拷贝更新本地数据
     profileData.value = JSON.parse(JSON.stringify(filteredData))
     // 不关闭编辑模式，允许用户继续编辑其他部分
     // editMode.value = false 

@@ -81,8 +81,10 @@ export class AdminDO extends DurableObject {
     }
 
     if (request.method === 'POST' && url.pathname === '/update-settings') {
-      const newSettings = await request.json()
-      await this.ctx.storage.put('settings', newSettings)
+      const newSettings = await request.json() as Record<string, any>
+      const existingSettings = (await this.ctx.storage.get('settings')) as Record<string, any> || { title: 'OpenBioCard', logo: '' }
+      const updatedSettings = { ...existingSettings, ...newSettings }
+      await this.ctx.storage.put('settings', updatedSettings)
       return new Response(JSON.stringify({ success: true }), {
         headers: { 'Content-Type': 'application/json' }
       })

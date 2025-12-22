@@ -150,6 +150,7 @@
     "saveProfile": "Save Profile",
     "saveSuccess": "Saved successfully",
     "saveFailed": "Failed to save",
+    "noChanges": "No changes detected",
     "imageTooLarge": "Image size cannot exceed 2MB",
     "backgroundTooLarge": "Background image size cannot exceed 3MB",
     "uploadError": "Upload failed"

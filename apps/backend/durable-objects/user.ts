@@ -38,7 +38,7 @@ export class UserDO extends DurableObject {
         try {
           // 这里需要AdminDO的引用，暂时简化
           // 实际应该通过环境变量传递AdminDO
-        } catch (e) {
+        } catch {
           // 忽略错误
         }
       }
@@ -113,8 +113,10 @@ export class UserDO extends DurableObject {
     }
 
     if (request.method === 'POST' && url.pathname === '/update-profile') {
-      const profileData = await request.json()
-      await this.ctx.storage.put('profile', profileData)
+      const profileData = await request.json() as Record<string, any>
+      const existingProfile = (await this.ctx.storage.get('profile') || {}) as Profile
+      const updatedProfile = { ...existingProfile, ...profileData }
+      await this.ctx.storage.put('profile', updatedProfile)
       return new Response(JSON.stringify({ success: true }), {
         headers: { 'Content-Type': 'application/json' }
       })

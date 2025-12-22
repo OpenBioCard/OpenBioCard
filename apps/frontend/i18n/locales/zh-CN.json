@@ -150,6 +150,7 @@
     "saveProfile": "保存资料",
     "saveSuccess": "保存成功",
     "saveFailed": "保存失败",
+    "noChanges": "未发现任何更改",
     "imageTooLarge": "图片大小不能超过2MB",
     "backgroundTooLarge": "背景图片大小不能超过3MB",
     "uploadError": "上传失败"

@@ -346,6 +346,10 @@ const settings = ref({
   title: 'OpenBioCard',
   logo: ''
 })
+const originalSettings = ref({
+  title: 'OpenBioCard',
+  logo: ''
+})
 
 // 同步网站标题和 Logo 到 head
 useHead({
@@ -421,17 +425,39 @@ const fetchSettings = async () => {
   if (!props.user || !props.token) return
   try {
     const data = await adminAPI.getSettings(props.token, props.user.username)
-    settings.value = data
+    settings.value = JSON.parse(JSON.stringify(data))
+    originalSettings.value = JSON.parse(JSON.stringify(data))
   } catch (error) {
     console.error('获取系统设置失败:', error)
   }
 }
 
+const getChangedFields = (oldData, newData) => {
+  const changes = {}
+  Object.keys(newData).forEach(key => {
+    const oldValue = oldData[key]
+    const newValue = newData[key]
+    if (JSON.stringify(oldValue) !== JSON.stringify(newValue)) {
+      changes[key] = newValue
+    }
+  })
+  return changes
+}
+
 const saveSettings = async () => {
   if (!props.user || !props.token) return
+
+  const changedFields = getChangedFields(originalSettings.value, settings.value)
+  
+  if (Object.keys(changedFields).length === 0) {
+    showNotification('info', t('common.tips'), t('profile.noChanges') || 'No changes to save')
+    return
+  }
+
   savingSettings.value = true
   try {
-    await adminAPI.updateSettings(settings.value, props.token, props.user.username)
+    await adminAPI.updateSettings(changedFields, props.token, props.user.username)
+    originalSettings.value = JSON.parse(JSON.stringify(settings.value))
     showNotification('success', t('common.tips'), t('admin.settingsUpdated'))
   } catch (error) {
     console.error('更新系统设置失败:', error)
