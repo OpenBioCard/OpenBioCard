@@ -71,16 +71,6 @@
           </svg>
           <span>{{ $t('social.add') }}</span>
         </button>
-
-        <div class="social-links-edit-actions">
-          <button
-            @click="$emit('save')"
-            :disabled="saving"
-            class="social-links-edit-save-btn"
-          >
-            {{ saving ? $t('common.saving') : $t('common.save') }}
-          </button>
-        </div>
       </div>
     </div>
   </div>

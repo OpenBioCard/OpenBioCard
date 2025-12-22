@@ -272,27 +272,6 @@
             </div>
           </div>
         </div>
-
-        <div style="display: flex; justify-content: flex-end; gap: 1rem; padding-top: 1rem;">
-          <button
-            type="button"
-            @click="$emit('cancel')"
-            style="padding: 0.75rem 1.5rem; color: var(--color-text-secondary); background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-weight: 500;"
-            onmouseover="this.style.backgroundColor='var(--color-bg-secondary)'"
-            onmouseout="this.style.backgroundColor='var(--color-bg-primary)'"
-          >
-            {{ $t('common.cancel') }}
-          </button>
-          <button
-            type="submit"
-            :disabled="saving"
-            style="padding: 0.75rem 1.5rem; background: var(--color-primary); color: var(--color-text-inverse); border: none; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-weight: 500; box-shadow: var(--shadow-sm);"
-            onmouseover="this.style.transform='translateY(-1px)'; this.style.backgroundColor='var(--color-primary-hover)'"
-            onmouseout="this.style.transform='translateY(0)'; this.style.backgroundColor='var(--color-primary)'"
-          >
-            {{ saving ? $t('common.saving') : $t('profile.saveProfile') }}
-          </button>
-        </div>
       </form>
     </div>
 

@@ -85,16 +85,6 @@
           </div>
         </div>
       </div>
-
-      <div class="gallery-edit-actions">
-        <button
-          @click="$emit('save')"
-          :disabled="saving"
-          class="gallery-edit-save-btn"
-        >
-          {{ saving ? $t('common.saving') : $t('common.save') }}
-        </button>
-      </div>
     </div>
 
     <!-- 通知弹窗 -->

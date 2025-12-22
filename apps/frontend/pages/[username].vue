@@ -162,6 +162,38 @@
       </div>
     </main>
 
+    <!-- 悬浮编辑控制栏 -->
+    <transition name="fade">
+      <div v-if="editMode && canEdit" style="position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); z-index: 50; display: flex; gap: 0.5rem; background: var(--color-bg-overlay); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); padding: 0.5rem; border-radius: 9999px; box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.2); border: 1px solid var(--color-border-tertiary); min-width: 200px; justify-content: center;">
+        <button
+          @click="cancelEdit"
+          style="padding: 0.75rem 1.5rem; border-radius: 9999px; font-weight: 600; color: var(--color-text-secondary); transition: all 0.2s; cursor: pointer; border: none; background: transparent;"
+          onmouseover="this.style.backgroundColor='var(--color-bg-tertiary)'; this.style.color='var(--color-text-primary)'"
+          onmouseout="this.style.backgroundColor='transparent'; this.style.color='var(--color-text-secondary)'"
+        >
+          {{ $t('common.cancel') }}
+        </button>
+        <button
+          @click="saveAll"
+          :disabled="isAnySaving"
+          style="padding: 0.75rem 2rem; border-radius: 9999px; font-weight: 600; color: var(--color-text-inverse); background: var(--color-primary); transition: all 0.2s; cursor: pointer; border: none; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); display: flex; align-items: center; justify-content: center;"
+          onmouseover="this.style.transform='translateY(-1px)'; this.style.backgroundColor='var(--color-primary-hover)'"
+          onmouseout="this.style.transform='translateY(0)'; this.style.backgroundColor='var(--color-primary)'"
+        >
+          <template v-if="isAnySaving">
+            <svg class="animate-spin" style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="none" viewBox="0 0 24 24">
+              <circle style="opacity: 0.25;" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path style="opacity: 0.75;" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+            </svg>
+            {{ $t('common.saving') }}
+          </template>
+          <template v-else>
+            {{ $t('common.save') }}
+          </template>
+        </button>
+      </div>
+    </transition>
+
     <!-- 二维码弹窗 -->
     <QRCodeModal
       :show="qrCodeModal.show"
@@ -266,6 +298,23 @@ const savingSchool = ref(false)
 const savingGallery = ref(false)
 
 const editData = ref({ ...profileData.value })
+
+// 是否正在保存任何部分
+const isAnySaving = computed(() => {
+  return savingProfileHeader.value ||
+         savingContacts.value ||
+         savingSocialLinks.value ||
+         savingProjects.value ||
+         savingWork.value ||
+         savingSchool.value ||
+         savingGallery.value
+})
+
+// 保存所有更改
+const saveAll = async () => {
+  // performSave 会更新所有更改的字段
+  await saveProfileHeader()
+}
 
 // 二维码弹窗状态
 const qrCodeModal = ref({
