@@ -331,6 +331,7 @@ Authorization: Bearer your-token-here
 |------|------|------|
 | `username` | string | 用户名 |
 | `name` | string | 显示名称 |
+| `userType` | string | 账户类型：`personal` (个人), `company` (公司), `organization` (组织) |
 | `pronouns` | string | 人称代词（如：he/him, she/her, they/them） |
 | `avatar` | string | 头像（字符、emoji 或 base64 图片） |
 | `bio` | string | 个人简介 |
@@ -434,6 +435,7 @@ Authorization: Bearer your-token-here
 {
   "username": "johndoe",
   "name": "John Doe Updated",
+  "userType": "personal",
   "pronouns": "he/him",
   "avatar": "👨‍💻",
   "bio": "Updated bio",

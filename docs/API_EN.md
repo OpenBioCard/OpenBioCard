@@ -345,6 +345,7 @@ Retrieve public profile information for a specific user.
 |-------|------|-------------|
 | `username` | string | Username |
 | `name` | string | Display name |
+| `userType` | string | Account type: `personal`, `company`, `organization` |
 | `pronouns` | string | Pronouns (e.g., he/him, she/her, they/them) |
 | `avatar` | string | Avatar (character, emoji, or base64 image) |
 | `bio` | string | Bio/About me |
@@ -451,6 +452,7 @@ Authorization: Bearer your-token-here
 {
   "username": "johndoe",
   "name": "John Doe Updated",
+  "userType": "personal",
   "pronouns": "he/him",
   "avatar": "👨‍💻",
   "bio": "Updated bio",
