@@ -18,6 +18,7 @@ interface Profile {
   currentSchoolLink?: string
   workExperiences?: any[]
   schoolExperiences?: any[]
+  locales?: { [key: string]: Partial<Profile> }
   [key: string]: any
 }
 

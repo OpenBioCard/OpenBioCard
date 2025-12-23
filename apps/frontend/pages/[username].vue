@@ -11,32 +11,42 @@
       <div style="background: var(--color-bg-overlay); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border-radius: 1rem; box-shadow: var(--shadow-sm); border: 1px solid var(--color-border-tertiary); overflow: hidden;">
         <!-- 资料头部 -->
         <ProfileHeader
-          :profile-data="profileData"
+          :profile-data="displayProfileData"
           :can-edit="canEdit"
           :site-settings="settings"
           @toggle-edit="editMode = !editMode"
         />
 
         <!-- 编辑模式 -->
+        <div v-if="editMode && canEdit" style="padding: 0 2rem; margin-top: 2rem; margin-bottom: -1rem; display: flex; justify-content: flex-end;">
+           <div style="display: flex; align-items: center; gap: 0.5rem;">
+             <label style="font-weight: 600; font-size: 0.875rem; color: var(--color-text-secondary);">Editing Language:</label>
+             <select v-model="currentEditLang" style="padding: 0.25rem 0.5rem; border-radius: 0.375rem; border: 1px solid var(--color-border-secondary); background: var(--color-bg-primary); color: var(--color-text-primary);">
+               <option value="default">{{ $t('common.default') || 'Default' }}</option>
+               <option v-for="l in supportedLocales" :key="l.code" :value="l.code">{{ l.name }}</option>
+             </select>
+           </div>
+        </div>
+
         <ProfileEditForm
           v-if="editMode && canEdit"
-          :edit-data="editData"
+          :edit-data="activeEditData"
           :username="username"
           :saving="savingProfileHeader"
           @save="saveProfileHeader"
           @cancel="cancelEdit"
-          @update:name="editData.name = $event"
-          @update:userType="editData.userType = $event"
-          @update:pronouns="editData.pronouns = $event"
-          @update:avatar="editData.avatar = $event"
-          @update:bio="editData.bio = $event"
-          @update:background="editData.background = $event"
-          @update:location="editData.location = $event"
-          @update:website="editData.website = $event"
-          @update:currentCompany="editData.currentCompany = $event"
-          @update:currentCompanyLink="editData.currentCompanyLink = $event"
-          @update:currentSchool="editData.currentSchool = $event"
-          @update:currentSchoolLink="editData.currentSchoolLink = $event"
+          @update:name="updateEditField('name', $event)"
+          @update:userType="updateEditField('userType', $event)"
+          @update:pronouns="updateEditField('pronouns', $event)"
+          @update:avatar="updateEditField('avatar', $event)"
+          @update:bio="updateEditField('bio', $event)"
+          @update:background="updateEditField('background', $event)"
+          @update:location="updateEditField('location', $event)"
+          @update:website="updateEditField('website', $event)"
+          @update:currentCompany="updateEditField('currentCompany', $event)"
+          @update:currentCompanyLink="updateEditField('currentCompanyLink', $event)"
+          @update:currentSchool="updateEditField('currentSchool', $event)"
+          @update:currentSchoolLink="updateEditField('currentSchoolLink', $event)"
           @update:workExperiences="editData.workExperiences = $event"
           @export-data="handleExportData"
           @import-data="handleImportData"
@@ -238,10 +248,11 @@ import WorkExperienceEdit from '../components/WorkExperienceEdit.vue'
 import SchoolExperience from '../components/SchoolExperience.vue'
 import SchoolExperienceEdit from '../components/SchoolExperienceEdit.vue'
 import { useSocialLinksData } from '../composables/useGitHubData'
+import { supportedLocales } from '../i18n'
 import { userAPI, authAPI } from '../api/index.js'
 
 const route = useRoute()
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const username = route.params.username
 
 // 系统设置
@@ -298,6 +309,55 @@ const savingSchool = ref(false)
 const savingGallery = ref(false)
 
 const editData = ref({ ...profileData.value })
+
+// 编辑语言状态
+const currentEditLang = ref('default')
+
+// 计算当前编辑的数据（合并默认数据和语言特定数据）
+const activeEditData = computed(() => {
+  if (currentEditLang.value === 'default') {
+    return editData.value
+  }
+  
+  // 确保 locales 对象存在
+  if (!editData.value.locales) {
+    editData.value.locales = {}
+  }
+  // 确保特定语言对象存在
+  if (!editData.value.locales[currentEditLang.value]) {
+    editData.value.locales[currentEditLang.value] = {}
+  }
+  
+  // 合并数据
+  return {
+    ...editData.value,
+    ...editData.value.locales[currentEditLang.value]
+  }
+})
+
+// 更新编辑字段的辅助函数
+const updateEditField = (field, value) => {
+  if (currentEditLang.value === 'default') {
+    editData.value[field] = value
+  } else {
+    if (!editData.value.locales) editData.value.locales = {}
+    if (!editData.value.locales[currentEditLang.value]) editData.value.locales[currentEditLang.value] = {}
+    editData.value.locales[currentEditLang.value][field] = value
+  }
+}
+
+// 显示用的资料数据（根据当前界面语言自动切换）
+const displayProfileData = computed(() => {
+  const currentLocale = locale.value
+  const data = { ...profileData.value }
+  
+  if (data.locales && data.locales[currentLocale]) {
+    // 过滤掉空值，避免覆盖默认值（可选，根据需求决定）
+    // 这里简单合并
+    Object.assign(data, data.locales[currentLocale])
+  }
+  return data
+})
 
 // 是否正在保存任何部分
 const isAnySaving = computed(() => {
