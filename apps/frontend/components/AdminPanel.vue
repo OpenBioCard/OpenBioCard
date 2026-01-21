@@ -285,22 +285,70 @@
             </div>
 
             <!-- 操作按钮 -->
-            <button v-if="u.username !== user.username && u.type !== 'root'" @click="deleteUser(u.username)" class="admin-user-delete">
-              <svg class="admin-user-delete-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"></path>
-              </svg>
-              {{ $t('admin.deleteUser') }}
-            </button>
-            <div v-else class="admin-user-current">
-              <svg class="admin-user-current-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM9 12L11 14L15 10"></path>
-              </svg>
-              {{ u.username === user.username ? $t('admin.currentUser') : $t('admin.systemAdmin') }}
+            <div class="admin-user-actions">
+              <button v-if="u.type !== 'root'" @click="openChangePasswordModal(u.username)" class="admin-user-btn secondary">
+                <svg class="admin-user-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                </svg>
+                {{ $t('admin.changePassword') }}
+              </button>
+
+              <button v-if="u.username !== user.username && u.type !== 'root'" @click="deleteUser(u.username)" class="admin-user-btn danger">
+                <svg class="admin-user-btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6H5H21M8 6V4C8 3.46957 8.21071 2.96086 8.58579 2.58579C8.96086 2.21071 9.46957 2 10 2H14C14.5304 2 15.0391 2.21071 15.4142 2.58579C15.7893 2.96086 16 3.46957 16 4V6M19 6V20C19 20.5304 18.7893 21.0391 18.4142 21.4142C18.0391 21.7893 17.5304 22 17 22H7C6.46957 22 5.96086 21.7893 5.58579 21.4142C5.21071 21.0391 5 20.5304 5 20V6H19Z"></path>
+                </svg>
+                {{ $t('admin.deleteUser') }}
+              </button>
+              
+              <div v-if="u.username === user.username" class="admin-user-current">
+                <svg class="admin-user-current-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22ZM9 12L11 14L15 10"></path>
+                </svg>
+                {{ $t('admin.currentUser') }}
+              </div>
             </div>
           </div>
         </div>
       </div>
     </main>
+
+    <!-- 修改密码弹窗 -->
+    <div v-if="changePasswordModal.show" class="modal-overlay" @click="closeChangePasswordModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3 class="modal-title">{{ $t('admin.changePassword') }} - {{ changePasswordModal.targetUsername }}</h3>
+          <button @click="closeChangePasswordModal" class="modal-close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <form @submit.prevent="handleChangePassword" class="modal-form">
+          <div class="admin-form-field">
+            <label for="newPassword" class="admin-form-label">{{ $t('admin.newPassword') }}</label>
+            <input
+              id="newPassword"
+              v-model="changePasswordModal.newPassword"
+              type="password"
+              :placeholder="$t('admin.enterNewPassword')"
+              required
+              class="admin-form-input"
+              autofocus
+            />
+          </div>
+          <div class="modal-actions">
+            <button type="button" @click="closeChangePasswordModal" class="modal-btn-secondary">
+              {{ $t('common.cancel') }}
+            </button>
+            <button type="submit" :disabled="changePasswordModal.submitting" class="modal-btn-primary">
+              <span v-if="!changePasswordModal.submitting">{{ $t('common.save') }}</span>
+              <div v-else class="spinner mini"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
 
     <!-- 通知弹窗 -->
     <NotificationModal
@@ -342,6 +390,15 @@ const newUser = ref({
 })
 const creating = ref(false)
 const mobileMenuOpen = ref(false)
+
+// 修改密码弹窗状态
+const changePasswordModal = ref({
+  show: false,
+  targetUsername: '',
+  newPassword: '',
+  submitting: false
+})
+
 const settings = ref({
   title: 'OpenBioCard',
   logo: ''
@@ -522,6 +579,41 @@ const deleteUser = async (username) => {
   } catch (error) {
     console.error('Delete user error:', error)
     showNotification('error', t('common.tips'), t('admin.userDeleteFailed'), error.message || String(error))
+  }
+}
+
+// 打开修改密码弹窗
+const openChangePasswordModal = (username) => {
+  changePasswordModal.value = {
+    show: true,
+    targetUsername: username,
+    newPassword: '',
+    submitting: false
+  }
+}
+
+// 关闭修改密码弹窗
+const closeChangePasswordModal = () => {
+  changePasswordModal.value.show = false
+}
+
+// 处理修改密码提交
+const handleChangePassword = async () => {
+  if (!props.user || !props.token) return
+  
+  const { targetUsername, newPassword } = changePasswordModal.value
+  if (!newPassword) return
+
+  changePasswordModal.value.submitting = true
+  try {
+    await adminAPI.changePassword(targetUsername, newPassword, props.token, props.user.username)
+    showNotification('success', t('common.tips'), t('admin.passwordChanged'))
+    closeChangePasswordModal()
+  } catch (error) {
+    console.error('Change password error:', error)
+    showNotification('error', t('common.tips'), t('admin.passwordChangeFailed'), error.message || String(error))
+  } finally {
+    changePasswordModal.value.submitting = false
   }
 }
 

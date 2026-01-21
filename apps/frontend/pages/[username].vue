@@ -50,6 +50,7 @@
           @update:workExperiences="editData.workExperiences = $event"
           @export-data="handleExportData"
           @import-data="handleImportData"
+          @change-password="openChangePasswordModal"
         />
 
         <!-- 联系方式列表 -->
@@ -221,6 +222,44 @@
       :details="notificationModal.details"
       @close="closeNotificationModal"
     />
+
+    <!-- 修改密码弹窗 -->
+    <div v-if="changePasswordModal.show" class="modal-overlay" @click="closeChangePasswordModal">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3 class="modal-title">{{ $t('admin.changePassword') }}</h3>
+          <button @click="closeChangePasswordModal" class="modal-close">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <form @submit.prevent="handleChangePassword" class="modal-form">
+          <div class="admin-form-field">
+            <label for="newPassword" class="admin-form-label">{{ $t('admin.newPassword') }}</label>
+            <input
+              id="newPassword"
+              v-model="changePasswordModal.newPassword"
+              type="password"
+              :placeholder="$t('admin.enterNewPassword')"
+              required
+              class="admin-form-input"
+              autofocus
+            />
+          </div>
+          <div class="modal-actions">
+            <button type="button" @click="closeChangePasswordModal" class="modal-btn-secondary">
+              {{ $t('common.cancel') }}
+            </button>
+            <button type="submit" :disabled="changePasswordModal.submitting" class="modal-btn-primary">
+              <span v-if="!changePasswordModal.submitting">{{ $t('common.confirm') }}</span>
+              <div v-else class="spinner"></div>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -389,6 +428,13 @@ const notificationModal = ref({
   type: 'info',
   title: '',
   message: ''
+})
+
+// 修改密码弹窗状态
+const changePasswordModal = ref({
+  show: false,
+  newPassword: '',
+  submitting: false
 })
 
 // 获取cookie
@@ -618,6 +664,40 @@ const handleImportData = async (data) => {
   } catch (error) {
     console.error('导入数据失败:', error)
     showNotification('error', t('data.importFailed'), error.message)
+  }
+}
+
+// 打开修改密码弹窗
+const openChangePasswordModal = () => {
+  changePasswordModal.value = {
+    show: true,
+    newPassword: '',
+    submitting: false
+  }
+}
+
+// 关闭修改密码弹窗
+const closeChangePasswordModal = () => {
+  changePasswordModal.value.show = false
+}
+
+// 处理修改密码提交
+const handleChangePassword = async () => {
+  if (!currentUser.value || !token.value) return
+  
+  const { newPassword } = changePasswordModal.value
+  if (!newPassword) return
+
+  changePasswordModal.value.submitting = true
+  try {
+    await userAPI.changePassword(username, newPassword, token.value)
+    showNotification('success', t('common.tips'), t('admin.passwordChanged'))
+    closeChangePasswordModal()
+  } catch (error) {
+    console.error('Change password error:', error)
+    showNotification('error', t('common.tips'), t('admin.passwordChangeFailed'), error.message || String(error))
+  } finally {
+    changePasswordModal.value.submitting = false
   }
 }
 
@@ -1004,3 +1084,179 @@ onMounted(async () => {
   loadProfile()
 })
 </script>
+
+<style scoped>
+/* 弹窗基础样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal-content {
+  background: var(--color-bg-overlay);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 1rem;
+  width: 100%;
+  max-width: 450px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 10px 10px -6px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--color-border-tertiary);
+  overflow: hidden;
+  animation: modal-in 0.3s ease-out;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.modal-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--color-border-tertiary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.modal-close {
+  padding: 0.5rem;
+  color: var(--color-text-tertiary);
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+}
+
+.modal-close:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.modal-form {
+  padding: 1.5rem;
+}
+
+.admin-form-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+}
+
+.admin-form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.admin-form-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-border-secondary);
+  border-radius: 0.5rem;
+  outline: none;
+  transition: all 0.2s;
+  font-size: 0.9375rem;
+  box-sizing: border-box;
+  background: var(--color-bg-primary);
+  color: var(--color-text-primary);
+}
+
+.admin-form-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.modal-btn-secondary {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-secondary);
+  background: var(--color-bg-tertiary);
+  border: 1px solid var(--color-border-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-btn-secondary:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.modal-btn-primary {
+  padding: 0.625rem 1.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text-inverse);
+  background: var(--color-primary);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 5rem;
+}
+
+.modal-btn-primary:hover {
+  background: var(--color-primary-hover);
+}
+
+.modal-btn-primary:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.spinner {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* 适配移动端 */
+@media (max-width: 640px) {
+  .modal-content {
+    border-radius: 0.75rem;
+  }
+  
+  .modal-header, .modal-form {
+    padding: 1rem;
+  }
+}
+</style>

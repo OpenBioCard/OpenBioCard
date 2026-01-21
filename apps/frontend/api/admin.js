@@ -115,5 +115,33 @@ export const adminAPI = {
     }
 
     return await response.json()
+  },
+
+  // 修改用户密码
+  async changePassword(targetUsername, newPassword, token, username) {
+    const response = await fetch(`${API_BASE}admin/users/change-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({
+        username,
+        token,
+        targetUsername,
+        newPassword
+      })
+    })
+
+    if (!response.ok) {
+      try {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to change password')
+      } catch (parseError) {
+        throw new Error(`Failed to change password: ${response.status} ${response.statusText}`)
+      }
+    }
+
+    return await response.json()
   }
 }

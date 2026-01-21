@@ -253,3 +253,38 @@ admin.delete('/users/:username', authMiddleware, requirePermission(['admin', 'ro
     return c.json({ error: 'Internal server error' }, 500)
   }
 })
+
+// 修改用户密码（admin权限）
+admin.post('/users/change-password', authMiddleware, requirePermission(['admin', 'root']), async (c) => {
+  try {
+    const { targetUsername, newPassword } = await c.req.json() as { targetUsername: string, newPassword: string }
+    
+    if (!targetUsername || !newPassword) {
+      return c.json({ error: 'Username and password are required' }, 400)
+    }
+
+    // 检查是否在修改 root 密码
+    if (targetUsername === c.env.ROOT_USERNAME) {
+      return c.json({ error: 'Cannot change root password via this API' }, 403)
+    }
+
+    const hashedPassword = await hashPassword(newPassword)
+    
+    const userId = c.env.USER_DO.idFromName(targetUsername)
+    const userStub = c.env.USER_DO.get(userId)
+    const response = await userStub.fetch('http://do/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ password: hashedPassword }),
+      headers: { 'Content-Type': 'application/json' }
+    })
+
+    if (!response.ok) {
+      return c.json({ error: 'Failed to change password' }, 500)
+    }
+
+    return c.json({ success: true, message: 'Password changed successfully' })
+  } catch (error: any) {
+    console.error('Change password error:', error)
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})

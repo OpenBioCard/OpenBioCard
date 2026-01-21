@@ -123,6 +123,23 @@ export class UserDO extends DurableObject {
       })
     }
 
+    if (request.method === 'POST' && url.pathname === '/change-password') {
+      const { password: hashedPassword }: { password: string } = await request.json()
+      const userData = await this.ctx.storage.get('user') as CreateAccount | undefined
+      if (userData) {
+        userData.password = hashedPassword
+        await this.ctx.storage.put('user', userData)
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { 'Content-Type': 'application/json' }
+        })
+      } else {
+        return new Response(JSON.stringify({ error: 'User not found' }), {
+          status: 404,
+          headers: { 'Content-Type': 'application/json' }
+        })
+      }
+    }
+
     if (request.method === 'GET' && url.pathname === '/export') {
       const user = await this.ctx.storage.get('user')
       const profile = await this.ctx.storage.get('profile')

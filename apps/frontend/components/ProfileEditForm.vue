@@ -228,47 +228,64 @@
           </div>
         </div>
         
-        <!-- 账户数据导出导入 -->
+        <!-- 账户安全与数据管理 -->
         <div style="margin-top: 1rem; padding: 1.5rem; background: var(--color-bg-tertiary); border-radius: 0.75rem; border: 1px dashed var(--color-border-secondary);">
           <h4 style="font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary); margin-bottom: 1rem; display: flex; align-items: center;">
             <svg style="width: 1.25rem; height: 1.25rem; margin-right: 0.5rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.58 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.58 4 8 4s8-1.79 8-4M4 7c0-2.21 3.58-4 8-4s8 1.79 8 4m0 5c0 2.21-3.58 4-8 4s-8-1.79-8-4"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
             </svg>
-            {{ $t('data.export') }} / {{ $t('data.import') }}
+            {{ $t('profile.accountSecurity') || 'Account Security' }} / {{ $t('data.export') }} / {{ $t('data.import') }}
           </h4>
-          <div style="display: flex; gap: 1rem;">
-            <button
-              type="button"
-              @click="$emit('export-data')"
-              style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500;"
-              onmouseover="this.style.backgroundColor='var(--color-bg-secondary)'; this.style.borderColor='var(--color-primary)'"
-              onmouseout="this.style.backgroundColor='var(--color-bg-primary)'; this.style.borderColor='var(--color-border-secondary)'"
-            >
-              <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-              </svg>
-              {{ $t('data.export') }}
-            </button>
-            <div style="flex: 1; position: relative;">
-              <input
-                ref="importInput"
-                type="file"
-                accept=".json"
-                style="position: absolute; opacity: 0; width: 0; height: 0;"
-                @change="handleImportFile"
-              />
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="display: flex; gap: 1rem;">
               <button
                 type="button"
-                @click="triggerImportInput"
-                style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500;"
+                @click="$emit('change-password')"
+                style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--color-primary); border: none; border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: var(--color-text-inverse); font-weight: 500;"
+                onmouseover="this.style.backgroundColor='var(--color-primary-hover)'"
+                onmouseout="this.style.backgroundColor='var(--color-primary)'"
+              >
+                <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path>
+                </svg>
+                {{ $t('admin.changePassword') }}
+              </button>
+            </div>
+            
+            <div style="display: flex; gap: 1rem;">
+              <button
+                type="button"
+                @click="$emit('export-data')"
+                style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500;"
                 onmouseover="this.style.backgroundColor='var(--color-bg-secondary)'; this.style.borderColor='var(--color-primary)'"
                 onmouseout="this.style.backgroundColor='var(--color-bg-primary)'; this.style.borderColor='var(--color-border-secondary)'"
               >
                 <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
                 </svg>
-                {{ $t('data.import') }}
+                {{ $t('data.export') }}
               </button>
+              <div style="flex: 1; position: relative;">
+                <input
+                  ref="importInput"
+                  type="file"
+                  accept=".json"
+                  style="position: absolute; opacity: 0; width: 0; height: 0;"
+                  @change="handleImportFile"
+                />
+                <button
+                  type="button"
+                  @click="triggerImportInput"
+                  style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.75rem 1rem; background: var(--color-bg-primary); border: 1px solid var(--color-border-secondary); border-radius: 0.75rem; cursor: pointer; transition: all 0.2s; font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500;"
+                  onmouseover="this.style.backgroundColor='var(--color-bg-secondary)'; this.style.borderColor='var(--color-primary)'"
+                  onmouseout="this.style.backgroundColor='var(--color-bg-primary)'; this.style.borderColor='var(--color-border-secondary)'"
+                >
+                  <svg style="width: 1.25rem; height: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                  </svg>
+                  {{ $t('data.import') }}
+                </button>
+              </div>
             </div>
           </div>
         </div>

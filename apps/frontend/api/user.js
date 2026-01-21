@@ -81,5 +81,28 @@ export const userAPI = {
       return { title: 'OpenBioCard', logo: '' }
     }
     return await response.json()
+  },
+
+  // 修改密码
+  async changePassword(username, newPassword, token) {
+    const response = await fetch(`${API_BASE}user/${username}/change-password`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ newPassword })
+    })
+
+    if (!response.ok) {
+      try {
+        const error = await response.json()
+        throw new Error(error.error || 'Failed to change password')
+      } catch (parseError) {
+        throw new Error(`Failed to change password: ${response.status} ${response.statusText}`)
+      }
+    }
+
+    return await response.json()
   }
 }

@@ -5,6 +5,7 @@ import { delate } from './router/delate'
 import { admin } from './router/admin'
 import { UserDO } from './durable-objects/user'
 import { AdminDO } from './durable-objects/admin'
+import { hashPassword } from './utils/password'
 
 type CloudflareBindings = {
   USER_DO: DurableObjectNamespace
@@ -260,6 +261,57 @@ api.post('/user/:username/import', async (c) => {
       return c.json({ error: 'Import failed' }, 500)
     }
   } catch (error) {
+    return c.json({ error: 'Internal server error' }, 500)
+  }
+})
+
+// 用户修改自己密码 API
+api.post('/user/:username/change-password', async (c) => {
+  const username = c.req.param('username')
+  const authHeader = c.req.header('Authorization')
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return c.json({ error: 'Unauthorized' }, 401)
+  }
+
+  const token = authHeader.substring(7)
+
+  try {
+    const id = c.env.USER_DO.idFromName(username)
+    const stub = c.env.USER_DO.get(id)
+    
+    // 1. 验证 token
+    const verifyResponse = await stub.fetch('http://internal/verify-token', {
+      method: 'POST',
+      body: JSON.stringify({ token })
+    })
+
+    const verifyResult: any = await verifyResponse.json()
+
+    if (!verifyResponse.ok || !verifyResult.valid) {
+      return c.json({ error: 'Invalid token' }, 401)
+    }
+
+    // 2. 修改密码
+    const { newPassword } = await c.req.json() as { newPassword: string }
+    if (!newPassword) {
+      return c.json({ error: 'New password is required' }, 400)
+    }
+
+    const hashedPassword = await hashPassword(newPassword)
+    const changeResponse = await stub.fetch('http://internal/change-password', {
+      method: 'POST',
+      body: JSON.stringify({ password: hashedPassword }),
+      headers: { 'Content-Type': 'application/json' }
+    })
+
+    if (changeResponse.ok) {
+      return c.json({ success: true, message: 'Password changed successfully' })
+    } else {
+      return c.json({ error: 'Failed to change password' }, 500)
+    }
+  } catch (error) {
+    console.error('User change password error:', error)
     return c.json({ error: 'Internal server error' }, 500)
   }
 })
