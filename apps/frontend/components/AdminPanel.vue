@@ -1267,13 +1267,16 @@ onBeforeUnmount(() => {
   height: 0.875rem;
 }
 
-.admin-user-delete {
+.admin-user-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.admin-user-btn {
   width: 100%;
   padding: 0.625rem;
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-danger-light);
   border-radius: 0.5rem;
-  color: var(--color-danger);
   font-weight: 600;
   font-size: 0.875rem;
   cursor: pointer;
@@ -1282,16 +1285,36 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  border: 1px solid transparent;
 }
 
-.admin-user-delete:hover {
+.admin-user-btn.secondary {
+  background: var(--color-bg-primary);
+  border-color: var(--color-border-secondary);
+  color: var(--color-text-secondary);
+}
+
+.admin-user-btn.secondary:hover {
+  background-color: var(--color-bg-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.admin-user-btn.danger {
+  background: var(--color-bg-primary);
+  border-color: var(--color-danger-light);
+  color: var(--color-danger);
+}
+
+.admin-user-btn.danger:hover {
   background-color: var(--color-danger-bg);
   border-color: var(--color-danger);
 }
 
-.admin-user-delete-icon {
+.admin-user-btn-icon {
   width: 1rem;
   height: 1rem;
+  flex-shrink: 0;
 }
 
 .admin-user-current {
@@ -1312,6 +1335,109 @@ onBeforeUnmount(() => {
 .admin-user-current-icon {
   width: 1.125rem;
   height: 1.125rem;
+}
+
+/* 弹窗样式 */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--color-bg-overlay);
+  border-radius: 1rem;
+  width: 90%;
+  max-width: 400px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid var(--color-border-tertiary);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.modal-title {
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: var(--color-text-primary);
+  margin: 0;
+}
+
+.modal-close {
+  background: transparent;
+  border: none;
+  color: var(--color-text-tertiary);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s;
+}
+
+.modal-close:hover {
+  background: var(--color-bg-hover);
+  color: var(--color-text-primary);
+}
+
+.modal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.modal-btn-primary,
+.modal-btn-secondary {
+  padding: 0.625rem 1.25rem;
+  border-radius: 0.5rem;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-btn-primary {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+  border: none;
+}
+
+.modal-btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-hover);
+}
+
+.modal-btn-secondary {
+  background: var(--color-bg-primary);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border-secondary);
+}
+
+.modal-btn-secondary:hover {
+  background: var(--color-bg-hover);
+}
+
+.spinner.mini {
+  width: 1rem;
+  height: 1rem;
+  border-width: 1.5px;
 }
 
 /* 响应式设计 */
